@@ -6,6 +6,11 @@ name: Deploy to Firebase Hosting on merge
   push:
     branches:
       - main
+
+defaults:
+  run:
+    working-directory: ./web
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
