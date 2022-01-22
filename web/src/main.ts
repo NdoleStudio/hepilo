@@ -5,6 +5,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { Constants } from "@/plugins/constants";
+import "@/plugins/firebase";
 
 Vue.config.productionTip = false;
 

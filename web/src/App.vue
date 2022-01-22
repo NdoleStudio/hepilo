@@ -15,7 +15,7 @@
         </template>
         <v-list class="px-2" nav>
           <v-list-item-group>
-            <v-list-item>
+            <v-list-item @click="logout">
               <v-list-item-icon>
                 <v-icon>{{ logoutIcon }}</v-icon>
               </v-list-item-icon>
@@ -28,6 +28,13 @@
           </v-list-item-group>
         </v-list>
       </v-menu>
+      <v-progress-linear
+        :active="loading"
+        :indeterminate="loading"
+        absolute
+        bottom
+        color="deep-purple accent-4"
+      ></v-progress-linear>
     </v-app-bar>
 
     <v-navigation-drawer app v-model="drawer" clipped>
@@ -63,6 +70,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { Getter } from "vuex-class";
 import {
   mdiDotsVertical,
   mdiFormatListCheckbox,
@@ -70,6 +78,7 @@ import {
   mdiSync,
 } from "@mdi/js";
 import { Location } from "vue-router";
+import { getFirebaseAuth } from "@/plugins/firebase";
 
 interface MenuItem {
   name: string;
@@ -87,7 +96,7 @@ export default class App extends Vue {
   refreshIcon: string = mdiSync;
   menuIcon: string = mdiDotsVertical;
   logoutIcon: string = mdiLogout;
-
+  @Getter("loading") loading!: boolean;
   get menuItems(): Array<MenuItem> {
     return [
       {
@@ -95,11 +104,19 @@ export default class App extends Vue {
         name: "Shopping List",
         icon: mdiFormatListCheckbox,
         route: {
-          name: this.$constants.ROUTE_NAMES.SHOPPING_LIST.INDEX,
+          name: this.$constants.ROUTE_NAMES.SHOPPING_LIST,
         },
-        routeNames: [this.$constants.ROUTE_NAMES.SHOPPING_LIST.INDEX],
+        routeNames: [this.$constants.ROUTE_NAMES.SHOPPING_LIST],
       },
     ];
+  }
+
+  logout() {
+    getFirebaseAuth()
+      .signOut()
+      .then(() => {
+        this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
+      });
   }
 }
 </script>

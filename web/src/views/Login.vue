@@ -1,5 +1,23 @@
 <template>
-  <v-container> </v-container>
+  <v-container fill-height fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" md="4" xl="3">
+        <v-card>
+          <v-card-text>
+            <div id="firebaseui-auth-container" ref="authContainer"></div>
+            <v-progress-circular
+              v-if="!firebaseUIInitialized"
+              class="mx-auto d-block my-16"
+              :size="80"
+              :width="5"
+              color="primary"
+              indeterminate
+            ></v-progress-circular>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -8,51 +26,41 @@ import { Component } from "vue-property-decorator";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
 import firebase from "@/plugins/firebase";
+import { getAuth, ProviderId } from "firebase/auth";
 
 @Component
 export default class Login extends Vue {
   ui: firebaseui.auth.AuthUI | null = null;
+  firebaseUIInitialized = false;
 
-  beforeDestroy() {
+  beforeDestroy(): void {
     if (this.ui) {
       this.ui.delete();
     }
   }
 
-  mounted() {
-    try {
-      this.ui = new firebaseui.auth.AuthUI(firebase.auth());
-      this.ui.start("#firebaseui-auth-container", this.uiConfig());
-    } catch (e) {
-      sentry.captureMessage(e.message, Severity.Error);
-    }
+  mounted(): void {
+    this.ui = new firebaseui.auth.AuthUI(getAuth(firebase));
+    this.ui.start("#firebaseui-auth-container", this.uiConfig());
   }
+
   uiConfig(): firebaseui.auth.Config {
     return {
       callbacks: {
-        signInSuccessWithAuthResult: (authResult) => {
-          addAnalyticsEvent("login", {
-            method: authResult.user.sign_in_provider,
-          });
-          this.setUser(authResult.user);
+        signInSuccessWithAuthResult: () => {
           this.$root.$emit(
-            this.$constants.NOTIFICATION_EVENTS.SUCCESS,
+            this.$constants.NOTIFICATION.EVENTS.SUCCESS,
             "Login successfull!"
           );
-          if (this.afterAuthPath) {
-            this.$router.push({ path: this.afterAuthPath });
-            return false;
-          }
           this.$router.push({
-            name: this.$constants.ROUTE_NAMES.HOME,
+            name: this.$constants.ROUTE_NAMES.SHOPPING_LIST,
           });
           return false;
         },
         uiShown: () => {
           // The widget is rendered.
           // Hide the loader.
-          const element = document.getElementById("loader") as HTMLElement;
-          element.remove();
+          this.firebaseUIInitialized = true;
           const container = this.$refs["authContainer"] as HTMLElement;
           Array.from(
             container.getElementsByClassName("firebaseui-idp-text-long")
@@ -68,10 +76,8 @@ export default class Login extends Vue {
       signInSuccessUrl: "https://nyangapay.com/user/profile",
       signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        ProviderId.GOOGLE,
+        ProviderId.PASSWORD,
       ],
       // Terms of service url.
       tosUrl: "https://nyangapay.com/privacy-policy",
