@@ -23,3 +23,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_HEPILO_F5CD4 }}'
           channelId: live
           projectId: hepilo-f5cd4
+          entryPoint: './web'

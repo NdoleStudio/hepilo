@@ -20,3 +20,4 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_HEPILO_F5CD4 }}'
           projectId: hepilo-f5cd4
+          entryPoint: './web'
