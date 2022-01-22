@@ -4,6 +4,12 @@ import Home from "../views/Home.vue";
 
 Vue.use(VueRouter);
 
+export const ROUTE_NAMES = {
+  SHOPPING_LIST: {
+    INDEX: "ShoppingList",
+  },
+};
+
 const routes: Array<RouteConfig> = [
   {
     path: "/",
