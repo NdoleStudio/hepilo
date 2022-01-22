@@ -1,5 +1,5 @@
 import { ROUTE_NAMES } from "@/router";
-import _Vue from "Vue";
+import _Vue from "vue";
 
 export const CONSTANTS = {
   ROUTE_NAMES,
