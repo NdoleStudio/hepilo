@@ -6,6 +6,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { Constants } from "@/plugins/constants";
 import "@/plugins/firebase";
+import "@/plugins/splitbee";
 
 Vue.config.productionTip = false;
 

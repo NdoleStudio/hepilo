@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, User, Auth } from "firebase/auth";
+import splitbee from "@/plugins/splitbee";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -20,6 +21,11 @@ export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
     const unsubscribe = getFirebaseAuth().onAuthStateChanged((user) => {
       unsubscribe();
+      if (user) {
+        splitbee.user.set({
+          email: user?.email,
+        });
+      }
       resolve(user);
     }, reject);
   });

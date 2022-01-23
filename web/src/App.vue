@@ -79,6 +79,7 @@ import {
 } from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
+import splitbee from "@/plugins/splitbee";
 
 interface MenuItem {
   name: string;
@@ -115,6 +116,7 @@ export default class App extends Vue {
     getFirebaseAuth()
       .signOut()
       .then(() => {
+        splitbee.reset();
         this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
       });
   }
