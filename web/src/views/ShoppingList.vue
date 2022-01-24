@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3" class="px-8">
+      <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
         <v-combobox
           filled
           @change="onChange"

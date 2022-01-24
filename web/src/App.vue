@@ -5,7 +5,7 @@
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-            <v-toolbar-title class="pl-8">{{ title }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
           </v-col>
         </v-row>
       </v-container>
