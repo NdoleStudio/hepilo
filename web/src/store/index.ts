@@ -30,9 +30,14 @@ interface ListItem {
   quantity: number;
 }
 
-export type MaterializedList = Array<{
+interface MaterializedListItem {
+  item: Item;
+  listItem: ListItem;
+}
+
+type MaterializedList = Array<{
   category: Category;
-  items: Array<{ item: Item; listItem: ListItem }>;
+  items: Array<MaterializedListItem>;
 }>;
 
 const categoryIdUncategorized = "uncategorized";
@@ -177,7 +182,10 @@ export default new Vuex.Store({
                 listItem,
                 item: getters.findItemById(listItem.itemId),
               };
-            }),
+            })
+            .sort((a: MaterializedListItem, b: MaterializedListItem) =>
+              a.item.name.localeCompare(b.item.name)
+            ),
         });
       });
       return list;
