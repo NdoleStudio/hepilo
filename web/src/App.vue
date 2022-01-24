@@ -2,8 +2,13 @@
   <v-app>
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>{{ $constants.APP.NAME }}</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-container>
+        <v-row>
+          <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+            <v-toolbar-title class="pl-8">{{ title }}</v-toolbar-title>
+          </v-col>
+        </v-row>
+      </v-container>
       <v-btn icon>
         <v-icon>{{ refreshIcon }}</v-icon>
       </v-btn>
@@ -98,6 +103,7 @@ export default class App extends Vue {
   menuIcon: string = mdiDotsVertical;
   logoutIcon: string = mdiLogout;
   @Getter("loading") loading!: boolean;
+  @Getter("title") title!: boolean;
   get menuItems(): Array<MenuItem> {
     return [
       {
@@ -112,7 +118,7 @@ export default class App extends Vue {
     ];
   }
 
-  logout() {
+  logout(): void {
     getFirebaseAuth()
       .signOut()
       .then(() => {
