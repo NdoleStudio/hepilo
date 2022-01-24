@@ -35,7 +35,7 @@ interface MaterializedListItem {
   listItem: ListItem;
 }
 
-type MaterializedList = Array<{
+export type MaterializedList = Array<{
   category: Category;
   items: Array<MaterializedListItem>;
 }>;
