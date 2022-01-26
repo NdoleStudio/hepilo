@@ -79,6 +79,9 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <p class="text--secondary subtitle-1 text-center mt-10">
+        {{ version }}
+      </p>
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>
@@ -118,6 +121,10 @@ export default class App extends Vue {
   @Getter("user") user!: User;
   @Getter("isLoggedIn") isLoggedIn!: User;
   @Getter("hasProfilePicture") hasProfilePicture!: boolean;
+
+  get version(): string {
+    return process.env.VUE_APP_COMMIT_HASH.slice(0, 7);
+  }
 
   get menuItems(): Array<MenuItem> {
     return [
