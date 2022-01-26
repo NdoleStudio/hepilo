@@ -1,15 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
 Vue.use(Vuex);
 
+const COLLECTION_STATE = "states";
+
 interface State {
   loading: boolean;
+  loadingState: boolean;
+  saving: boolean;
   title: string;
+  user: User | null;
   list: Array<ListItem>;
   categories: Array<Category>;
   items: Array<Item>;
   currency: string;
+}
+
+export interface User {
+  id: string;
+  name: string | null;
+  photoURL: string | null;
 }
 
 interface Item {
@@ -45,6 +57,9 @@ const categoryIdUncategorized = "uncategorized";
 export default new Vuex.Store({
   state: {
     loading: false,
+    loadingState: false,
+    saving: false,
+    user: null,
     title: "",
     categories: [{ id: categoryIdUncategorized, name: "Uncategorized" }],
     items: [],
@@ -55,9 +70,14 @@ export default new Vuex.Store({
     setLoading(state: State, loading: boolean) {
       state.loading = loading;
     },
-
+    setLoadingState(state: State, loading: boolean) {
+      state.loadingState = loading;
+    },
     setTitle(state: State, title: string) {
       state.title = title;
+    },
+    setSaving(state: State, saving: boolean) {
+      state.saving = saving;
     },
     addCategory(state: State, category: Category) {
       state.categories.push(category);
@@ -73,22 +93,58 @@ export default new Vuex.Store({
         return item.itemId != itemId;
       });
     },
+    setUser(state: State, user: User | null) {
+      state.user = user;
+    },
+    setState(
+      state: State,
+      payload: {
+        list: Array<ListItem>;
+        categories: Array<Category>;
+        items: Array<Item>;
+        currency: string;
+      }
+    ) {
+      state.list = payload.list;
+      state.categories = payload.categories;
+      state.items = payload.items;
+      state.currency = payload.currency;
+    },
   },
   actions: {
-    setLoading({ commit }, loading: boolean) {
-      commit("setLoading", loading);
+    async setLoading({ commit }, loading: boolean) {
+      await commit("setLoading", loading);
     },
 
+    setUser({ commit, getters }, user: User | null) {
+      if (getters.user === user) {
+        return;
+      }
+      commit("setUser", user);
+    },
     setTitle({ commit }, title: string) {
       commit("setTitle", title);
     },
 
-    deleteListItem({ commit }, itemId: string) {
+    async deleteListItem({ commit, getters }, itemId: string) {
       commit("deleteListItem", itemId);
+      if (!getters.isLoggedIn) {
+        return;
+      }
+
+      commit("setSaving", true);
+      await setDoc(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+        {
+          list: getters.list,
+        },
+        { merge: true }
+      );
+      commit("setSaving", false);
     },
 
-    addItem({ commit, getters }, name: string) {
-      // fetch or add item
+    async addItem({ commit, getters }, name: string) {
+      commit("setSaving", true);
       if (!getters.hasItem(name)) {
         const item: Item = {
           id: getters.nameToId(name),
@@ -96,7 +152,7 @@ export default new Vuex.Store({
           pricePerUnit: 0,
           categoryId: categoryIdUncategorized,
         };
-        commit("addItem", item);
+        await commit("addItem", item);
       }
 
       const listItem: ListItem = {
@@ -106,13 +162,83 @@ export default new Vuex.Store({
       };
 
       if (!getters.listHasItemId(getters.nameToId(name))) {
-        commit("addItemToList", listItem);
+        await commit("addItemToList", listItem);
       }
+
+      if (getters.user === null) {
+        commit("setSaving", false);
+        return;
+      }
+
+      await setDoc(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+        {
+          list: getters.list,
+          categories: getters.categories,
+          items: getters.items,
+        },
+        { merge: true }
+      );
+      commit("setSaving", false);
+    },
+
+    async loadState({ commit, getters }) {
+      if (getters.user === null) {
+        return;
+      }
+
+      await commit("setLoadingState", true);
+      const stateSnapshot = await getDoc(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id)
+      );
+      if (!stateSnapshot.exists()) {
+        await commit("setLoadingState", false);
+        return;
+      }
+      await commit("setState", {
+        list: stateSnapshot.data().list ?? getters.list,
+        categories: stateSnapshot.data().categories ?? getters.categories,
+        items: stateSnapshot.data().items ?? getters.items,
+        currency: stateSnapshot.data().currency ?? getters.currency,
+      });
+      await commit("setLoadingState", false);
     },
   },
   getters: {
     loading(state: State): boolean {
       return state.loading;
+    },
+
+    categories(state: State): Array<Category> {
+      return state.categories;
+    },
+
+    loadingState(state: State): boolean {
+      return state.loadingState;
+    },
+
+    items(state: State): Array<Item> {
+      return state.items;
+    },
+
+    list(state: State): Array<ListItem> {
+      return state.list;
+    },
+
+    saving(state: State): boolean {
+      return state.saving;
+    },
+
+    user(state: State): User | null {
+      return state.user;
+    },
+
+    hasProfilePicture(state: State): boolean {
+      return state.user !== null && state.user.photoURL !== null;
+    },
+
+    isLoggedIn(state: State): boolean {
+      return state.user !== null;
     },
 
     title(state: State): string {
@@ -146,12 +272,12 @@ export default new Vuex.Store({
       const categories = new Set<string>();
       state.list.forEach((listItem: ListItem) => {
         const item = getters.findItemById(listItem.itemId);
-        if (item === null) {
+        if (item === undefined) {
           return;
         }
 
         const category = getters.findCategoryById(item.categoryId);
-        if (category == undefined) {
+        if (category === undefined) {
           return;
         }
         categories.add(category.name);

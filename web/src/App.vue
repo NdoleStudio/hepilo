@@ -5,26 +5,40 @@
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-            <v-toolbar-title class="pl-7">{{ title }}</v-toolbar-title>
+            <v-toolbar-title class="pl-2 text-h4">{{ title }}</v-toolbar-title>
           </v-col>
         </v-row>
       </v-container>
-      <v-btn icon>
-        <v-icon>{{ refreshIcon }}</v-icon>
-      </v-btn>
-      <v-menu left bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
-            <v-icon>{{ menuIcon }}</v-icon>
+      <v-menu left bottom v-if="isLoggedIn">
+        <template v-slot:activator="{ on }">
+          <v-btn icon x-large v-on="on">
+            <v-avatar size="30" color="black">
+              <img
+                :src="user.photoURL"
+                :alt="user.name"
+                v-if="hasProfilePicture"
+              />
+              <v-icon v-else>{{ accountIcon }}</v-icon>
+            </v-avatar>
           </v-btn>
         </template>
         <v-list class="px-2" nav>
           <v-list-item-group>
+            <v-list-item>
+              <v-list-item-icon class="pl-2">
+                <v-icon>{{ settingsIcon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content class="ml-n3">
+                <v-list-item-title class="pr-16">
+                  <span class="pr-16"> Settings </span>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item @click="logout">
-              <v-list-item-icon>
+              <v-list-item-icon class="pl-2">
                 <v-icon>{{ logoutIcon }}</v-icon>
               </v-list-item-icon>
-              <v-list-item-content class="ml-n5">
+              <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16">
                   <span class="pr-16"> Logout </span>
                 </v-list-item-title>
@@ -76,15 +90,11 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
-import {
-  mdiDotsVertical,
-  mdiFormatListCheckbox,
-  mdiLogout,
-  mdiSync,
-} from "@mdi/js";
+import { mdiAccount, mdiCog, mdiFormatListCheckbox, mdiLogout } from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
+import { User } from "@/store";
 
 interface MenuItem {
   name: string;
@@ -99,11 +109,16 @@ interface MenuItem {
 @Component
 export default class App extends Vue {
   drawer = false;
-  refreshIcon: string = mdiSync;
-  menuIcon: string = mdiDotsVertical;
+  settingsIcon: string = mdiCog;
   logoutIcon: string = mdiLogout;
+  accountIcon: string = mdiAccount;
+
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;
+  @Getter("user") user!: User;
+  @Getter("isLoggedIn") isLoggedIn!: User;
+  @Getter("hasProfilePicture") hasProfilePicture!: boolean;
+
   get menuItems(): Array<MenuItem> {
     return [
       {

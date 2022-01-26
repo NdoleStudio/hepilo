@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, User, Auth } from "firebase/auth";
+import { User as StateUser } from "@/store/index";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import splitbee from "@/plugins/splitbee";
+import store from "@/store";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,12 +27,32 @@ export const getCurrentUser = (): Promise<User | null> => {
       if (user) {
         splitbee.user.set({
           email: user?.email,
+          userId: user?.uid,
         });
       }
-      resolve(user);
+
+      let stateUser: StateUser | null = null;
+      if (user) {
+        stateUser = {
+          id: user.uid,
+          name: user.displayName,
+          photoURL: user.photoURL,
+        };
+      }
+      store.dispatch("setUser", stateUser).finally(() => {
+        resolve(user);
+      });
     }, reject);
   });
 };
+
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider(process.env.VUE_APP_RECAPTCHA_SITE_KEY),
+
+  // Optional argument. If true, the SDK automatically refreshes App Check
+  // tokens as needed.
+  isTokenAutoRefreshEnabled: true,
+});
 
 export const getFirebaseAuth = (): Auth => getAuth(app);
 

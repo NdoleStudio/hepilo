@@ -20,9 +20,9 @@
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
         <v-list subheader class="pb-0">
           <v-progress-linear
-            :active="isLoading"
-            :indeterminate="isLoading"
-            v-if="isLoading"
+            :active="saving"
+            :indeterminate="saving"
+            v-if="saving"
             color="deep-purple accent-4"
           ></v-progress-linear>
           <template v-for="categoryItem in list">
@@ -81,18 +81,21 @@ export default class ShoppingList extends Vue {
   isBlur = false;
   deleteIcon: string = mdiDelete;
   selectedItem: null | number = -1;
-  isLoading = false;
 
   @Getter("materializedList") list!: MaterializedList;
   @Getter("currency") currency!: string;
+  @Getter("saving") saving!: boolean;
+  @Getter("loadingState") loadingState!: boolean;
   @Getter("autocompleteItems") autocompleteItems!: Array<string>;
 
   @Action("setTitle") setTitle!: (title: string) => void;
   @Action("addItem") addItem!: (name: string) => void;
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
+  @Action("loadState") loadState!: () => void;
 
   mounted(): void {
     this.setTitle("Shopping List");
+    this.loadState();
   }
 
   formatCurrency(value: number): string {
