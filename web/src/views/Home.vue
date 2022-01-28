@@ -19,9 +19,15 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import "firebaseui/dist/firebaseui.css";
 import { mdiLogin } from "@mdi/js";
+import { Action } from "vuex-class";
 
 @Component
 export default class Home extends Vue {
   loginIcon: string = mdiLogin;
+  @Action("setTitle") setTitle!: (title: string) => void;
+
+  mounted(): void {
+    this.setTitle("");
+  }
 }
 </script>

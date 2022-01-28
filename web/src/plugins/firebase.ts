@@ -27,6 +27,7 @@ export const getCurrentUser = (): Promise<User | null> => {
       if (user) {
         splitbee.user.set({
           email: user?.email,
+          name: user?.displayName,
           userId: user?.uid,
         });
       }

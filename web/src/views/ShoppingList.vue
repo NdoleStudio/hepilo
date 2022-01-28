@@ -63,13 +63,39 @@
         </v-list>
       </v-col>
     </v-row>
+    <v-dialog
+      v-model="dialog"
+      max-width="90%"
+      :width="dialogWidth"
+      transition="scale-transition"
+    >
+      <v-card>
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialog = false">
+            <v-icon>{{ closeIcon }}</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text>
+          Let Google help apps determine location. This means sending anonymous
+          location data to Google, even when no apps are running.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="primary" @click="dialog = false">Save</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="dialog = false"> Delete </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { mdiDelete, mdiPlus } from "@mdi/js";
+import { mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
 import { MaterializedList } from "@/store";
 
 type SelectItem = string;
@@ -81,6 +107,8 @@ export default class ShoppingList extends Vue {
   isBlur = false;
   deleteIcon: string = mdiDelete;
   selectedItem: null | number = -1;
+  dialog = false;
+  closeIcon: string = mdiClose;
 
   @Getter("materializedList") list!: MaterializedList;
   @Getter("currency") currency!: string;
@@ -92,6 +120,19 @@ export default class ShoppingList extends Vue {
   @Action("addItem") addItem!: (name: string) => void;
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
   @Action("loadState") loadState!: () => void;
+
+  get dialogWidth(): string {
+    switch (this.$vuetify.breakpoint.name) {
+      case "md":
+        return "500";
+      case "lg":
+        return "600";
+      case "xl":
+        return "780";
+      default:
+        return "90%";
+    }
+  }
 
   mounted(): void {
     this.setTitle("Shopping List");
@@ -118,6 +159,7 @@ export default class ShoppingList extends Vue {
   }
 
   itemClicked(): void {
+    this.dialog = true;
     setTimeout(() => {
       this.selectedItem = null;
     }, 200);

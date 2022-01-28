@@ -27,11 +27,14 @@ import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
 import firebase from "@/plugins/firebase";
 import { getAuth, ProviderId } from "firebase/auth";
+import { Action } from "vuex-class";
 
 @Component
 export default class Login extends Vue {
   ui: firebaseui.auth.AuthUI | null = null;
   firebaseUIInitialized = false;
+
+  @Action("setTitle") setTitle!: (title: string) => void;
 
   beforeDestroy(): void {
     if (this.ui) {
@@ -42,6 +45,7 @@ export default class Login extends Vue {
   mounted(): void {
     this.ui = new firebaseui.auth.AuthUI(getAuth(firebase));
     this.ui.start("#firebaseui-auth-container", this.uiConfig());
+    this.setTitle("");
   }
 
   uiConfig(): firebaseui.auth.Config {
