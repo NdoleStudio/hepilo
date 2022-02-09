@@ -83,7 +83,7 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn color="primary" @click="dialog = false">Save</v-btn>
+          <v-btn text color="success" @click="dialog = false">Save</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="error" text @click="dialog = false"> Delete </v-btn>
         </v-card-actions>
