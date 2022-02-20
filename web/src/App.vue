@@ -118,6 +118,7 @@ import { Component } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import {
   mdiAccount,
+  mdiCheck,
   mdiCheckAll,
   mdiCog,
   mdiFormatListCheckbox,
@@ -144,7 +145,7 @@ export default class App extends Vue {
   settingsIcon: string = mdiCog;
   logoutIcon: string = mdiLogout;
   accountIcon: string = mdiAccount;
-  tickIcon: string = mdiCheckAll;
+  tickIcon: string = mdiCheck;
 
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;

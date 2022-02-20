@@ -16,7 +16,7 @@
         </v-combobox>
       </v-col>
     </v-row>
-    <v-row v-if="list.length > 0">
+    <v-row v-if="listItems.length > 0">
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
         <v-list subheader class="pb-0">
           <v-progress-linear
@@ -25,9 +25,10 @@
             v-if="saving"
             color="deep-purple accent-4"
           ></v-progress-linear>
-          <template v-for="categoryItem in list">
+          <template v-for="categoryItem in listItems ">
             <v-subheader
-              class="teal--text text-button"
+              class="text-button"
+              :class="categoryClass(categoryItem.category)"
               :key="'header-' + categoryItem.category.id"
               >{{ categoryItem.category.name }}</v-subheader
             >
@@ -41,7 +42,11 @@
                 :key="item.item.id"
               >
                 <v-list-item-action>
-                  <v-checkbox></v-checkbox>
+                  <v-checkbox
+                    @click.stop
+                    @change="addToCart"
+                    :disabled="saving"
+                  ></v-checkbox>
                 </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title>{{ item.item.name }}</v-list-item-title>
@@ -63,6 +68,67 @@
         </v-list>
       </v-col>
     </v-row>
+
+    <v-row v-if="cartItems.length > 0">
+      <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+        <v-expansion-panels :value="cartPanel">
+          <v-expansion-panel @change="toggleCartPanel">
+            <v-expansion-panel-header class="text-button pl-4">
+              <div>
+                Shopping Cart
+                <v-icon small>{{ cartIcon }}</v-icon>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content class="mx-n6">
+              <v-list subheader class="mb-n6 pb-0">
+                <template v-for="categoryItem in cartItems">
+                  <v-list-item-group
+                    v-model="selectedItem"
+                    :key="'list-' + categoryItem.category.id"
+                  >
+                    <v-list-item
+                      @click="itemClicked(item)"
+                      v-for="item in categoryItem.items"
+                      :key="item.item.id"
+                    >
+                      <v-list-item-action>
+                        <v-checkbox
+                          @click.stop
+                          :disabled="saving"
+                          input-value="true"
+                          @change="removeFromCart"
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          class="text-decoration-line-through text--secondary"
+                          >{{ item.item.name }}</v-list-item-title
+                        >
+                        <v-list-item-subtitle class="caption">{{
+                          formatCurrency(
+                            item.listItem.quantity * item.item.pricePerUnit
+                          )
+                        }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                      <v-spacer></v-spacer>
+                      <v-list-item-action>
+                        <v-btn
+                          icon
+                          @click="deleteListItem(item.listItem.itemId)"
+                        >
+                          <v-icon color="error">{{ deleteIcon }}</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list-item-group>
+                </template>
+              </v-list>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
+    </v-row>
+
     <v-dialog
       v-model="dialog"
       max-width="90%"
@@ -146,7 +212,7 @@
             >Save</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="closePopup"> Delete </v-btn>
+          <v-btn color="error" text @click="onPopupDelete"> Delete </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -156,8 +222,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
+import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
 import {
+  Category,
   categoryIdUncategorized,
   MaterializedList,
   MaterializedListItem,
@@ -173,10 +240,12 @@ export default class ShoppingList extends Vue {
   selectedItem: null | number = -1;
   dialog = false;
   formValid = false;
+  cartIcon: string = mdiCart;
   addIcon: string = mdiPlus;
   closeIcon: string = mdiClose;
   formItemId = "";
   formName = "";
+  formAddedToCart = false;
   formCategoryId = categoryIdUncategorized;
   formNameRules = [
     (value: string | null): boolean | string => !!value || "Name is required",
@@ -205,7 +274,9 @@ export default class ShoppingList extends Vue {
       "Notes must be less than 300 characters",
   ];
 
-  @Getter("materializedList") list!: MaterializedList;
+  @Getter("cartPanel") cartPanel!: number;
+  @Getter("cartMaterializedItems") listItems!: MaterializedList;
+  @Getter("listMaterializedItems") cartItems!: MaterializedList;
   @Getter("currency") currency!: string;
   @Getter("saving") saving!: boolean;
   @Getter("currencySymbol") currencySymbol!: string;
@@ -218,6 +289,9 @@ export default class ShoppingList extends Vue {
   @Action("updateItem") updateItem!: (request: UpdateItemRequest) => void;
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
   @Action("loadState") loadState!: () => void;
+  @Action("toggleCartPanel") toggleCartPanel!: () => void;
+  @Action("addToCart") addToCart!: () => void;
+  @Action("removeFromCart") removeFromCart!: () => void;
 
   get dialogWidth(): string {
     switch (this.$vuetify.breakpoint.name) {
@@ -237,6 +311,11 @@ export default class ShoppingList extends Vue {
     this.dialog = false;
   }
 
+  onPopupDelete(): void {
+    this.deleteListItem(this.formItemId);
+    this.closePopup();
+  }
+
   clearForm(): void {
     this.formName = "";
     this.formQuantity = 1;
@@ -244,6 +323,7 @@ export default class ShoppingList extends Vue {
     this.formItemId = "";
     this.formCategoryId = categoryIdUncategorized;
     this.formPricePerUnit = 0.0;
+    this.formAddedToCart = false;
   }
 
   setFormItem(item: MaterializedListItem): void {
@@ -253,6 +333,7 @@ export default class ShoppingList extends Vue {
     this.formNotes = item.listItem.notes;
     this.formCategoryId = item.item.categoryId;
     this.formPricePerUnit = item.item.pricePerUnit;
+    this.formAddedToCart = item.listItem.addedToCart;
   }
 
   mounted(): void {
@@ -262,6 +343,12 @@ export default class ShoppingList extends Vue {
 
   get totalPrice(): number {
     return this.formPricePerUnit * this.formQuantity;
+  }
+
+  categoryClass(category: Category): { [p: string]: boolean } {
+    return {
+      [`${category.color}--text`]: true,
+    };
   }
 
   formatCurrency(value: number): string {
@@ -291,6 +378,7 @@ export default class ShoppingList extends Vue {
       quantity: this.formQuantity,
       notes: this.formNotes,
       pricePerUnit: this.formPricePerUnit,
+      addedToCart: this.formAddedToCart,
     });
     this.dialog = false;
     this.clearForm();

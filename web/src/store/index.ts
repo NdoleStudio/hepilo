@@ -16,7 +16,9 @@ interface State {
   categories: Array<Category>;
   items: Array<Item>;
   currency: string;
+  cart: Array<ListItem>;
   notification: Notification;
+  cartPanelOpen: boolean;
 }
 
 type NotificationType = "error" | "success";
@@ -46,7 +48,7 @@ interface Item {
   categoryId: string;
 }
 
-interface Category {
+export interface Category {
   id: string;
   name: string;
   color: string;
@@ -55,6 +57,7 @@ interface Category {
 interface ListItem {
   itemId: string;
   notes: string;
+  addedToCart: boolean;
   quantity: number;
 }
 
@@ -73,6 +76,7 @@ export interface UpdateItemRequest {
   categoryId: string;
   pricePerUnit: number;
   quantity: number;
+  addedToCart: boolean;
   notes: string;
   itemId: string;
 }
@@ -98,6 +102,8 @@ export default new Vuex.Store({
       type: "success",
       timeout: 3000,
     },
+    cart: [],
+    cartPanelOpen: true,
   },
   mutations: {
     setLoading(state: State, loading: boolean) {
@@ -111,6 +117,9 @@ export default new Vuex.Store({
     },
     setSaving(state: State, saving: boolean) {
       state.saving = saving;
+    },
+    toggleCartPanel(state: State) {
+      state.cartPanelOpen = !state.cartPanelOpen;
     },
     setNotification(
       state: State,
@@ -174,6 +183,18 @@ export default new Vuex.Store({
       });
     },
 
+    setAddedToCart(
+      state: State,
+      input: { itemId: string; addedToCart: boolean }
+    ) {
+      state.list = state.list.map((item: ListItem) => {
+        if (item.itemId === input.itemId) {
+          item.addedToCart = input.addedToCart;
+        }
+        return item;
+      });
+    },
+
     deleteListItem(state: State, itemId: string) {
       state.list = state.list.filter((item: ListItem) => {
         return item.itemId != itemId;
@@ -189,12 +210,14 @@ export default new Vuex.Store({
         categories: Array<Category>;
         items: Array<Item>;
         currency: string;
+        cartPanelOpen: boolean;
       }
     ) {
       state.list = payload.list;
       state.categories = payload.categories;
       state.items = payload.items;
       state.currency = payload.currency;
+      state.cartPanelOpen = payload.cartPanelOpen;
     },
   },
   actions: {
@@ -210,6 +233,21 @@ export default new Vuex.Store({
     },
     setTitle({ commit }, title: string) {
       commit("setTitle", title);
+    },
+
+    async toggleCartPanel({ commit, getters }) {
+      await commit("toggleCartPanel");
+      if (!getters.isLoggedIn) {
+        return;
+      }
+
+      await setDoc(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+        {
+          cartPanelOpen: getters.cartPanelOpen,
+        },
+        { merge: true }
+      );
     },
 
     async deleteListItem({ commit, getters }, itemId: string) {
@@ -245,12 +283,20 @@ export default new Vuex.Store({
         const listItem: ListItem = {
           itemId: getters.nameToId(name),
           notes: "",
+          addedToCart: false,
           quantity: 1,
         };
         await commit("upsertListItem", listItem);
       }
 
-      if (getters.user !== null) {
+      if (getters.ItemIdIsInCart(getters.nameToId(name))) {
+        await commit("setAddedToCart", {
+          itemId: getters.nameToId(name),
+          addedToCart: false,
+        });
+      }
+
+      if (getters.isLoggedIn) {
         await setDoc(
           doc(getFirestore(), COLLECTION_STATE, getters.user.id),
           {
@@ -286,6 +332,7 @@ export default new Vuex.Store({
       const listItem: ListItem = {
         itemId: request.itemId,
         notes: request.notes,
+        addedToCart: request.addedToCart,
         quantity: request.quantity,
       };
       await commit("upsertListItem", listItem);
@@ -314,11 +361,70 @@ export default new Vuex.Store({
       commit("setSaving", false);
     },
 
+    async addToCart({ commit, getters }, itemId: string) {
+      commit("setSaving", true);
+      if (getters.ItemIdIsInCart(itemId)) {
+        await commit("setAddedToCart", {
+          itemId: itemId,
+          addedToCart: true,
+        });
+      }
+
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            list: getters.list,
+          },
+          { merge: true }
+        );
+      }
+
+      const item = getters.findItemById(itemId);
+      if (!item) {
+        commit("setNotification", {
+          type: "success",
+          message: `${item.name} added to cart`,
+        });
+      }
+
+      commit("setSaving", false);
+    },
+
+    async removeFromCart({ commit, getters }, itemId: string) {
+      commit("setSaving", true);
+      if (getters.ItemIdIsInCart(itemId)) {
+        await commit("setAddedToCart", {
+          itemId: itemId,
+          addedToCart: false,
+        });
+      }
+
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            list: getters.list,
+          },
+          { merge: true }
+        );
+      }
+
+      const item = getters.findItemById(itemId);
+      if (!item) {
+        commit("setNotification", {
+          type: "success",
+          message: `${item.name} removed from cart`,
+        });
+      }
+
+      commit("setSaving", false);
+    },
+
     async loadState({ commit, getters }) {
       if (getters.user === null) {
         return;
       }
-
       await commit("setLoadingState", true);
       const stateSnapshot = await getDoc(
         doc(getFirestore(), COLLECTION_STATE, getters.user.id)
@@ -332,6 +438,8 @@ export default new Vuex.Store({
         categories: stateSnapshot.data().categories ?? getters.categories,
         items: stateSnapshot.data().items ?? getters.items,
         currency: stateSnapshot.data().currency ?? getters.currency,
+        cartPanelOpen:
+          stateSnapshot.data().cartPanelOpen ?? getters.cartPanelOpen,
       });
       await commit("setLoadingState", false);
     },
@@ -351,6 +459,17 @@ export default new Vuex.Store({
 
     items(state: State): Array<Item> {
       return state.items;
+    },
+
+    cartPanelOpen(state: State): boolean {
+      return state.cartPanelOpen;
+    },
+
+    cartPanel(state: State): number {
+      if (state.cartPanelOpen) {
+        return 0;
+      }
+      return -1;
     },
 
     list(state: State): Array<ListItem> {
@@ -399,55 +518,83 @@ export default new Vuex.Store({
         );
       },
 
-    materializedList(state: State, getters): MaterializedList {
-      const list: MaterializedList = [];
-      const categories = new Set<string>();
-      state.list.forEach((listItem: ListItem) => {
-        const item = getters.findItemById(listItem.itemId);
-        if (item === undefined) {
-          return;
-        }
+    ItemIdIsInCart:
+      (state: State) =>
+      (itemId: string): boolean => {
+        return (
+          state.list.find((listItem: ListItem) => {
+            return listItem.itemId === itemId && listItem.addedToCart;
+          }) != undefined
+        );
+      },
 
-        const category = getters.findCategoryById(item.categoryId);
-        if (category === undefined) {
-          return;
-        }
-        categories.add(category.name);
-      });
-
-      const sortedCategories = Array.from(categories).sort();
-      sortedCategories.forEach((categoryName: string) => {
-        const category = getters.findCategoryByName(categoryName);
-        if (category === undefined) {
-          return;
-        }
-        list.push({
-          category,
-          items: state.list
-            .filter((listItem: ListItem) => {
-              const item = getters.findItemById(listItem.itemId);
-              if (item == undefined) {
-                return false;
-              }
-              const itemCategory = getters.findCategoryById(item.categoryId);
-              if (itemCategory == undefined) {
-                return false;
-              }
-              return itemCategory.id == category.id;
-            })
-            .map((listItem: ListItem) => {
-              return {
-                listItem,
-                item: getters.findItemById(listItem.itemId),
-              };
-            })
-            .sort((a: MaterializedListItem, b: MaterializedListItem) =>
-              a.item.name.localeCompare(b.item.name)
-            ),
-        });
-      });
-      return list;
+    cartMaterializedItems(state: State, getters): MaterializedList {
+      return getters.materializedList(true);
     },
+
+    listMaterializedItems(state: State, getters): MaterializedList {
+      return getters.materializedList(false);
+    },
+
+    materializedList:
+      (state: State, getters) =>
+      (addedToCart: boolean): MaterializedList => {
+        const list: MaterializedList = [];
+        const categories = new Set<string>();
+
+        const items = state.list.filter((listItem) => {
+          if (addedToCart) {
+            return listItem.addedToCart;
+          }
+          return !listItem.addedToCart;
+        });
+
+        items.forEach((listItem: ListItem) => {
+          const item = getters.findItemById(listItem.itemId);
+          if (item === undefined) {
+            return;
+          }
+
+          const category = getters.findCategoryById(item.categoryId);
+          if (category === undefined) {
+            return;
+          }
+          categories.add(category.name);
+        });
+
+        const sortedCategories = Array.from(categories).sort();
+        sortedCategories.forEach((categoryName: string) => {
+          const category = getters.findCategoryByName(categoryName);
+          if (category === undefined) {
+            return;
+          }
+          list.push({
+            category,
+            items: items
+              .filter((listItem: ListItem) => {
+                const item = getters.findItemById(listItem.itemId);
+                if (item == undefined) {
+                  return false;
+                }
+                const itemCategory = getters.findCategoryById(item.categoryId);
+                if (itemCategory == undefined) {
+                  return false;
+                }
+                return itemCategory.id == category.id;
+              })
+              .map((listItem: ListItem) => {
+                return {
+                  listItem,
+                  item: getters.findItemById(listItem.itemId),
+                };
+              })
+              .sort((a: MaterializedListItem, b: MaterializedListItem) =>
+                a.item.name.localeCompare(b.item.name)
+              ),
+          });
+        });
+        return list;
+      },
 
     findCategoryById:
       (state: State) =>
