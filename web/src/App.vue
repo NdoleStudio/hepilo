@@ -1,11 +1,21 @@
 <template>
   <v-app>
     <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click="setNavDrawer(!navDrawerActive)"
+      ></v-app-bar-nav-icon>
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-            <v-toolbar-title class="pl-2 text-h4">{{ title }}</v-toolbar-title>
+            <v-slide-x-transition>
+              <Transition>
+                <v-toolbar-title
+                  :class="{ 'page-title--drawer-open': navDrawerOpen }"
+                  class="pl-2 text-h4 page-title"
+                  >{{ title }}</v-toolbar-title
+                >
+              </Transition>
+            </v-slide-x-transition>
           </v-col>
         </v-row>
       </v-container>
@@ -56,7 +66,7 @@
       ></v-progress-linear>
     </v-app-bar>
 
-    <v-navigation-drawer app v-model="drawer" clipped>
+    <v-navigation-drawer app v-model="navDrawerActive" clipped>
       <v-list shaped>
         <v-list-item-group color="primary">
           <v-list-item
@@ -99,12 +109,12 @@
         {{ notification.message }}
         <template v-slot:action="{ attrs }">
           <v-btn
-            color="primary"
+            :color="notification.type"
             text
             v-bind="attrs"
             @click="disableNotification"
           >
-            Close
+            <span class="font-weight-bold">Close</span>
           </v-btn>
         </template>
       </v-snackbar>
@@ -119,7 +129,6 @@ import { Action, Getter } from "vuex-class";
 import {
   mdiAccount,
   mdiCheck,
-  mdiCheckAll,
   mdiCog,
   mdiFormatListCheckbox,
   mdiLogout,
@@ -141,7 +150,6 @@ interface MenuItem {
 
 @Component
 export default class App extends Vue {
-  drawer = false;
   settingsIcon: string = mdiCog;
   logoutIcon: string = mdiLogout;
   accountIcon: string = mdiAccount;
@@ -150,14 +158,26 @@ export default class App extends Vue {
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;
   @Getter("user") user!: User;
+  @Getter("navDrawerOpen") navDrawerOpen!: boolean;
   @Getter("notification") notification!: Notification;
   @Getter("isLoggedIn") isLoggedIn!: User;
   @Getter("hasProfilePicture") hasProfilePicture!: boolean;
 
   @Action("disableNotification") disableNotification!: () => void;
+  @Action("setNavDrawer") setNavDrawer!: (isOpen: boolean) => void;
 
   get version(): string {
     return process.env.VUE_APP_COMMIT_HASH.slice(0, 7);
+  }
+
+  get navDrawerActive(): boolean {
+    console.log(this.navDrawerOpen);
+    return this.navDrawerOpen;
+  }
+
+  set navDrawerActive(value: boolean) {
+    console.log(value);
+    this.setNavDrawer(value);
   }
 
   get notificationActive(): boolean {
@@ -192,3 +212,18 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.v-application {
+  .w-full {
+    width: 100%;
+  }
+
+  .page-title {
+    transition: margin 100ms ease-out;
+    &--drawer-open {
+      margin-left: 160px;
+    }
+  }
+}
+</style>

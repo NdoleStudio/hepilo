@@ -1,7 +1,12 @@
 <template>
   <v-container fill-height fluid>
     <v-row align="center" justify="center">
-      <v-col cols="12" md="4" xl="2">
+      <v-col cols="12" md="4" xl="3" class="mt-n16">
+        <v-img
+          class="mx-auto mt-n16"
+          max-width="100"
+          src="@/assets/logo.png"
+        ></v-img>
         <v-card>
           <v-card-text>
             <div id="firebaseui-auth-container" ref="authContainer"></div>

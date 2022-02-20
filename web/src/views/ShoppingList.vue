@@ -44,7 +44,7 @@
                 <v-list-item-action>
                   <v-checkbox
                     @click.stop
-                    @change="addToCart"
+                    @change="addToCart(item.item.id)"
                     :disabled="saving"
                   ></v-checkbox>
                 </v-list-item-action>
@@ -96,7 +96,7 @@
                           @click.stop
                           :disabled="saving"
                           input-value="true"
-                          @change="removeFromCart"
+                          @change="removeFromCart(item.item.id)"
                         ></v-checkbox>
                       </v-list-item-action>
                       <v-list-item-content>
@@ -126,6 +126,32 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="cartTotal > 0.0 || listTotal > 0.0">
+      <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+        <v-card>
+          <v-card-text class="pb-0">
+            <v-row>
+              <v-col>
+                <div class="d-flex mb-n2" style="width: 100%">
+                  <div>
+                    <p class="text-button">List Total</p>
+                    <p class="text-h6 mt-n4">{{ formatCurrency(listTotal) }}</p>
+                  </div>
+                  <v-spacer></v-spacer>
+                  <div>
+                    <p class="text-button text-right">Cart Total</p>
+                    <p class="text-h6 mt-n4">
+                      {{ formatCurrency(cartTotal) }}
+                    </p>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 
@@ -275,8 +301,10 @@ export default class ShoppingList extends Vue {
   ];
 
   @Getter("cartPanel") cartPanel!: number;
-  @Getter("cartMaterializedItems") listItems!: MaterializedList;
-  @Getter("listMaterializedItems") cartItems!: MaterializedList;
+  @Getter("listMaterializedItems") listItems!: MaterializedList;
+  @Getter("cartMaterializedItems") cartItems!: MaterializedList;
+  @Getter("cartTotal") cartTotal!: number;
+  @Getter("listTotal") listTotal!: number;
   @Getter("currency") currency!: string;
   @Getter("saving") saving!: boolean;
   @Getter("currencySymbol") currencySymbol!: string;
@@ -290,8 +318,8 @@ export default class ShoppingList extends Vue {
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
   @Action("loadState") loadState!: () => void;
   @Action("toggleCartPanel") toggleCartPanel!: () => void;
-  @Action("addToCart") addToCart!: () => void;
-  @Action("removeFromCart") removeFromCart!: () => void;
+  @Action("addToCart") addToCart!: (itemId: string) => void;
+  @Action("removeFromCart") removeFromCart!: (itemId: string) => void;
 
   get dialogWidth(): string {
     switch (this.$vuetify.breakpoint.name) {
@@ -347,7 +375,7 @@ export default class ShoppingList extends Vue {
 
   categoryClass(category: Category): { [p: string]: boolean } {
     return {
-      [`${category.color}--text`]: true,
+      [`${category.color || "teal"}--text`]: true,
     };
   }
 

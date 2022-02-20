@@ -19,6 +19,7 @@ interface State {
   cart: Array<ListItem>;
   notification: Notification;
   cartPanelOpen: boolean;
+  navDrawerOpen: boolean;
 }
 
 type NotificationType = "error" | "success";
@@ -66,10 +67,12 @@ export interface MaterializedListItem {
   listItem: ListItem;
 }
 
-export type MaterializedList = Array<{
+interface MaterializedListElement {
   category: Category;
   items: Array<MaterializedListItem>;
-}>;
+}
+
+export type MaterializedList = Array<MaterializedListElement>;
 
 export interface UpdateItemRequest {
   name: string;
@@ -104,6 +107,7 @@ export default new Vuex.Store({
     },
     cart: [],
     cartPanelOpen: true,
+    navDrawerOpen: false,
   },
   mutations: {
     setLoading(state: State, loading: boolean) {
@@ -121,6 +125,9 @@ export default new Vuex.Store({
     toggleCartPanel(state: State) {
       state.cartPanelOpen = !state.cartPanelOpen;
     },
+    setNavDrawer(state: State, isOpen: boolean) {
+      state.navDrawerOpen = isOpen;
+    },
     setNotification(
       state: State,
       notification: { message: string; type: NotificationType }
@@ -130,6 +137,7 @@ export default new Vuex.Store({
         active: true,
         message: notification.message,
         type: notification.type,
+        timeout: state.notification.timeout + 1, // Reset the timeout
       };
     },
     disableNotification(state: State) {
@@ -211,6 +219,7 @@ export default new Vuex.Store({
         items: Array<Item>;
         currency: string;
         cartPanelOpen: boolean;
+        navDrawerOpen: boolean;
       }
     ) {
       state.list = payload.list;
@@ -218,6 +227,7 @@ export default new Vuex.Store({
       state.items = payload.items;
       state.currency = payload.currency;
       state.cartPanelOpen = payload.cartPanelOpen;
+      state.navDrawerOpen = payload.navDrawerOpen;
     },
   },
   actions: {
@@ -233,6 +243,21 @@ export default new Vuex.Store({
     },
     setTitle({ commit }, title: string) {
       commit("setTitle", title);
+    },
+
+    async setNavDrawer({ commit, getters }, state: boolean) {
+      await commit("setNavDrawer", state);
+      if (!getters.isLoggedIn) {
+        return;
+      }
+
+      await setDoc(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+        {
+          navDrawerOpen: state,
+        },
+        { merge: true }
+      );
     },
 
     async toggleCartPanel({ commit, getters }) {
@@ -363,12 +388,11 @@ export default new Vuex.Store({
 
     async addToCart({ commit, getters }, itemId: string) {
       commit("setSaving", true);
-      if (getters.ItemIdIsInCart(itemId)) {
-        await commit("setAddedToCart", {
-          itemId: itemId,
-          addedToCart: true,
-        });
-      }
+
+      await commit("setAddedToCart", {
+        itemId: itemId,
+        addedToCart: true,
+      });
 
       if (getters.isLoggedIn) {
         await setDoc(
@@ -381,7 +405,7 @@ export default new Vuex.Store({
       }
 
       const item = getters.findItemById(itemId);
-      if (!item) {
+      if (item) {
         commit("setNotification", {
           type: "success",
           message: `${item.name} added to cart`,
@@ -393,12 +417,11 @@ export default new Vuex.Store({
 
     async removeFromCart({ commit, getters }, itemId: string) {
       commit("setSaving", true);
-      if (getters.ItemIdIsInCart(itemId)) {
-        await commit("setAddedToCart", {
-          itemId: itemId,
-          addedToCart: false,
-        });
-      }
+
+      await commit("setAddedToCart", {
+        itemId: itemId,
+        addedToCart: false,
+      });
 
       if (getters.isLoggedIn) {
         await setDoc(
@@ -411,7 +434,7 @@ export default new Vuex.Store({
       }
 
       const item = getters.findItemById(itemId);
-      if (!item) {
+      if (item) {
         commit("setNotification", {
           type: "success",
           message: `${item.name} removed from cart`,
@@ -438,6 +461,7 @@ export default new Vuex.Store({
         categories: stateSnapshot.data().categories ?? getters.categories,
         items: stateSnapshot.data().items ?? getters.items,
         currency: stateSnapshot.data().currency ?? getters.currency,
+        navDrawerOpen: stateSnapshot.data().navDrawerOpen ?? false,
         cartPanelOpen:
           stateSnapshot.data().cartPanelOpen ?? getters.cartPanelOpen,
       });
@@ -459,6 +483,10 @@ export default new Vuex.Store({
 
     items(state: State): Array<Item> {
       return state.items;
+    },
+
+    navDrawerOpen(state: State): boolean {
+      return state.navDrawerOpen;
     },
 
     cartPanelOpen(state: State): boolean {
@@ -656,6 +684,34 @@ export default new Vuex.Store({
           .find((part) => {
             return part.type == "currency";
           })?.value || "$"
+      );
+    },
+
+    listTotal(state: State, getters): number {
+      return getters.listMaterializedItems.reduce(
+        (sum: number, item: MaterializedListElement) => {
+          return (
+            sum +
+            item.items.reduce((value: number, item: MaterializedListItem) => {
+              return item.item.pricePerUnit * item.listItem.quantity;
+            }, 0)
+          );
+        },
+        0
+      );
+    },
+
+    cartTotal(state: State, getters): number {
+      return getters.cartMaterializedItems.reduce(
+        (sum: number, item: MaterializedListElement) => {
+          return (
+            sum +
+            item.items.reduce((value: number, item: MaterializedListItem) => {
+              return item.item.pricePerUnit * item.listItem.quantity;
+            }, 0)
+          );
+        },
+        0
       );
     },
 
