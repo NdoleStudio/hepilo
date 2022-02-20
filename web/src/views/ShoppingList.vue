@@ -25,7 +25,7 @@
             v-if="saving"
             color="deep-purple accent-4"
           ></v-progress-linear>
-          <template v-for="categoryItem in listItems ">
+          <template v-for="categoryItem in listItems">
             <v-subheader
               class="text-button"
               :class="categoryClass(categoryItem.category)"
