@@ -9,7 +9,7 @@
           @focus="onFocus"
           :items="autocompleteItems"
           solo
-          v-model="item"
+          v-model="itemName"
           placeholder="Add Item"
           :prepend-inner-icon="addIcon"
         >
@@ -36,7 +36,7 @@
               :key="'list-' + categoryItem.category.id"
             >
               <v-list-item
-                @click="itemClicked"
+                @click="itemClicked(item)"
                 v-for="item in categoryItem.items"
                 :key="item.item.id"
               >
@@ -72,20 +72,81 @@
       <v-card>
         <v-card-title>
           <v-spacer></v-spacer>
-          <v-btn icon @click="dialog = false">
+          <v-btn color="info" icon @click="closePopup">
             <v-icon>{{ closeIcon }}</v-icon>
           </v-btn>
         </v-card-title>
-
         <v-card-text>
-          Let Google help apps determine location. This means sending anonymous
-          location data to Google, even when no apps are running.
+          <v-form v-model="formValid" lazy-validation ref="updateItemForm">
+            <v-text-field
+              aria-required="true"
+              :disabled="saving"
+              v-model="formName"
+              :rules="formNameRules"
+              label="Name"
+              counter="15"
+              persistent-placeholder
+              placeholder="e.g Bread"
+              outlined
+            ></v-text-field>
+            <v-text-field
+              class="mt-2"
+              :disabled="saving"
+              aria-required="true"
+              v-model="formQuantity"
+              :rules="formQuantityRules"
+              label="Quantity"
+              type="number"
+              persistent-placeholder
+              placeholder="e.g 1"
+              outlined
+            ></v-text-field>
+            <v-text-field
+              class="mt-2"
+              :disabled="saving"
+              aria-required="true"
+              v-model="formPricePerUnit"
+              :rules="formPricePerUnitRules"
+              label="Price Per Unit"
+              type="number"
+              :prefix="currencySymbol"
+              persistent-placeholder
+              placeholder="1.99"
+              :hint="'Total Price: ' + formatCurrency(totalPrice)"
+              :persistent-hint="totalPrice > 0"
+              outlined
+            ></v-text-field>
+            <v-select
+              class="mt-2"
+              :disabled="saving"
+              :items="categorySelectItems"
+              v-model="formCategoryId"
+              outlined
+              label="Category"
+            ></v-select>
+            <v-textarea
+              class="mt-2"
+              :disabled="saving"
+              counter="300"
+              v-model="formNotes"
+              :rules="formNotesRules"
+              label="Notes"
+              persistent-placeholder
+              placeholder=""
+              outlined
+            ></v-textarea>
+          </v-form>
         </v-card-text>
-
         <v-card-actions>
-          <v-btn text color="success" @click="dialog = false">Save</v-btn>
+          <v-btn
+            text
+            color="success"
+            :disabled="!formValid || saving"
+            @click="onSave"
+            >Save</v-btn
+          >
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="dialog = false"> Delete </v-btn>
+          <v-btn color="error" text @click="closePopup"> Delete </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -96,28 +157,65 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import { mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
-import { MaterializedList } from "@/store";
-
-type SelectItem = string;
+import {
+  categoryIdUncategorized,
+  MaterializedList,
+  MaterializedListItem,
+  SelectItem,
+  UpdateItemRequest,
+} from "@/store";
 
 @Component
 export default class ShoppingList extends Vue {
-  addIcon: string = mdiPlus;
-  item: string | SelectItem = "";
+  itemName = "";
   isBlur = false;
   deleteIcon: string = mdiDelete;
   selectedItem: null | number = -1;
   dialog = false;
+  formValid = false;
+  addIcon: string = mdiPlus;
   closeIcon: string = mdiClose;
+  formItemId = "";
+  formName = "";
+  formCategoryId = categoryIdUncategorized;
+  formNameRules = [
+    (value: string | null): boolean | string => !!value || "Name is required",
+    (value: string | null): boolean | string =>
+      (value && value.length <= 15) || "Name must be less than 15 characters",
+  ];
+  formQuantity = 1;
+  formQuantityRules = [
+    (value: number | null): boolean | string =>
+      !!value || "Quantity is required",
+    (value: number | null): boolean | string =>
+      (value && value > 0 && value <= 100) ||
+      "Quantity must be between 1 and 100",
+  ];
+  formPricePerUnit = 0.0;
+  formPricePerUnitRules = [
+    (value: number | null | string): boolean | string =>
+      (!Number.isNaN(value) && value != null && value != "" && value >= 0) ||
+      "Price per unit must be at least " + this.formatCurrency(0),
+  ];
+  formNotes = "";
+  formNotesRules = [
+    (value: string | null): boolean | string =>
+      !value ||
+      (value && value.length <= 300) ||
+      "Notes must be less than 300 characters",
+  ];
 
   @Getter("materializedList") list!: MaterializedList;
   @Getter("currency") currency!: string;
   @Getter("saving") saving!: boolean;
+  @Getter("currencySymbol") currencySymbol!: string;
   @Getter("loadingState") loadingState!: boolean;
-  @Getter("autocompleteItems") autocompleteItems!: Array<string>;
+  @Getter("autocompleteItems") autocompleteItems!: Array<SelectItem>;
+  @Getter("categorySelectItems") categorySelectItems!: Array<SelectItem>;
 
   @Action("setTitle") setTitle!: (title: string) => void;
   @Action("addItem") addItem!: (name: string) => void;
+  @Action("updateItem") updateItem!: (request: UpdateItemRequest) => void;
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
   @Action("loadState") loadState!: () => void;
 
@@ -134,9 +232,36 @@ export default class ShoppingList extends Vue {
     }
   }
 
+  closePopup(): void {
+    this.clearForm();
+    this.dialog = false;
+  }
+
+  clearForm(): void {
+    this.formName = "";
+    this.formQuantity = 1;
+    this.formNotes = "";
+    this.formItemId = "";
+    this.formCategoryId = categoryIdUncategorized;
+    this.formPricePerUnit = 0.0;
+  }
+
+  setFormItem(item: MaterializedListItem): void {
+    this.formItemId = item.item.id;
+    this.formName = item.item.name;
+    this.formQuantity = item.listItem.quantity;
+    this.formNotes = item.listItem.notes;
+    this.formCategoryId = item.item.categoryId;
+    this.formPricePerUnit = item.item.pricePerUnit;
+  }
+
   mounted(): void {
     this.setTitle("Shopping List");
     this.loadState();
+  }
+
+  get totalPrice(): number {
+    return this.formPricePerUnit * this.formQuantity;
   }
 
   formatCurrency(value: number): string {
@@ -158,19 +283,37 @@ export default class ShoppingList extends Vue {
     this.isBlur = true;
   }
 
-  itemClicked(): void {
+  onSave(): void {
+    this.updateItem({
+      itemId: this.formItemId,
+      name: this.formName,
+      categoryId: this.formCategoryId,
+      quantity: this.formQuantity,
+      notes: this.formNotes,
+      pricePerUnit: this.formPricePerUnit,
+    });
+    this.dialog = false;
+    this.clearForm();
+  }
+
+  itemClicked(item: MaterializedListItem): void {
+    this.setFormItem(item);
     this.dialog = true;
     setTimeout(() => {
       this.selectedItem = null;
     }, 200);
   }
 
-  onChange(chosenItem: string): void {
+  onChange(chosenItem: string | SelectItem): void {
     if (!this.isBlur) {
-      this.addItem(chosenItem);
+      if (typeof chosenItem == "string") {
+        this.addItem(chosenItem);
+      } else {
+        this.addItem(chosenItem.text);
+      }
     }
     this.$nextTick(() => {
-      this.item = "";
+      this.itemName = "";
     });
   }
 }

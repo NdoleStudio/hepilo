@@ -85,6 +85,29 @@
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>
+      <v-snackbar
+        text
+        :color="notification.type"
+        v-model="notificationActive"
+        :timeout="notification.timeout"
+      >
+        <v-icon
+          v-if="notification.type === 'success'"
+          :color="notification.type"
+          >{{ tickIcon }}</v-icon
+        >
+        {{ notification.message }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="primary"
+            text
+            v-bind="attrs"
+            @click="disableNotification"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-main>
   </v-app>
 </template>
@@ -92,12 +115,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
-import { mdiAccount, mdiCog, mdiFormatListCheckbox, mdiLogout } from "@mdi/js";
+import { Action, Getter } from "vuex-class";
+import {
+  mdiAccount,
+  mdiCheckAll,
+  mdiCog,
+  mdiFormatListCheckbox,
+  mdiLogout,
+} from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
-import { User } from "@/store";
+import { User, Notification } from "@/store";
 
 interface MenuItem {
   name: string;
@@ -115,15 +144,27 @@ export default class App extends Vue {
   settingsIcon: string = mdiCog;
   logoutIcon: string = mdiLogout;
   accountIcon: string = mdiAccount;
+  tickIcon: string = mdiCheckAll;
 
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;
   @Getter("user") user!: User;
+  @Getter("notification") notification!: Notification;
   @Getter("isLoggedIn") isLoggedIn!: User;
   @Getter("hasProfilePicture") hasProfilePicture!: boolean;
 
+  @Action("disableNotification") disableNotification!: () => void;
+
   get version(): string {
     return process.env.VUE_APP_COMMIT_HASH.slice(0, 7);
+  }
+
+  get notificationActive(): boolean {
+    return this.notification.active;
+  }
+
+  set notificationActive(state: boolean) {
+    this.disableNotification();
   }
 
   get menuItems(): Array<MenuItem> {

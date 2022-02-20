@@ -16,12 +16,27 @@ interface State {
   categories: Array<Category>;
   items: Array<Item>;
   currency: string;
+  notification: Notification;
+}
+
+type NotificationType = "error" | "success";
+
+export interface Notification {
+  message: string;
+  timeout: number;
+  active: boolean;
+  type: NotificationType;
 }
 
 export interface User {
   id: string;
   name: string | null;
   photoURL: string | null;
+}
+
+export interface SelectItem {
+  text: string;
+  value: string;
 }
 
 interface Item {
@@ -34,6 +49,7 @@ interface Item {
 interface Category {
   id: string;
   name: string;
+  color: string;
 }
 
 interface ListItem {
@@ -42,7 +58,7 @@ interface ListItem {
   quantity: number;
 }
 
-interface MaterializedListItem {
+export interface MaterializedListItem {
   item: Item;
   listItem: ListItem;
 }
@@ -52,7 +68,16 @@ export type MaterializedList = Array<{
   items: Array<MaterializedListItem>;
 }>;
 
-const categoryIdUncategorized = "uncategorized";
+export interface UpdateItemRequest {
+  name: string;
+  categoryId: string;
+  pricePerUnit: number;
+  quantity: number;
+  notes: string;
+  itemId: string;
+}
+
+export const categoryIdUncategorized = "uncategorized";
 
 export default new Vuex.Store({
   state: {
@@ -61,10 +86,18 @@ export default new Vuex.Store({
     saving: false,
     user: null,
     title: "",
-    categories: [{ id: categoryIdUncategorized, name: "Uncategorized" }],
+    categories: [
+      { id: categoryIdUncategorized, name: "Uncategorized", color: "teal" },
+    ],
     items: [],
     currency: "EUR",
     list: [],
+    notification: {
+      active: false,
+      message: "",
+      type: "success",
+      timeout: 3000,
+    },
   },
   mutations: {
     setLoading(state: State, loading: boolean) {
@@ -79,15 +112,68 @@ export default new Vuex.Store({
     setSaving(state: State, saving: boolean) {
       state.saving = saving;
     },
-    addCategory(state: State, category: Category) {
-      state.categories.push(category);
+    setNotification(
+      state: State,
+      notification: { message: string; type: NotificationType }
+    ) {
+      state.notification = {
+        ...state.notification,
+        active: true,
+        message: notification.message,
+        type: notification.type,
+      };
     },
-    addItem(state: State, item: Item) {
-      state.items.push(item);
+    disableNotification(state: State) {
+      state.notification.active = false;
     },
-    addItemToList(state: State, item: ListItem) {
-      state.list.push(item);
+    upsertCategory(state: State, category: Category) {
+      const index = state.categories.findIndex(
+        (value: Category) => value.id === category.id
+      );
+      if (index === -1) {
+        state.categories.push(category);
+        return;
+      }
+      state.categories[index] = category;
+      state.categories = [...state.categories];
     },
+    upsertItem(state: State, item: Item) {
+      const index = state.items.findIndex(
+        (value: Item) => value.id === item.id
+      );
+      if (index === -1) {
+        state.items.push(item);
+        return;
+      }
+      state.items[index] = item;
+      state.items = [...state.items];
+    },
+
+    upsertListItem(state: State, item: ListItem) {
+      const index = state.list.findIndex(
+        (value: ListItem) => value.itemId === item.itemId
+      );
+      if (index === -1) {
+        state.list.push(item);
+        return;
+      }
+      state.list[index] = item;
+      state.list = [...state.list];
+    },
+
+    updateListItemId(
+      state: State,
+      input: { oldItemId: string; newItemId: string }
+    ) {
+      state.list = state.list.map((item: ListItem) => {
+        if (item.itemId !== input.oldItemId) {
+          return item;
+        }
+        item.itemId = input.newItemId;
+        return item;
+      });
+    },
+
     deleteListItem(state: State, itemId: string) {
       state.list = state.list.filter((item: ListItem) => {
         return item.itemId != itemId;
@@ -150,19 +236,65 @@ export default new Vuex.Store({
           id: getters.nameToId(name),
           name: name.trim(),
           pricePerUnit: 0,
-          categoryId: categoryIdUncategorized,
+          categoryId: getters.findCategoryByItemId(getters.nameToId),
         };
-        await commit("addItem", item);
+        await commit("upsertItem", item);
       }
 
-      const listItem: ListItem = {
-        itemId: getters.nameToId(name),
-        notes: "",
-        quantity: 1,
-      };
-
       if (!getters.listHasItemId(getters.nameToId(name))) {
-        await commit("addItemToList", listItem);
+        const listItem: ListItem = {
+          itemId: getters.nameToId(name),
+          notes: "",
+          quantity: 1,
+        };
+        await commit("upsertListItem", listItem);
+      }
+
+      if (getters.user !== null) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            list: getters.list,
+            categories: getters.categories,
+            items: getters.items,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setNotification", {
+        type: "success",
+        message: `${name} has been added successfully`,
+      });
+
+      commit("setSaving", false);
+    },
+
+    disableNotification({ commit }) {
+      commit("disableNotification");
+    },
+    async updateItem({ commit, getters }, request: UpdateItemRequest) {
+      commit("setSaving", true);
+      const item: Item = {
+        id: getters.nameToId(request.name),
+        name: request.name.trim(),
+        pricePerUnit: request.pricePerUnit,
+        categoryId: request.categoryId,
+      };
+      await commit("upsertItem", item);
+
+      const listItem: ListItem = {
+        itemId: request.itemId,
+        notes: request.notes,
+        quantity: request.quantity,
+      };
+      await commit("upsertListItem", listItem);
+
+      if (getters.nameToId(request.name) !== request.itemId) {
+        await commit("updateListItemId", {
+          oldItemId: request.itemId,
+          newItemId: getters.nameToId(request.name),
+        });
       }
 
       if (getters.user === null) {
@@ -325,6 +457,16 @@ export default new Vuex.Store({
         });
       },
 
+    findCategoryByItemId:
+      (state: State, getters) =>
+      (itemId: string): string => {
+        const item = getters.findItemById(itemId);
+        if (item !== undefined) {
+          return item.categoryId;
+        }
+        return categoryIdUncategorized;
+      },
+
     findCategoryByName:
       (state: State, getters) =>
       (categoryName: string): Category | undefined => {
@@ -353,10 +495,41 @@ export default new Vuex.Store({
       return state.currency;
     },
 
-    autocompleteItems(state: State, getters): Array<string> {
+    notification(state: State): Notification {
+      return state.notification;
+    },
+
+    currencySymbol(state: State): string {
+      return (
+        new Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: state.currency,
+        })
+          .formatToParts(0.0)
+          .find((part) => {
+            return part.type == "currency";
+          })?.value || "$"
+      );
+    },
+
+    categorySelectItems(state: State): Array<SelectItem> {
+      return state.categories.map((category: Category) => {
+        return {
+          value: category.id,
+          text: category.name,
+        };
+      });
+    },
+
+    autocompleteItems(state: State, getters): Array<SelectItem> {
       return state.items
         .filter((item: Item) => !getters.listHasItemId(item.id))
-        .map((item: Item) => item.name);
+        .map((item: Item) => {
+          return {
+            value: item.name,
+            text: item.name,
+          };
+        });
     },
   },
 });
