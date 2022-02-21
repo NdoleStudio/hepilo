@@ -216,6 +216,10 @@ export default class App extends Vue {
     ];
   }
 
+  mounted(): void {
+    this.listenForDarkMode();
+  }
+
   listenForDarkMode(): void {
     const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     try {

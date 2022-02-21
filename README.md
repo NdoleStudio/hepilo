@@ -4,7 +4,7 @@ Grocery Shopping List App with Prices and Categories
 
 ## TO DO
 
-- [ ] Refresh PWA button
+- [x] Refresh PWA button
 - [ ] Multiple Lists Support
 - [ ] Settings Page
 - [ ] Database Rules
