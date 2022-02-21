@@ -18,54 +18,60 @@
     </v-row>
     <v-row v-if="listItems.length > 0">
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <v-list subheader class="pb-0">
-          <v-progress-linear
-            :active="saving"
-            :indeterminate="saving"
-            v-if="saving"
-            color="deep-purple accent-4"
-          ></v-progress-linear>
-          <template v-for="categoryItem in listItems">
-            <v-subheader
-              class="text-button"
-              :class="categoryClass(categoryItem.category)"
-              :key="'header-' + categoryItem.category.id"
-              >{{ categoryItem.category.name }}</v-subheader
-            >
-            <v-list-item-group
-              v-model="selectedItem"
-              :key="'list-' + categoryItem.category.id"
-            >
-              <v-list-item
-                @click="itemClicked(item)"
-                v-for="item in categoryItem.items"
-                :key="item.item.id"
-              >
-                <v-list-item-action>
-                  <v-checkbox
-                    @click.stop
-                    @change="addToCart(item.item.id)"
-                    :disabled="saving"
-                  ></v-checkbox>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.item.name }}</v-list-item-title>
-                  <v-list-item-subtitle class="caption">{{
-                    formatCurrency(
-                      item.listItem.quantity * item.item.pricePerUnit
-                    )
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-spacer></v-spacer>
-                <v-list-item-action>
-                  <v-btn icon @click="deleteListItem(item.listItem.itemId)">
-                    <v-icon color="error">{{ deleteIcon }}</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list-item-group>
-          </template>
-        </v-list>
+        <v-card>
+          <v-card-text class="px-0 py-0">
+            <v-list subheader class="pb-0">
+              <v-progress-linear
+                :active="saving"
+                :indeterminate="saving"
+                v-if="saving"
+                color="deep-purple accent-4"
+              ></v-progress-linear>
+              <template v-for="categoryItem in listItems">
+                <v-subheader
+                  class="text-button"
+                  :class="categoryClass(categoryItem.category)"
+                  :key="'header-' + categoryItem.category.id"
+                  >{{ categoryItem.category.name }}</v-subheader
+                >
+                <v-list-item-group
+                  v-model="selectedItem"
+                  :key="'list-' + categoryItem.category.id"
+                >
+                  <v-list-item
+                    @click="itemClicked(item)"
+                    v-for="item in categoryItem.items"
+                    :key="item.item.id"
+                  >
+                    <v-list-item-action>
+                      <v-checkbox
+                        @click.stop
+                        @change="addToCart(item.item.id)"
+                        :disabled="saving"
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>{{
+                        item.item.name
+                      }}</v-list-item-title>
+                      <v-list-item-subtitle class="caption">{{
+                        formatCurrency(
+                          item.listItem.quantity * item.item.pricePerUnit
+                        )
+                      }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-spacer></v-spacer>
+                    <v-list-item-action>
+                      <v-btn icon @click="deleteListItem(item.listItem.itemId)">
+                        <v-icon color="error">{{ deleteIcon }}</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list-item-group>
+              </template>
+            </v-list>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 

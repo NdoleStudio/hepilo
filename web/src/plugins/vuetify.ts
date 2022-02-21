@@ -7,6 +7,11 @@ Vue.use(Vuetify);
 export default new Vuetify({
   theme: {
     dark: isDarkModeOn(),
+    themes: {
+      light: {
+        primary: "#C6FF00",
+      },
+    },
   },
   icons: {
     iconfont: "mdiSvg",

@@ -1,21 +1,21 @@
 <template>
   <v-app>
-    <v-app-bar app clipped-left>
+    <v-app-bar
+      app
+      clipped-left
+      :color="$vuetify.theme.dark ? 'grey darken-4' : 'primary'"
+    >
       <v-app-bar-nav-icon
         @click="setNavDrawer(!navDrawerActive)"
       ></v-app-bar-nav-icon>
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-            <v-slide-x-transition>
-              <Transition>
-                <v-toolbar-title
-                  :class="{ 'page-title--drawer-open': navDrawerOpen }"
-                  class="pl-2 text-h4 page-title"
-                  >{{ title }}</v-toolbar-title
-                >
-              </Transition>
-            </v-slide-x-transition>
+            <v-toolbar-title
+              :class="{ 'page-title--drawer-open': navDrawerOpen }"
+              class="pl-2 text-h4 page-title"
+              >{{ title }}</v-toolbar-title
+            >
           </v-col>
         </v-row>
       </v-container>
