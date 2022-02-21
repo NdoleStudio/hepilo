@@ -18,7 +18,7 @@
     </v-row>
     <v-row v-if="listItems.length > 0">
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <v-card>
+        <v-card tile>
           <v-card-text class="px-0 py-0">
             <v-list subheader class="pb-0">
               <v-progress-linear
@@ -77,7 +77,7 @@
 
     <v-row v-if="cartItems.length > 0">
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <v-expansion-panels :value="cartPanel">
+        <v-expansion-panels :value="cartPanel" tile>
           <v-expansion-panel @change="toggleCartPanel">
             <v-expansion-panel-header class="text-button pl-4">
               <div>
@@ -137,7 +137,7 @@
 
     <v-row v-if="cartTotal > 0.0 || listTotal > 0.0">
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <v-card>
+        <v-card tile>
           <v-card-text class="pb-0">
             <v-row>
               <v-col>
