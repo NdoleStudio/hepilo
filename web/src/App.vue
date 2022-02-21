@@ -34,12 +34,22 @@
         </template>
         <v-list class="px-2" nav>
           <v-list-item-group>
+            <v-list-item @click="refreshApp">
+              <v-list-item-icon class="pl-2">
+                <v-icon>{{ refreshIcon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content class="ml-n3">
+                <v-list-item-title class="pr-16 py-1">
+                  <span class="pr-16"> Refresh </span>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item>
               <v-list-item-icon class="pl-2">
                 <v-icon>{{ settingsIcon }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
-                <v-list-item-title class="pr-16">
+                <v-list-item-title class="pr-16 py-1">
                   <span class="pr-16"> Settings </span>
                 </v-list-item-title>
               </v-list-item-content>
@@ -132,11 +142,13 @@ import {
   mdiCog,
   mdiFormatListCheckbox,
   mdiLogout,
+  mdiRefresh,
 } from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
-import { User, Notification } from "@/store";
+import { User, Notification, NotificationRequest } from "@/store";
+import { getPlatformName } from "@/plugins/utils";
 
 interface MenuItem {
   name: string;
@@ -154,6 +166,7 @@ export default class App extends Vue {
   logoutIcon: string = mdiLogout;
   accountIcon: string = mdiAccount;
   tickIcon: string = mdiCheck;
+  refreshIcon: string = mdiRefresh;
 
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;
@@ -165,13 +178,15 @@ export default class App extends Vue {
 
   @Action("disableNotification") disableNotification!: () => void;
   @Action("setNavDrawer") setNavDrawer!: (isOpen: boolean) => void;
+  @Action("addNotification") addNotification!: (
+    request: NotificationRequest
+  ) => void;
 
   get version(): string {
     return process.env.VUE_APP_COMMIT_HASH.slice(0, 7);
   }
 
   get navDrawerActive(): boolean {
-    console.log(this.navDrawerOpen);
     return this.navDrawerOpen;
   }
 
@@ -199,6 +214,53 @@ export default class App extends Vue {
         routeNames: [this.$constants.ROUTE_NAMES.SHOPPING_LIST],
       },
     ];
+  }
+
+  listenForDarkMode(): void {
+    const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    try {
+      // Chrome & Firefox
+      darkMediaQuery.addEventListener("change", (event) => {
+        this.$vuetify.theme.dark = event.matches;
+      });
+    } catch (error) {
+      try {
+        // Safari
+        darkMediaQuery.addListener(() => {
+          this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  refreshApp(): void {
+    if (!("serviceWorker" in navigator)) {
+      return;
+    }
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((registrations) => {
+        const promises = Array<Promise<boolean>>();
+        registrations.forEach((registration) => {
+          promises.push(registration.unregister());
+        });
+        return Promise.all(promises);
+      })
+      .then(() =>
+        caches.keys().then((keys) => keys.map((key) => caches.delete(key)))
+      )
+      .then(() => {
+        this.addNotification({
+          type: "success",
+          message: `Update successful! The ${getPlatformName()} will reload in a few seconds.`,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch(console.error);
   }
 
   logout(): void {

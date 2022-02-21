@@ -84,6 +84,11 @@ export interface UpdateItemRequest {
   itemId: string;
 }
 
+export interface NotificationRequest {
+  message: string;
+  type: NotificationType;
+}
+
 export const categoryIdUncategorized = "uncategorized";
 
 export default new Vuex.Store({
@@ -128,10 +133,7 @@ export default new Vuex.Store({
     setNavDrawer(state: State, isOpen: boolean) {
       state.navDrawerOpen = isOpen;
     },
-    setNotification(
-      state: State,
-      notification: { message: string; type: NotificationType }
-    ) {
+    setNotification(state: State, notification: NotificationRequest) {
       state.notification = {
         ...state.notification,
         active: true,
@@ -442,6 +444,10 @@ export default new Vuex.Store({
       }
 
       commit("setSaving", false);
+    },
+
+    addNotification({ commit }, request: NotificationRequest) {
+      commit("setNotification", request);
     },
 
     async loadState({ commit, getters }) {
