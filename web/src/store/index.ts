@@ -693,7 +693,7 @@ export default new Vuex.Store({
           return (
             sum +
             item.items.reduce((value: number, item: MaterializedListItem) => {
-              return item.item.pricePerUnit * item.listItem.quantity;
+              return value + item.item.pricePerUnit * item.listItem.quantity;
             }, 0)
           );
         },
@@ -707,7 +707,7 @@ export default new Vuex.Store({
           return (
             sum +
             item.items.reduce((value: number, item: MaterializedListItem) => {
-              return item.item.pricePerUnit * item.listItem.quantity;
+              return value + item.item.pricePerUnit * item.listItem.quantity;
             }, 0)
           );
         },

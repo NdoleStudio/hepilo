@@ -138,12 +138,12 @@
                 <div class="d-flex mb-n2" style="width: 100%">
                   <div>
                     <p class="text-button">List Total</p>
-                    <p class="text-h6 mt-n4">{{ formatCurrency(listTotal) }}</p>
+                    <p class="text-h6 mt-n5">{{ formatCurrency(listTotal) }}</p>
                   </div>
                   <v-spacer></v-spacer>
                   <div>
                     <p class="text-button text-right">Cart Total</p>
-                    <p class="text-h6 mt-n4">
+                    <p class="text-h6 mt-n5">
                       {{ formatCurrency(cartTotal) }}
                     </p>
                   </div>

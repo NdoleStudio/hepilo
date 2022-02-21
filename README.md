@@ -10,5 +10,7 @@ Grocery Shopping List App with Prices and Categories
 - [ ] Database Rules
 - [ ] Autofill items/Categories
 - [ ] Items/Categories list management
+- [ ] Fix terms and conditions
+- [ ] Add Sentry
 - [ ] Multiple Language Support
 - [ ] Landing Page

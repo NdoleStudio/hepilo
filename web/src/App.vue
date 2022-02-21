@@ -176,7 +176,6 @@ export default class App extends Vue {
   }
 
   set navDrawerActive(value: boolean) {
-    console.log(value);
     this.setNavDrawer(value);
   }
 
