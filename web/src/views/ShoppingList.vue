@@ -252,7 +252,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
 import {
@@ -264,6 +264,7 @@ import {
   SelectItem,
   UpdateItemRequest,
 } from "@/store";
+import { dialogWidth } from "@/plugins/vuetify";
 
 @Component
 export default class ShoppingList extends Vue {
@@ -317,6 +318,7 @@ export default class ShoppingList extends Vue {
   @Getter("saving") saving!: boolean;
   @Getter("currencySymbol") currencySymbol!: string;
   @Getter("loadingState") loadingState!: boolean;
+  @Getter("listExists") listExists!: (listId: string) => boolean;
   @Getter("autocompleteItems") autocompleteItems!: Array<SelectItem>;
   @Getter("categorySelectItems") categorySelectItems!: Array<SelectItem>;
 
@@ -328,18 +330,11 @@ export default class ShoppingList extends Vue {
   @Action("toggleCartPanel") toggleCartPanel!: () => void;
   @Action("addToCart") addToCart!: (itemId: string) => void;
   @Action("removeFromCart") removeFromCart!: (itemId: string) => void;
+  @Action("setSelectedListId") setSelectedListId!: (listId: string) => void;
+  @Action("setTitleByListId") setTitleByListId!: (listId: string) => void;
 
   get dialogWidth(): string {
-    switch (this.$vuetify.breakpoint.name) {
-      case "md":
-        return "500";
-      case "lg":
-        return "600";
-      case "xl":
-        return "780";
-      default:
-        return "90%";
-    }
+    return dialogWidth(this.$vuetify.breakpoint.name);
   }
 
   closePopup(): void {
@@ -374,9 +369,27 @@ export default class ShoppingList extends Vue {
 
   mounted(): void {
     this.loadState().then(() => {
-      console.log(this.$router);
       this.setTitle(this.list.name);
+      if (this.list.id !== this.$route.params.listId) {
+        if (!this.listExists(this.$route.params.listId)) {
+          this.$router.push({
+            name: this.$constants.ROUTE_NAMES.SHOPPING_LIST_SHOW,
+            params: {
+              listId: this.list.id,
+            },
+          });
+        } else {
+          this.setSelectedListId(this.$route.params.listId);
+          this.setTitleByListId(this.$route.params.listId);
+        }
+      }
     });
+  }
+
+  @Watch("$route.params.listId")
+  onListIdChange(newListId: string): void {
+    this.setSelectedListId(newListId);
+    this.setTitleByListId(newListId);
   }
 
   get totalPrice(): number {

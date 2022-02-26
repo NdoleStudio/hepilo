@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :class="{ 'v-application--drawer--open': navDrawerActive }">
     <v-app-bar
       app
       clipped-left
@@ -12,11 +12,14 @@
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-            <v-toolbar-title
-              :class="{ 'page-title--drawer-open': navDrawerOpen }"
-              class="pl-2 text-h4 page-title"
-              >{{ title }}</v-toolbar-title
-            >
+            <v-toolbar-title class="pl-2 text-h4">
+              <div
+                class="page-title"
+                :style="{ 'margin-left': titleLeftPadding + 'px' }"
+              >
+                {{ title }}
+              </div>
+            </v-toolbar-title>
           </v-col>
         </v-row>
       </v-container>
@@ -84,10 +87,6 @@
             link
             :to="item.route"
             exact
-            :class="{
-              'v-list-item--active':
-                item.routeNames.indexOf($route.name) !== -1,
-            }"
             v-for="item in menuItems"
             :key="item.name"
           >
@@ -100,6 +99,9 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <div class="w-full text-center mt-4">
+        <add-list-button></add-list-button>
+      </div>
       <p class="text--secondary subtitle-1 text-center mt-10">
         {{ version }}
       </p>
@@ -137,19 +139,13 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import {
-  mdiAccount,
-  mdiCheck,
-  mdiCog,
-  mdiFormatListCheckbox,
-  mdiLogout,
-  mdiRefresh,
-} from "@mdi/js";
+import { mdiAccount, mdiCheck, mdiCog, mdiLogout, mdiRefresh } from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
-import { User, Notification, NotificationRequest } from "@/store";
+import { User, Notification, NotificationRequest, List } from "@/store";
 import { getPlatformName } from "@/plugins/utils";
+import AddListButton from "@/components/AddListButton.vue";
 
 interface MenuItem {
   name: string;
@@ -161,7 +157,9 @@ interface MenuItem {
   routeNames?: Array<string>;
 }
 
-@Component
+@Component({
+  components: { AddListButton },
+})
 export default class App extends Vue {
   settingsIcon: string = mdiCog;
   logoutIcon: string = mdiLogout;
@@ -175,9 +173,11 @@ export default class App extends Vue {
   @Getter("navDrawerOpen") navDrawerOpen!: boolean;
   @Getter("notification") notification!: Notification;
   @Getter("isLoggedIn") isLoggedIn!: User;
+  @Getter("listIcon") listIcon!: (name: string) => string;
   @Getter("hasProfilePicture") hasProfilePicture!: boolean;
-
+  @Getter("lists") lists!: Array<List>;
   @Action("disableNotification") disableNotification!: () => void;
+  @Action("resetState") resetState!: () => void;
   @Action("setNavDrawer") setNavDrawer!: (isOpen: boolean) => void;
   @Action("addNotification") addNotification!: (
     request: NotificationRequest
@@ -203,18 +203,25 @@ export default class App extends Vue {
     this.disableNotification();
   }
 
+  get titleLeftPadding(): number {
+    if (this.$vuetify.breakpoint.mdAndDown || !this.navDrawerOpen) {
+      return 0;
+    }
+    return 130;
+  }
+
   get menuItems(): Array<MenuItem> {
-    return [
-      {
-        adminOnly: true,
-        name: "Shopping List",
-        icon: mdiFormatListCheckbox,
+    return this.lists.map((list) => {
+      return {
+        name: list.name,
+        icon: this.listIcon(list.icon),
         route: {
           name: this.$constants.ROUTE_NAMES.SHOPPING_LIST_SHOW,
+          params: { listId: list.id },
         },
-        routeNames: [this.$constants.ROUTE_NAMES.SHOPPING_LIST_SHOW],
-      },
-    ];
+        routeNames: [],
+      };
+    });
   }
 
   mounted(): void {
@@ -272,6 +279,7 @@ export default class App extends Vue {
     getFirebaseAuth()
       .signOut()
       .then(() => {
+        this.resetState();
         splitbee.reset();
         this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
       });
@@ -287,8 +295,17 @@ export default class App extends Vue {
 
   .page-title {
     transition: margin 100ms ease-out;
-    &--drawer-open {
-      margin-left: 160px;
+  }
+
+  &--drawer--open {
+    .v-snack__wrapper {
+      margin-left: 270px;
+    }
+
+    @media screen and (max-width: 1930px) and (min-width: 1263px) {
+      .page-title {
+        padding-left: 30px;
+      }
     }
   }
 }
