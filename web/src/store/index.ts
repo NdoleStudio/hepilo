@@ -330,7 +330,7 @@ export default new Vuex.Store({
       await setDoc(
         doc(getFirestore(), COLLECTION_STATE, getters.user.id),
         {
-          navDrawerOpen: state,
+          navDrawerOpen: getters.navDrawerOpen,
         },
         { merge: true }
       );
@@ -345,7 +345,7 @@ export default new Vuex.Store({
       await setDoc(
         doc(getFirestore(), COLLECTION_STATE, getters.user.id),
         {
-          cartPanelOpen: getters.cartPanelOpen,
+          lists: getters.lists,
         },
         { merge: true }
       );
@@ -659,8 +659,7 @@ export default new Vuex.Store({
         items: [],
         currency: getters.currency,
         stateLoaded: false,
-        navDrawerOpen: getters.navDrawerOpen,
-        cartPanelOpen: getters.cartPanelOpen,
+        navDrawerOpen: false,
       });
     },
   },
