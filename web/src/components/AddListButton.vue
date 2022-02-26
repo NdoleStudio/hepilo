@@ -6,7 +6,13 @@
     transition="scale-transition"
   >
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="primary" v-bind="attrs" v-on="on" class="mx-auto">
+      <v-btn
+        color="primary"
+        @click="onCreateList"
+        v-bind="attrs"
+        v-on="on"
+        class="mx-auto"
+      >
         <v-icon>{{ addIcon }}</v-icon>
         Create New List
       </v-btn>
@@ -86,6 +92,7 @@ export default class AddListButton extends Vue {
   @Getter("listIcon") listIcon!: (name: string) => string;
   @Getter("lists") lists!: Array<List>;
   @Action("addList") addList!: (request: StoreListRequest) => Promise<void>;
+  @Action("setNavDrawer") setNavDrawer!: (state: boolean) => void;
 
   closePopup(): void {
     this.clearForm();
@@ -103,6 +110,12 @@ export default class AddListButton extends Vue {
 
   get prependIcon(): string {
     return this.listIcon(this.formIcon);
+  }
+
+  onCreateList(): void {
+    if (this.$vuetify.breakpoint.lgAndDown) {
+      this.setNavDrawer(false);
+    }
   }
 
   async onSave(): Promise<void> {
