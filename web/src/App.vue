@@ -6,6 +6,7 @@
       :color="$vuetify.theme.dark ? 'grey darken-4' : 'primary'"
     >
       <v-app-bar-nav-icon
+        v-if="isLoggedIn"
         @click="setNavDrawer(!navDrawerActive)"
       ></v-app-bar-nav-icon>
       <v-container>
@@ -209,9 +210,9 @@ export default class App extends Vue {
         name: "Shopping List",
         icon: mdiFormatListCheckbox,
         route: {
-          name: this.$constants.ROUTE_NAMES.SHOPPING_LIST,
+          name: this.$constants.ROUTE_NAMES.SHOPPING_LIST_SHOW,
         },
-        routeNames: [this.$constants.ROUTE_NAMES.SHOPPING_LIST],
+        routeNames: [this.$constants.ROUTE_NAMES.SHOPPING_LIST_SHOW],
       },
     ];
   }

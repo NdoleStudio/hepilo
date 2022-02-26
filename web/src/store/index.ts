@@ -1,6 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import shortUUID from "short-uuid";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { DEFAULT_CURRENCY, getDefaultCurrency } from "@/plugins/intl";
+import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from "@mdi/js";
 
 Vue.use(Vuex);
 
@@ -12,8 +15,9 @@ interface State {
   saving: boolean;
   title: string;
   user: User | null;
-  list: Array<ListItem>;
   categories: Array<Category>;
+  selectedListId: string;
+  lists: Array<List>;
   items: Array<Item>;
   currency: string;
   cart: Array<ListItem>;
@@ -21,6 +25,20 @@ interface State {
   cartPanelOpen: boolean;
   navDrawerOpen: boolean;
 }
+
+const LIST_ICON_DEFAULT = "list";
+const LIST_ICONS = new Map<string, string>([
+  ["list", mdiFormatListCheckbox],
+  ["work", mdiDomain],
+  ["fitness", mdiWeightLifter],
+]);
+
+export type List = {
+  name: string;
+  icon: string;
+  id: string;
+  items: Array<ListItem>;
+};
 
 type NotificationType = "error" | "success";
 
@@ -90,6 +108,7 @@ export interface NotificationRequest {
 }
 
 export const categoryIdUncategorized = "uncategorized";
+const defaultNotificationTimeout = 3000;
 
 export default new Vuex.Store({
   state: {
@@ -102,8 +121,9 @@ export default new Vuex.Store({
       { id: categoryIdUncategorized, name: "Uncategorized", color: "teal" },
     ],
     items: [],
-    currency: "EUR",
-    list: [],
+    currency: DEFAULT_CURRENCY,
+    lists: [],
+    selectedListId: "",
     notification: {
       active: false,
       message: "",
@@ -139,7 +159,7 @@ export default new Vuex.Store({
         active: true,
         message: notification.message,
         type: notification.type,
-        timeout: state.notification.timeout + 1, // Reset the timeout
+        timeout: Math.floor(Math.random() * 100) + defaultNotificationTimeout, // Reset the timeout
       };
     },
     disableNotification(state: State) {
@@ -169,54 +189,80 @@ export default new Vuex.Store({
     },
 
     upsertListItem(state: State, item: ListItem) {
-      const index = state.list.findIndex(
+      const listIndex = state.lists.findIndex(
+        (list) => list.id === state.selectedListId
+      );
+
+      const index = state.lists[listIndex].items.findIndex(
         (value: ListItem) => value.itemId === item.itemId
       );
       if (index === -1) {
-        state.list.push(item);
+        state.lists[listIndex].items.push(item);
         return;
       }
-      state.list[index] = item;
-      state.list = [...state.list];
+      state.lists[listIndex].items[index] = item;
+      state.lists = [...state.lists];
     },
 
     updateListItemId(
       state: State,
       input: { oldItemId: string; newItemId: string }
     ) {
-      state.list = state.list.map((item: ListItem) => {
-        if (item.itemId !== input.oldItemId) {
+      const listIndex = state.lists.findIndex(
+        (list) => list.id === state.selectedListId
+      );
+      state.lists[listIndex].items = state.lists[listIndex].items.map(
+        (item: ListItem) => {
+          if (item.itemId !== input.oldItemId) {
+            return item;
+          }
+          item.itemId = input.newItemId;
           return item;
         }
-        item.itemId = input.newItemId;
-        return item;
-      });
+      );
+      state.lists = [...state.lists];
     },
 
     setAddedToCart(
       state: State,
       input: { itemId: string; addedToCart: boolean }
     ) {
-      state.list = state.list.map((item: ListItem) => {
-        if (item.itemId === input.itemId) {
-          item.addedToCart = input.addedToCart;
+      const listIndex = state.lists.findIndex(
+        (list) => list.id === state.selectedListId
+      );
+      state.lists[listIndex].items = state.lists[listIndex].items.map(
+        (item: ListItem) => {
+          if (item.itemId === input.itemId) {
+            item.addedToCart = input.addedToCart;
+          }
+          return item;
         }
-        return item;
-      });
+      );
+      state.lists = [...state.lists];
     },
 
     deleteListItem(state: State, itemId: string) {
-      state.list = state.list.filter((item: ListItem) => {
-        return item.itemId != itemId;
-      });
+      const listIndex = state.lists.findIndex(
+        (list) => list.id === state.selectedListId
+      );
+      state.lists[listIndex].items = state.lists[listIndex].items.filter(
+        (item: ListItem) => {
+          return item.itemId != itemId;
+        }
+      );
+      state.lists = [...state.lists];
     },
     setUser(state: State, user: User | null) {
       state.user = user;
     },
+    setCurrency(state: State, currency: string) {
+      state.currency = currency;
+    },
     setState(
       state: State,
       payload: {
-        list: Array<ListItem>;
+        lists: Array<List>;
+        selectedListId: string;
         categories: Array<Category>;
         items: Array<Item>;
         currency: string;
@@ -224,7 +270,8 @@ export default new Vuex.Store({
         navDrawerOpen: boolean;
       }
     ) {
-      state.list = payload.list;
+      state.lists = payload.lists;
+      state.selectedListId = payload.selectedListId;
       state.categories = payload.categories;
       state.items = payload.items;
       state.currency = payload.currency;
@@ -450,27 +497,79 @@ export default new Vuex.Store({
       commit("setNotification", request);
     },
 
-    async loadState({ commit, getters }) {
+    async sanitizeState({ commit, getters }) {
+      const list: List = {
+        name: "Shopping List",
+        id: shortUUID.generate(),
+        items: [],
+        icon: LIST_ICON_DEFAULT,
+      };
+
+      let lists = [...getters.lists];
+      let selectedListId = getters.selectedListId;
+
+      // Create default list if not exists
+      if (!getters.selectedListIsValid) {
+        if (lists.length > 0) {
+          selectedListId = lists[0].id;
+        } else {
+          lists.push(list);
+          selectedListId = list.id;
+        }
+      }
+
+      // Sanitize icon names
+      lists = lists.map((list) => {
+        if (!LIST_ICONS.has(list.icon)) {
+          list.icon = LIST_ICON_DEFAULT;
+        }
+        return list;
+      });
+
+      await commit("setState", {
+        lists,
+        selectedListId,
+        categories: getters.categories,
+        items: getters.items,
+        currency: getters.currency,
+        navDrawerOpen: getters.navDrawerOpen,
+        cartPanelOpen: getters.cartPanelOpen,
+      });
+    },
+
+    async loadState({ commit, getters, dispatch }) {
       if (getters.user === null) {
+        await commit("setCurrency", await getDefaultCurrency());
+        await dispatch("sanitizeState");
         return;
       }
+
       await commit("setLoadingState", true);
+
       const stateSnapshot = await getDoc(
-        doc(getFirestore(), COLLECTION_STATE, getters.user.id)
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id + "1")
       );
+
       if (!stateSnapshot.exists()) {
+        await commit("setCurrency", await getDefaultCurrency());
+        await dispatch("sanitizeState");
         await commit("setLoadingState", false);
         return;
       }
+
       await commit("setState", {
+        lists: stateSnapshot.data().lists ?? getters.lists,
         list: stateSnapshot.data().list ?? getters.list,
         categories: stateSnapshot.data().categories ?? getters.categories,
         items: stateSnapshot.data().items ?? getters.items,
-        currency: stateSnapshot.data().currency ?? getters.currency,
-        navDrawerOpen: stateSnapshot.data().navDrawerOpen ?? false,
+        currency: stateSnapshot.data().currency ?? (await getDefaultCurrency()),
+        navDrawerOpen:
+          stateSnapshot.data().navDrawerOpen ?? getters.navDrawerOpen,
         cartPanelOpen:
           stateSnapshot.data().cartPanelOpen ?? getters.cartPanelOpen,
       });
+
+      await dispatch("sanitizeState");
       await commit("setLoadingState", false);
     },
   },
@@ -506,8 +605,10 @@ export default new Vuex.Store({
       return -1;
     },
 
-    list(state: State): Array<ListItem> {
-      return state.list;
+    selectedList(state: State): List {
+      return state.lists.find(
+        (list) => list.id === state.selectedListId
+      ) as List;
     },
 
     saving(state: State): boolean {
@@ -543,20 +644,20 @@ export default new Vuex.Store({
       },
 
     listHasItemId:
-      (state: State) =>
+      (state: State, getters) =>
       (itemId: string): boolean => {
         return (
-          state.list.find((listItem: ListItem) => {
+          getters.selectedList.find((listItem: ListItem) => {
             return listItem.itemId === itemId;
           }) != undefined
         );
       },
 
     ItemIdIsInCart:
-      (state: State) =>
+      (state: State, getters) =>
       (itemId: string): boolean => {
         return (
-          state.list.find((listItem: ListItem) => {
+          getters.selectedList.find((listItem: ListItem) => {
             return listItem.itemId === itemId && listItem.addedToCart;
           }) != undefined
         );
@@ -576,12 +677,18 @@ export default new Vuex.Store({
         const list: MaterializedList = [];
         const categories = new Set<string>();
 
-        const items = state.list.filter((listItem) => {
-          if (addedToCart) {
-            return listItem.addedToCart;
+        if (getters.lists.length === 0) {
+          return list;
+        }
+
+        const items = getters.selectedList.items.filter(
+          (listItem: ListItem) => {
+            if (addedToCart) {
+              return listItem.addedToCart;
+            }
+            return !listItem.addedToCart;
           }
-          return !listItem.addedToCart;
-        });
+        );
 
         items.forEach((listItem: ListItem) => {
           const item = getters.findItemById(listItem.itemId);
@@ -680,6 +787,21 @@ export default new Vuex.Store({
       return state.notification;
     },
 
+    selectedListId(state: State): string {
+      return state.selectedListId;
+    },
+
+    selectedListIsValid(state: State): boolean {
+      return (
+        state.lists.find((list) => list.id === state.selectedListId) !==
+        undefined
+      );
+    },
+
+    lists(state: State): Array<List> {
+      return state.lists;
+    },
+
     currencySymbol(state: State): string {
       return (
         new Intl.NumberFormat(undefined, {
@@ -705,6 +827,13 @@ export default new Vuex.Store({
         },
         0
       );
+    },
+
+    listIcon: () => (name: string) => {
+      if (LIST_ICONS.has(name)) {
+        return LIST_ICONS.get(name);
+      }
+      return LIST_ICONS.get(LIST_ICON_DEFAULT);
     },
 
     cartTotal(state: State, getters): number {

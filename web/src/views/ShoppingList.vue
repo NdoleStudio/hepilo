@@ -258,6 +258,7 @@ import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
 import {
   Category,
   categoryIdUncategorized,
+  List,
   MaterializedList,
   MaterializedListItem,
   SelectItem,
@@ -309,6 +310,7 @@ export default class ShoppingList extends Vue {
   @Getter("cartPanel") cartPanel!: number;
   @Getter("listMaterializedItems") listItems!: MaterializedList;
   @Getter("cartMaterializedItems") cartItems!: MaterializedList;
+  @Getter("selectedList") list!: List;
   @Getter("cartTotal") cartTotal!: number;
   @Getter("listTotal") listTotal!: number;
   @Getter("currency") currency!: string;
@@ -322,7 +324,7 @@ export default class ShoppingList extends Vue {
   @Action("addItem") addItem!: (name: string) => void;
   @Action("updateItem") updateItem!: (request: UpdateItemRequest) => void;
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
-  @Action("loadState") loadState!: () => void;
+  @Action("loadState") loadState!: () => Promise<void>;
   @Action("toggleCartPanel") toggleCartPanel!: () => void;
   @Action("addToCart") addToCart!: (itemId: string) => void;
   @Action("removeFromCart") removeFromCart!: (itemId: string) => void;
@@ -371,8 +373,10 @@ export default class ShoppingList extends Vue {
   }
 
   mounted(): void {
-    this.setTitle("Shopping List");
-    this.loadState();
+    this.loadState().then(() => {
+      console.log(this.$router);
+      this.setTitle(this.list.name);
+    });
   }
 
   get totalPrice(): number {

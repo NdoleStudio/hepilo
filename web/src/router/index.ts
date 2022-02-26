@@ -5,11 +5,13 @@ import Login from "@/views/Login.vue";
 import { getCurrentUser } from "@/plugins/firebase";
 import store from "@/store";
 import Home from "@/views/Home.vue";
+import ShoppingListIndex from "@/views/ShoppingListIndex.vue";
 
 Vue.use(VueRouter);
 
 export const ROUTE_NAMES = {
-  SHOPPING_LIST: "ShoppingList",
+  SHOPPING_LIST_SHOW: "ShowShoppingList",
+  SHOPPING_LIST_INDEX: "IndexShoppingList",
   LOGIN: "Login",
   HOME: "Home",
 };
@@ -24,9 +26,17 @@ const routes: Array<RouteConfig> = [
     },
   },
   {
-    path: "/shopping-list",
-    name: ROUTE_NAMES.SHOPPING_LIST,
+    path: "/lists/:listId",
+    name: ROUTE_NAMES.SHOPPING_LIST_SHOW,
     component: ShoppingList,
+    meta: {
+      auth: true,
+    },
+  },
+  {
+    path: "/lists",
+    name: ROUTE_NAMES.SHOPPING_LIST_INDEX,
+    component: ShoppingListIndex,
     meta: {
       auth: true,
     },
@@ -56,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
 
   const requiresGuest = to.matched.some((record) => record.meta.guest);
   if (requiresGuest && user) {
-    next({ name: ROUTE_NAMES.SHOPPING_LIST });
+    next({ name: ROUTE_NAMES.SHOPPING_LIST_INDEX });
     return;
   }
 

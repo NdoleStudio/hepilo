@@ -62,7 +62,7 @@ export default class Login extends Vue {
             "Login successfull!"
           );
           this.$router.push({
-            name: this.$constants.ROUTE_NAMES.SHOPPING_LIST,
+            name: this.$constants.ROUTE_NAMES.SHOPPING_LIST_INDEX,
           });
           return false;
         },
