@@ -298,9 +298,11 @@ export default class App extends Vue {
   }
 
   &--drawer--open {
-    .v-snack__wrapper,
-    .v-dialog--active {
-      margin-left: 270px;
+    @media screen and (min-width: 1264px) {
+      .v-snack__wrapper,
+      .v-dialog--active {
+        margin-left: 270px;
+      }
     }
 
     @media screen and (max-width: 1930px) and (min-width: 1263px) {
