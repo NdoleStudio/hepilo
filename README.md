@@ -6,11 +6,11 @@ Grocery Shopping List App with Prices and Categories
 
 - [x] Refresh PWA button
 - [x] Multiple Lists Support
-- [ ] Items/Categories/Lists list management
-- [ ] Settings Page
+- [x] Items/Categories/Lists list management
+- [x] Settings Page
 - [ ] Database Rules
 - [ ] Autofill items/Categories
 - [ ] Fix terms and conditions
 - [ ] Add Sentry
-- [ ] Multiple Language Support
 - [ ] Landing Page
+- [ ] Multiple Language Support

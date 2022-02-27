@@ -182,6 +182,7 @@ import {
 
 @Component
 export default class ManageItems extends Vue {
+  @Getter("formatCurrency") formatCurrency!: (value: number) => string;
   formNameRules = [
     (value: string | null): boolean | string =>
       (!!value && value.trim() != "") || "Category name is required",
@@ -193,7 +194,7 @@ export default class ManageItems extends Vue {
   formPricePerUnitRules = [
     (value: number | null | string): boolean | string =>
       (!Number.isNaN(value) && value != null && value != "" && value >= 0) ||
-      "Price per unit must be at least " + this.formatCurrency(0),
+      "Price per unit must be at least " + this.currencyFormat(0),
   ];
   squareIcon: string = mdiSquare;
   formValid = false;
@@ -216,7 +217,6 @@ export default class ManageItems extends Vue {
     pricePerUnit: 0,
     categoryId: CATEGORY_ID_UNCATEGORIZED,
   };
-
   @Getter("currencySymbol") currencySymbol!: string;
   @Getter("categorySelectItems") categories!: Array<List>;
   @Getter("items") items!: Array<Item>;
@@ -246,6 +246,10 @@ export default class ManageItems extends Vue {
   mounted(): void {
     this.loadState();
     this.setTitle("Manage Items");
+  }
+
+  currencyFormat(value: number): string {
+    return this.formatCurrency(value);
   }
 
   closePopup(): void {
@@ -279,13 +283,6 @@ export default class ManageItems extends Vue {
   onEditItem(item: Item): void {
     this.editedItem = { ...item, itemId: item.id };
     this.dialog = true;
-  }
-
-  formatCurrency(value: number): string {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: this.currency,
-    }).format(value);
   }
 
   clearForm(): void {

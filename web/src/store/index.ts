@@ -2,7 +2,11 @@ import Vue from "vue";
 import Vuex from "vuex";
 import shortUUID from "short-uuid";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { DEFAULT_CURRENCY, getDefaultCurrency } from "@/plugins/intl";
+import {
+  CURRENCY_LIST,
+  DEFAULT_CURRENCY,
+  getDefaultCurrency,
+} from "@/plugins/intl";
 import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from "@mdi/js";
 
 Vue.use(Vuex);
@@ -413,6 +417,28 @@ export default new Vuex.Store({
       await commit("setLoading", loading);
     },
 
+    async setCurrency({ commit, getters }, currency: string) {
+      await commit("setSaving", true);
+
+      commit("setCurrency", currency);
+
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            currency: getters.currency,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setNotification", {
+        type: "success",
+        message: `Currency has been set successfully`,
+      });
+
+      await commit("setSaving", false);
+    },
     setUser({ commit, getters }, user: User | null) {
       if (getters.user === user) {
         return;
@@ -1184,6 +1210,18 @@ export default new Vuex.Store({
       return state.currency;
     },
 
+    formatCurrency:
+      (state: State) =>
+      (value: number): string => {
+        return new Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: state.currency,
+        })
+          .format(value)
+          .replace("US$", "$")
+          .replace("CA$", "$");
+      },
+
     notification(state: State): Notification {
       return state.notification;
     },
@@ -1306,6 +1344,17 @@ export default new Vuex.Store({
         });
       });
       return items;
+    },
+
+    currencySelectItems(): Array<SelectItem> {
+      return CURRENCY_LIST.map(
+        (currency: { code: string; description: string }) => {
+          return {
+            text: currency.description,
+            value: currency.code,
+          };
+        }
+      );
     },
 
     categoryColorSelectItems(): Array<SelectItem> {

@@ -48,16 +48,7 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item>
-              <v-list-item-icon class="pl-2">
-                <v-icon dense>{{ settingsIcon }}</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content class="ml-n3">
-                <v-list-item-title class="pr-16 py-1">
-                  <span class="pr-16"> Settings </span>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <settings-menu-item></settings-menu-item>
             <v-list-item @click="logout">
               <v-list-item-icon class="pl-2">
                 <v-icon dense>{{ logoutIcon }}</v-icon>
@@ -189,6 +180,7 @@ import splitbee from "@/plugins/splitbee";
 import { User, Notification, NotificationRequest, List } from "@/store";
 import { getPlatformName } from "@/plugins/utils";
 import AddListButton from "@/components/AddListButton.vue";
+import SettingsMenuItem from "@/components/SettingsMenuItem.vue";
 
 interface MenuItem {
   name: string;
@@ -201,10 +193,9 @@ interface MenuItem {
 }
 
 @Component({
-  components: { AddListButton },
+  components: { SettingsMenuItem, AddListButton },
 })
 export default class App extends Vue {
-  settingsIcon: string = mdiCog;
   logoutIcon: string = mdiLogout;
   accountIcon: string = mdiAccount;
   tickIcon: string = mdiCheck;

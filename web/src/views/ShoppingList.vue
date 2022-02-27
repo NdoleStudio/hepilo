@@ -300,7 +300,7 @@ export default class ShoppingList extends Vue {
   formPricePerUnitRules = [
     (value: number | null | string): boolean | string =>
       (!Number.isNaN(value) && value != null && value != "" && value >= 0) ||
-      "Price per unit must be at least " + this.formatCurrency(0),
+      "Price per unit must be at least " + this.currencyFormat(0),
   ];
   formNotes = "";
   formNotesRules = [
@@ -321,6 +321,7 @@ export default class ShoppingList extends Vue {
   @Getter("currencySymbol") currencySymbol!: string;
   @Getter("loadingState") loadingState!: boolean;
   @Getter("listExists") listExists!: (listId: string) => boolean;
+  @Getter("formatCurrency") formatCurrency!: (value: number) => string;
   @Getter("autocompleteItems") autocompleteItems!: Array<SelectItem>;
   @Getter("categorySelectItems") categorySelectItems!: Array<SelectItem>;
 
@@ -404,15 +405,12 @@ export default class ShoppingList extends Vue {
     };
   }
 
-  formatCurrency(value: number): string {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: this.currency,
-    }).format(value);
-  }
-
   itemSelected(event: Event): void {
     event.stopPropagation();
+  }
+
+  currencyFormat(value: number): string {
+    return this.formatCurrency(value);
   }
 
   onFocus(): void {
