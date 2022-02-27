@@ -36,11 +36,11 @@
             </v-avatar>
           </v-btn>
         </template>
-        <v-list class="px-2" nav>
+        <v-list class="px-2" nav :dense="$vuetify.breakpoint.mdAndDown">
           <v-list-item-group>
             <v-list-item @click="refreshApp">
               <v-list-item-icon class="pl-2">
-                <v-icon>{{ refreshIcon }}</v-icon>
+                <v-icon dense>{{ refreshIcon }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16 py-1">
@@ -50,7 +50,7 @@
             </v-list-item>
             <v-list-item>
               <v-list-item-icon class="pl-2">
-                <v-icon>{{ settingsIcon }}</v-icon>
+                <v-icon dense>{{ settingsIcon }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16 py-1">
@@ -60,7 +60,7 @@
             </v-list-item>
             <v-list-item @click="logout">
               <v-list-item-icon class="pl-2">
-                <v-icon>{{ logoutIcon }}</v-icon>
+                <v-icon dense>{{ logoutIcon }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16">
@@ -99,9 +99,11 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <v-divider class="my-2"></v-divider>
       <div class="w-full text-center mt-4">
         <add-list-button></add-list-button>
       </div>
+      <v-divider class="mt-4"></v-divider>
       <p class="text--secondary subtitle-1 text-center mt-10">
         {{ version }}
       </p>
