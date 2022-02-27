@@ -76,7 +76,8 @@ import shortUUID from "short-uuid";
 @Component
 export default class AddListButton extends Vue {
   formNameRules = [
-    (value: string | null): boolean | string => !!value || "Name is required",
+    (value: string | null): boolean | string =>
+      (!!value && value.trim() != "") || "Name is required",
     (value: string | null): boolean | string =>
       (value && value.length <= 15) || "Name must be less than 15 characters",
   ];

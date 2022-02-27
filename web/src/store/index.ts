@@ -68,7 +68,7 @@ export interface SelectItem {
   value: string;
 }
 
-interface Item {
+export interface Item {
   id: string;
   name: string;
   pricePerUnit: number;
@@ -100,6 +100,12 @@ interface MaterializedListElement {
 
 export type MaterializedList = Array<MaterializedListElement>;
 
+export interface UpsertCategoryRequest {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export interface UpsertListRequest {
   id: string;
   name: string;
@@ -121,10 +127,32 @@ export interface NotificationRequest {
   type: NotificationType;
 }
 
-export const categoryIdUncategorized = "uncategorized";
+export const CATEGORY_ID_UNCATEGORIZED = "uncategorized";
+export const CATEGORY_COLOR_TEAL = "teal";
+const CATEGORY_COLORS = new Set<string>([
+  "red",
+  "pink",
+  "purple",
+  "deep-purple",
+  "indigo",
+  "blue",
+  "light-blue",
+  "cyan",
+  "teal",
+  "green",
+  "light-green",
+  "lime",
+  "yellow",
+  "amber",
+  "orange",
+  "deep-orange",
+  "brown",
+  "blue-grey",
+]);
+
 const defaultNotificationTimeout = 3000;
 const defaultCategory: Category = {
-  id: categoryIdUncategorized,
+  id: CATEGORY_ID_UNCATEGORIZED,
   name: "Uncategorized",
   color: "teal",
 };
@@ -259,6 +287,25 @@ export default new Vuex.Store({
       state.lists = [...state.lists];
     },
 
+    updateCategoryId(
+      state: State,
+      input: { oldCategoryId: string; newCategoryId: string }
+    ) {
+      state.categories = state.categories.map((category: Category) => {
+        if (category.id === input.oldCategoryId) {
+          category.id = input.newCategoryId;
+        }
+        return category;
+      });
+
+      state.items = state.items.map((item: Item) => {
+        if (item.categoryId === input.oldCategoryId) {
+          item.categoryId = input.newCategoryId;
+        }
+        return item;
+      });
+    },
+
     setAddedToCart(
       state: State,
       input: { itemId: string; addedToCart: boolean }
@@ -275,6 +322,19 @@ export default new Vuex.Store({
         }
       );
       state.lists = [...state.lists];
+    },
+
+    deleteCategory(state: State, categoryId: string) {
+      state.categories = state.categories.filter((category: Category) => {
+        return category.id !== categoryId;
+      });
+
+      state.items = state.items.map((item: Item) => {
+        if (item.categoryId === categoryId) {
+          item.categoryId = CATEGORY_ID_UNCATEGORIZED;
+        }
+        return item;
+      });
     },
 
     deleteList(state: State, listId: string) {
@@ -423,6 +483,29 @@ export default new Vuex.Store({
       commit("setSaving", false);
     },
 
+    async deleteCategory({ commit, getters }, categoryId: string) {
+      commit("setSaving", true);
+
+      await commit("deleteCategory", categoryId);
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            categories: getters.categories,
+            items: getters.items,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setNotification", {
+        type: "info",
+        message: `Category has been deleted successfully`,
+      });
+
+      commit("setSaving", false);
+    },
+
     setTitleByListId({ commit, getters }, listId: string) {
       const list = getters.listById(listId);
       if (list) {
@@ -476,6 +559,51 @@ export default new Vuex.Store({
       commit("setNotification", {
         type: "success",
         message: `${request.name} has been added successfully`,
+      });
+
+      commit("setSaving", false);
+    },
+
+    async upsertCategory({ commit, getters }, request: UpsertCategoryRequest) {
+      commit("setSaving", true);
+
+      let category = getters.findCategoryById(request.id);
+      if (category === undefined) {
+        category = {
+          name: request.name,
+          id: getters.nameToId(request.name),
+          color: request.color,
+        };
+      }
+
+      category.name = request.name;
+      category.color = request.color;
+
+      await commit("upsertCategory", category);
+      const categoryIsUpdated = getters.nameToId(request.name) !== category.id;
+      if (categoryIsUpdated) {
+        await commit("updateCategoryId", {
+          oldItemId: request.id,
+          newItemId: getters.nameToId(request.name),
+        });
+      }
+
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            categories: getters.categories,
+            items: getters.items,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setNotification", {
+        type: "success",
+        message: `Category has been ${
+          categoryIsUpdated ? "updated" : "added"
+        } successfully`,
       });
 
       commit("setSaving", false);
@@ -733,6 +861,12 @@ export default new Vuex.Store({
       return state.stateLoaded;
     },
 
+    editableCategories(state: State): Array<Category> {
+      return state.categories.filter((category) => {
+        return category.id !== CATEGORY_ID_UNCATEGORIZED;
+      });
+    },
+
     categories(state: State): Array<Category> {
       return state.categories;
     },
@@ -918,7 +1052,7 @@ export default new Vuex.Store({
         if (item !== undefined) {
           return item.categoryId;
         }
-        return categoryIdUncategorized;
+        return CATEGORY_ID_UNCATEGORIZED;
       },
 
     findCategoryByName:
@@ -1012,6 +1146,17 @@ export default new Vuex.Store({
       return LIST_ICONS.get(LIST_ICON_DEFAULT);
     },
 
+    categoryItemsCount:
+      (state: State) =>
+      (categoryId: string): number => {
+        return state.items.reduce((sum: number, item: Item) => {
+          if (item.categoryId === categoryId) {
+            return sum + 1;
+          }
+          return sum;
+        }, 0);
+      },
+
     cartTotal(state: State, getters): number {
       return getters.cartMaterializedItems.reduce(
         (sum: number, item: MaterializedListElement) => {
@@ -1041,6 +1186,23 @@ export default new Vuex.Store({
         items.push({
           value: value,
           text: value.slice(0, 1).toUpperCase() + value.slice(1).toLowerCase(),
+        });
+      });
+      return items;
+    },
+
+    categoryColorSelectItems(): Array<SelectItem> {
+      const items: Array<SelectItem> = [];
+      CATEGORY_COLORS.forEach((value) => {
+        items.push({
+          value: value,
+          text: value
+            .split("-")
+            .map(
+              (item) =>
+                item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase()
+            )
+            .join(" "),
         });
       });
       return items;

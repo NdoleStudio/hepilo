@@ -7,6 +7,7 @@ import store from "@/store";
 import Home from "@/views/Home.vue";
 import ShoppingListIndex from "@/views/ShoppingListIndex.vue";
 import ManageLists from "@/views/ManageLists.vue";
+import ManageCategories from "@/views/ManageCategories.vue";
 
 Vue.use(VueRouter);
 
@@ -57,7 +58,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/manage/categories",
     name: ROUTE_NAMES.MANAGE_CATEGORIES,
-    component: ShoppingListIndex,
+    component: ManageCategories,
     meta: {
       auth: true,
     },

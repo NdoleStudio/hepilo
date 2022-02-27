@@ -2,56 +2,6 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <div class="d-flex">
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" :max-width="dialogWidth">
-            <v-card>
-              <v-card-title>
-                {{ formTitle }}
-                <v-spacer></v-spacer>
-                <v-btn color="info" icon @click="closePopup">
-                  <v-icon>{{ closeIcon }}</v-icon>
-                </v-btn>
-              </v-card-title>
-              <v-card-text>
-                <v-form v-model="formValid" lazy-validation>
-                  <v-text-field
-                    class="mt-2"
-                    aria-required="true"
-                    :disabled="saving"
-                    v-model="editedList.name"
-                    :rules="formNameRules"
-                    label="Name"
-                    counter="15"
-                    persistent-placeholder
-                    placeholder="e.g Shopping List"
-                    outlined
-                  ></v-text-field>
-                  <v-select
-                    class="mt-2"
-                    :disabled="saving"
-                    :items="listIcons"
-                    v-model="editedList.icon"
-                    :append-icon="prependIcon"
-                    outlined
-                    label="Icon"
-                  ></v-select>
-                </v-form>
-              </v-card-text>
-              <v-card-actions class="mt-n8">
-                <v-btn
-                  text
-                  color="success"
-                  :disabled="!formValid || saving"
-                  @click="onSave"
-                  >Save</v-btn
-                >
-                <v-spacer></v-spacer>
-                <v-btn color="info" text @click="closePopup">Cancel</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
         <v-card tile>
           <v-card-text class="px-0 py-0">
             <v-list subheader two-line class="pb-0 px-0" nav>
@@ -115,6 +65,53 @@
             </v-list>
           </v-card-text>
         </v-card>
+        <v-dialog v-model="dialog" :max-width="dialogWidth">
+          <v-card>
+            <v-card-title>
+              {{ formTitle }}
+              <v-spacer></v-spacer>
+              <v-btn color="info" icon @click="closePopup">
+                <v-icon>{{ closeIcon }}</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text>
+              <v-form v-model="formValid" lazy-validation>
+                <v-text-field
+                  class="mt-2"
+                  aria-required="true"
+                  :disabled="saving"
+                  v-model="editedList.name"
+                  :rules="formNameRules"
+                  label="Name"
+                  counter="15"
+                  persistent-placeholder
+                  placeholder="e.g Shopping List"
+                  outlined
+                ></v-text-field>
+                <v-select
+                  class="mt-2"
+                  :disabled="saving"
+                  :items="listIcons"
+                  v-model="editedList.icon"
+                  :append-icon="prependIcon"
+                  outlined
+                  label="Icon"
+                ></v-select>
+              </v-form>
+            </v-card-text>
+            <v-card-actions class="mt-n8">
+              <v-btn
+                text
+                color="success"
+                :disabled="!formValid || saving"
+                @click="onSave"
+                >Save</v-btn
+              >
+              <v-spacer></v-spacer>
+              <v-btn color="info" text @click="closePopup">Cancel</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-dialog v-model="dialogDelete" :max-width="dialogWidth" width="400">
           <v-card>
             <v-card-title class="text-h5">
@@ -151,7 +148,8 @@ import { mdiClose, mdiPlus, mdiSquareEditOutline, mdiTrashCan } from "@mdi/js";
 @Component
 export default class ManageLists extends Vue {
   formNameRules = [
-    (value: string | null): boolean | string => !!value || "Name is required",
+    (value: string | null): boolean | string =>
+      (!!value && value.trim() != "") || "Name is required",
     (value: string | null): boolean | string =>
       (value && value.length <= 15) || "Name must be less than 15 characters",
   ];

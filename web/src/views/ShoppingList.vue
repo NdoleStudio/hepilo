@@ -35,6 +35,7 @@
                   >{{ categoryItem.category.name }}</v-subheader
                 >
                 <v-list-item-group
+                  class="left-color"
                   v-model="selectedItem"
                   :key="'list-' + categoryItem.category.id"
                 >
@@ -257,7 +258,7 @@ import { Action, Getter } from "vuex-class";
 import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
 import {
   Category,
-  categoryIdUncategorized,
+  CATEGORY_ID_UNCATEGORIZED,
   List,
   MaterializedList,
   MaterializedListItem,
@@ -280,9 +281,10 @@ export default class ShoppingList extends Vue {
   formItemId = "";
   formName = "";
   formAddedToCart = false;
-  formCategoryId = categoryIdUncategorized;
+  formCategoryId = CATEGORY_ID_UNCATEGORIZED;
   formNameRules = [
-    (value: string | null): boolean | string => !!value || "Name is required",
+    (value: string | null): boolean | string =>
+      (!!value && value.trim() != "") || "Name is required",
     (value: string | null): boolean | string =>
       (value && value.length <= 15) || "Name must be less than 15 characters",
   ];
@@ -352,7 +354,7 @@ export default class ShoppingList extends Vue {
     this.formQuantity = 1;
     this.formNotes = "";
     this.formItemId = "";
-    this.formCategoryId = categoryIdUncategorized;
+    this.formCategoryId = CATEGORY_ID_UNCATEGORIZED;
     this.formPricePerUnit = 0.0;
     this.formAddedToCart = false;
   }
