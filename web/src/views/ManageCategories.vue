@@ -97,8 +97,11 @@
                       v-text="category.name"
                     ></v-list-item-title>
                     <v-list-item-subtitle>
-                      {{ categoryItemsCount(category.id) }}
-                      items
+                      {{
+                        categoryItemsCount(category.id) +
+                        " item" +
+                        (categoryItemsCount(category.id) === 1 ? "" : "s")
+                      }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
@@ -225,7 +228,7 @@ export default class ManageCategories extends Vue {
   @Getter("saving") saving!: boolean;
   @Getter("categoryItemsCount") categoryItemsCount!: (
     categoryId: string
-  ) => string;
+  ) => number;
 
   @Action("upsertCategory") upsertCategory!: (
     request: UpsertCategoryRequest
