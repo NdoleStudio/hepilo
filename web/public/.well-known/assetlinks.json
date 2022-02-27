@@ -1,6 +1,12 @@
-[{
-        "relation": ["delegate_permission/common.handle_all_urls"],
-        "target" : { "namespace": "android_app", "package_name": "com.hepilo.twa",
-                     "sha256_cert_fingerprints": ["DD:D8:CD:B2:3D:37:81:CE:88:29:A2:ED:3C:E2:4D:8D:56:56:A1:2A:02:B6:05:20:11:C1:95:40:22:9C:AE:86"] }
-      }
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hepilo.twa",
+      "sha256_cert_fingerprints": [
+        "DD:D8:CD:B2:3D:37:81:CE:88:29:A2:ED:3C:E2:4D:8D:56:56:A1:2A:02:B6:05:20:11:C1:95:40:22:9C:AE:86"
+      ]
+    }
+  }
 ]
