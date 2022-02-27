@@ -63,9 +63,15 @@
 import { Component } from "vue-property-decorator";
 import Vue from "vue";
 import { Action, Getter } from "vuex-class";
-import { List, LIST_ICON_DEFAULT, SelectItem, StoreListRequest } from "@/store";
+import {
+  List,
+  LIST_ICON_DEFAULT,
+  SelectItem,
+  UpsertListRequest,
+} from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import { mdiClose, mdiPlus } from "@mdi/js";
+import shortUUID from "short-uuid";
 
 @Component
 export default class AddListButton extends Vue {
@@ -85,7 +91,9 @@ export default class AddListButton extends Vue {
   @Getter("listIconSelectItems") listIcons!: Array<SelectItem>;
   @Getter("listIcon") listIcon!: (name: string) => string;
   @Getter("lists") lists!: Array<List>;
-  @Action("addList") addList!: (request: StoreListRequest) => Promise<void>;
+  @Action("upsertList") upsertList!: (
+    request: UpsertListRequest
+  ) => Promise<void>;
 
   closePopup(): void {
     this.clearForm();
@@ -106,9 +114,10 @@ export default class AddListButton extends Vue {
   }
 
   async onSave(): Promise<void> {
-    await this.addList({
+    await this.upsertList({
       name: this.formName,
       icon: this.formIcon,
+      id: shortUUID.generate(),
     });
     this.dialog = false;
     this.clearForm();

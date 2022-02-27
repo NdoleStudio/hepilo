@@ -48,7 +48,7 @@ export type List = {
   items: Array<ListItem>;
 };
 
-type NotificationType = "error" | "success";
+type NotificationType = "error" | "success" | "info";
 
 export interface Notification {
   message: string;
@@ -100,7 +100,8 @@ interface MaterializedListElement {
 
 export type MaterializedList = Array<MaterializedListElement>;
 
-export interface StoreListRequest {
+export interface UpsertListRequest {
+  id: string;
   name: string;
   icon: string;
 }
@@ -162,8 +163,16 @@ export default new Vuex.Store({
     setTitle(state: State, title: string) {
       state.title = title;
     },
-    addList(state: State, list: List) {
-      state.lists.push(list);
+    upsertList(state: State, list: List) {
+      const index = state.lists.findIndex(
+        (value: List) => value.id === list.id
+      );
+      if (index === -1) {
+        state.lists.push(list);
+        return;
+      }
+      state.lists[index] = list;
+      state.lists = [...state.lists];
     },
     setSaving(state: State, saving: boolean) {
       state.saving = saving;
@@ -268,6 +277,12 @@ export default new Vuex.Store({
       state.lists = [...state.lists];
     },
 
+    deleteList(state: State, listId: string) {
+      state.lists = state.lists.filter((list: List) => {
+        return list.id !== listId;
+      });
+    },
+
     deleteListItem(state: State, itemId: string) {
       const listIndex = state.lists.findIndex(
         (list) => list.id === state.selectedListId
@@ -368,6 +383,46 @@ export default new Vuex.Store({
       commit("setSaving", false);
     },
 
+    async deleteList({ commit, getters, dispatch }, listId: string) {
+      commit("setSaving", true);
+      if (getters.lists.length < 2) {
+        commit("setNotification", {
+          type: "error",
+          message: `You cannot delete the only list`,
+        });
+        commit("setSaving", false);
+        return;
+      }
+
+      const list = getters.listById(listId);
+
+      if (getters.selectedListId == listId) {
+        await commit(
+          "setSelectedListId",
+          getters.lists.find((list: List) => list.id !== listId).id
+        );
+      }
+
+      await commit("deleteList", listId);
+      await dispatch("sanitizeState");
+
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            lists: getters.lists,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setNotification", {
+        type: "info",
+        message: `${list?.name ?? "List"} has been deleted successfully`,
+      });
+      commit("setSaving", false);
+    },
+
     setTitleByListId({ commit, getters }, listId: string) {
       const list = getters.listById(listId);
       if (list) {
@@ -389,18 +444,24 @@ export default new Vuex.Store({
         );
       }
     },
-    async addList({ commit, getters }, request: StoreListRequest) {
+    async upsertList({ commit, getters }, request: UpsertListRequest) {
       commit("setSaving", true);
 
-      const list: List = {
-        name: request.name,
-        items: [],
-        cartPanelOpen: true,
-        id: shortUUID.generate(),
-        icon: request.icon,
-      };
+      let list = getters.listById(request.id);
+      if (list === undefined) {
+        list = {
+          name: request.name,
+          items: [],
+          cartPanelOpen: true,
+          id: request.id,
+          icon: request.icon,
+        };
+      }
 
-      await commit("addList", list);
+      list.icon = request.icon;
+      list.name = request.name;
+
+      await commit("upsertList", list);
 
       if (getters.isLoggedIn) {
         await setDoc(

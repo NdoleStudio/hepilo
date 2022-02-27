@@ -81,13 +81,38 @@
     </v-app-bar>
 
     <v-navigation-drawer app v-model="navDrawerActive" clipped>
+      <v-list shaped two-line>
+        <v-list-item-group color="primary">
+          <v-list-item
+            link
+            two-line
+            :to="item.route"
+            exact
+            v-for="item in menuItems"
+            :key="JSON.stringify(item.route)"
+          >
+            <v-list-item-avatar rounded>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ item.secondary }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <v-divider class="my-2"></v-divider>
+      <div class="w-full text-center mt-4">
+        <add-list-button></add-list-button>
+      </div>
+      <v-divider class="mt-4"></v-divider>
       <v-list shaped>
         <v-list-item-group color="primary">
           <v-list-item
             link
             :to="item.route"
             exact
-            v-for="item in menuItems"
+            v-for="item in manageMenuItems"
             :key="item.name"
           >
             <v-list-item-icon>
@@ -99,11 +124,7 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <v-divider class="my-2"></v-divider>
-      <div class="w-full text-center mt-4">
-        <add-list-button></add-list-button>
-      </div>
-      <v-divider class="mt-4"></v-divider>
+      <v-divider class="my-4"></v-divider>
       <p class="text--secondary subtitle-1 text-center mt-10">
         {{ version }}
       </p>
@@ -120,6 +141,11 @@
           v-if="notification.type === 'success'"
           :color="notification.type"
           >{{ tickIcon }}</v-icon
+        >
+        <v-icon
+          v-if="notification.type === 'info'"
+          :color="notification.type"
+          >{{ infoIcon }}</v-icon
         >
         {{ notification.message }}
         <template v-slot:action="{ attrs }">
@@ -141,7 +167,17 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { mdiAccount, mdiCheck, mdiCog, mdiLogout, mdiRefresh } from "@mdi/js";
+import {
+  mdiAccount,
+  mdiArchiveCogOutline,
+  mdiCheck,
+  mdiCog,
+  mdiInformation,
+  mdiLogout,
+  mdiPlaylistEdit,
+  mdiRefresh,
+  mdiShapeOutline,
+} from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
@@ -152,11 +188,11 @@ import AddListButton from "@/components/AddListButton.vue";
 interface MenuItem {
   name: string;
   icon: string;
+  secondary?: string;
   route: Location;
   adminOnly?: boolean;
   hasAccount?: boolean;
   isNotAnonymous?: boolean;
-  routeNames?: Array<string>;
 }
 
 @Component({
@@ -167,6 +203,7 @@ export default class App extends Vue {
   logoutIcon: string = mdiLogout;
   accountIcon: string = mdiAccount;
   tickIcon: string = mdiCheck;
+  infoIcon: string = mdiInformation;
   refreshIcon: string = mdiRefresh;
 
   @Getter("loading") loading!: boolean;
@@ -216,14 +253,42 @@ export default class App extends Vue {
     return this.lists.map((list) => {
       return {
         name: list.name,
+        secondary: `${list.items.length} item${
+          list.items.length === 1 ? "" : "s"
+        }`,
         icon: this.listIcon(list.icon),
         route: {
           name: this.$constants.ROUTE_NAMES.SHOPPING_LIST_SHOW,
           params: { listId: list.id },
         },
-        routeNames: [],
       };
     });
+  }
+
+  get manageMenuItems(): Array<MenuItem> {
+    return [
+      {
+        name: "Manage Lists",
+        icon: mdiPlaylistEdit,
+        route: {
+          name: this.$constants.ROUTE_NAMES.MANAGE_LISTS,
+        },
+      },
+      {
+        name: "Manage Categories",
+        icon: mdiShapeOutline,
+        route: {
+          name: this.$constants.ROUTE_NAMES.MANAGE_CATEGORIES,
+        },
+      },
+      {
+        name: "Manage Items",
+        icon: mdiArchiveCogOutline,
+        route: {
+          name: this.$constants.ROUTE_NAMES.MANAGE_ITEMS,
+        },
+      },
+    ];
   }
 
   mounted(): void {

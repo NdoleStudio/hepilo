@@ -6,12 +6,17 @@ import { getCurrentUser } from "@/plugins/firebase";
 import store from "@/store";
 import Home from "@/views/Home.vue";
 import ShoppingListIndex from "@/views/ShoppingListIndex.vue";
+import ManageLists from "@/views/ManageLists.vue";
 
 Vue.use(VueRouter);
 
 export const ROUTE_NAMES = {
   SHOPPING_LIST_SHOW: "ShowShoppingList",
   SHOPPING_LIST_INDEX: "IndexShoppingList",
+  MANAGE_LISTS: "ManageLists",
+  MANAGE_ITEMS: "ManageItems",
+  MANAGE_CATEGORIES: "ManageCategories",
+  SETTINGS_INDEX: "IndexSettings",
   LOGIN: "Login",
   HOME: "Home",
 };
@@ -36,6 +41,38 @@ const routes: Array<RouteConfig> = [
   {
     path: "/lists",
     name: ROUTE_NAMES.SHOPPING_LIST_INDEX,
+    component: ShoppingListIndex,
+    meta: {
+      auth: true,
+    },
+  },
+  {
+    path: "/manage/lists",
+    name: ROUTE_NAMES.MANAGE_LISTS,
+    component: ManageLists,
+    meta: {
+      auth: true,
+    },
+  },
+  {
+    path: "/manage/categories",
+    name: ROUTE_NAMES.MANAGE_CATEGORIES,
+    component: ShoppingListIndex,
+    meta: {
+      auth: true,
+    },
+  },
+  {
+    path: "/manage/items",
+    name: ROUTE_NAMES.MANAGE_ITEMS,
+    component: ShoppingListIndex,
+    meta: {
+      auth: true,
+    },
+  },
+  {
+    path: "/settings",
+    name: ROUTE_NAMES.SETTINGS_INDEX,
     component: ShoppingListIndex,
     meta: {
       auth: true,
