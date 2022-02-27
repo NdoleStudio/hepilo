@@ -167,7 +167,6 @@ import {
   mdiAccount,
   mdiArchiveCogOutline,
   mdiCheck,
-  mdiCog,
   mdiInformation,
   mdiLogout,
   mdiPlaylistEdit,
