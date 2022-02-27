@@ -6,15 +6,15 @@
           class="d-flex"
           :class="{
             'justify-center':
-              categories.length === 0 && $vuetify.breakpoint.mdAndDown,
+              items.length === 0 && $vuetify.breakpoint.mdAndDown,
           }"
         >
-          <v-spacer v-if="categories.length"></v-spacer>
+          <v-spacer v-if="items.length"></v-spacer>
           <v-dialog v-model="dialog" :max-width="dialogWidth">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" v-bind="attrs" v-on="on" class="mb-4">
                 <v-icon>{{ addIcon }}</v-icon>
-                Add Category
+                Add Item
               </v-btn>
             </template>
             <v-card>
@@ -31,7 +31,7 @@
                     class="mt-2"
                     aria-required="true"
                     :disabled="saving"
-                    v-model="editedCategory.name"
+                    v-model="editedItem.name"
                     :rules="formNameRules"
                     label="Name"
                     counter="15"
@@ -39,30 +39,27 @@
                     placeholder="e.g Meat"
                     outlined
                   ></v-text-field>
+                  <v-text-field
+                    class="mt-2"
+                    :disabled="saving"
+                    aria-required="true"
+                    v-model="editedItem.pricePerUnit"
+                    :rules="formPricePerUnitRules"
+                    label="Price Per Unit"
+                    type="number"
+                    :prefix="currencySymbol"
+                    persistent-placeholder
+                    placeholder="1.99"
+                    outlined
+                  ></v-text-field>
                   <v-select
                     class="mt-2"
                     :disabled="saving"
-                    :items="categoryColors"
-                    v-model="editedCategory.color"
+                    :items="categories"
+                    v-model="editedItem.categoryId"
                     outlined
-                    label="Color"
-                  >
-                    <template v-slot:item="{ item, attrs, on }">
-                      <v-list-item v-on="on" v-bind="attrs">
-                        <v-list-item-title>{{ item.text }}</v-list-item-title>
-                        <v-list-item-action>
-                          <v-icon :color="item.value">
-                            {{ squareIcon }}
-                          </v-icon>
-                        </v-list-item-action>
-                      </v-list-item>
-                    </template>
-                    <template v-slot:append>
-                      <v-icon :color="editedCategory.color">
-                        {{ squareIcon }}
-                      </v-icon>
-                    </template>
-                  </v-select>
+                    label="Category"
+                  ></v-select>
                 </v-form>
               </v-card-text>
               <v-card-actions class="mt-n8">
@@ -82,26 +79,22 @@
         <v-card tile>
           <v-card-text class="px-0 py-0">
             <v-list subheader two-line class="pb-0 px-0" nav>
-              <template v-for="(category, index) in categories">
+              <template v-for="(item, index) in items">
                 <v-list-item
-                  :key="category.id"
-                  @click="onEditCategory(category)"
+                  :key="item.id"
+                  @click="onEditItem(item)"
                   class="mb-0"
                 >
-                  <v-list-item-avatar rounded>
-                    <v-icon :color="category.color">{{ squareIcon }}</v-icon>
-                  </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title
-                      class="text-overline"
-                      v-text="category.name"
-                    ></v-list-item-title>
+                    <v-list-item-title v-text="item.name"></v-list-item-title>
                     <v-list-item-subtitle>
-                      {{
-                        categoryItemsCount(category.id) +
-                        " item" +
-                        (categoryItemsCount(category.id) === 1 ? "" : "s")
-                      }}
+                      <span class="text-overline">
+                        {{ categoryNameByItemId(item.id) }}
+                      </span>
+                      -
+                      <span class="text--primary">
+                        {{ formatCurrency(item.pricePerUnit) }}
+                      </span>
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
@@ -109,7 +102,7 @@
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
-                            @click="onEditCategory(category)"
+                            @click="onEditItem(item)"
                             color="info"
                             class="mr-2"
                             v-bind="attrs"
@@ -119,12 +112,12 @@
                             <v-icon>{{ editIcon }}</v-icon>
                           </v-btn>
                         </template>
-                        <span>Edit {{ category.name }}</span>
+                        <span>Edit {{ item.name }}</span>
                       </v-tooltip>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
-                            @click.stop="onDeleteList(category)"
+                            @click.stop="onDeleteItem(item)"
                             color="error"
                             icon
                             v-bind="attrs"
@@ -134,14 +127,14 @@
                             <v-icon>{{ deleteIcon }}</v-icon>
                           </v-btn>
                         </template>
-                        <span>Delete {{ category.name }}</span>
+                        <span>Delete {{ item.name }}</span>
                       </v-tooltip>
                     </div>
                   </v-list-item-action>
                 </v-list-item>
                 <v-divider
                   class="mt-0"
-                  v-if="index < categories.length - 1"
+                  v-if="index < items.length - 1"
                   :key="index"
                 ></v-divider>
               </template>
@@ -153,9 +146,7 @@
             <v-card-title class="text-h5">
               <div class="text-break">
                 Are you sure you want to delete
-                <code class="d-inline-block">{{
-                  this.editedCategory.name
-                }}</code>
+                <code class="d-inline-block">{{ this.editedItem.name }}</code>
                 ?
               </div>
             </v-card-title>
@@ -175,11 +166,10 @@ import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import {
   Category,
-  CATEGORY_COLOR_TEAL,
+  CATEGORY_ID_UNCATEGORIZED,
   Item,
   List,
-  SelectItem,
-  UpsertCategoryRequest,
+  UpsertItemRequest,
 } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import {
@@ -191,13 +181,19 @@ import {
 } from "@mdi/js";
 
 @Component
-export default class ManageCategories extends Vue {
+export default class ManageItems extends Vue {
   formNameRules = [
     (value: string | null): boolean | string =>
       (!!value && value.trim() != "") || "Category name is required",
     (value: string | null): boolean | string =>
       (value && value.length <= 15) ||
       "Category name must be less than 15 characters",
+  ];
+
+  formPricePerUnitRules = [
+    (value: number | null | string): boolean | string =>
+      (!Number.isNaN(value) && value != null && value != "" && value >= 0) ||
+      "Price per unit must be at least " + this.formatCurrency(0),
   ];
   squareIcon: string = mdiSquare;
   formValid = false;
@@ -207,33 +203,33 @@ export default class ManageCategories extends Vue {
   closeIcon: string = mdiClose;
   dialog = false;
   dialogDelete = false;
-  editedCategory: UpsertCategoryRequest = {
+  editedItem: UpsertItemRequest = {
     name: "",
-    id: "",
-    color: CATEGORY_COLOR_TEAL,
+    itemId: "",
+    pricePerUnit: 0,
+    categoryId: CATEGORY_ID_UNCATEGORIZED,
   };
 
-  defaultCategory: UpsertCategoryRequest = {
+  defaultItem: UpsertItemRequest = {
     name: "",
-    id: "",
-    color: CATEGORY_COLOR_TEAL,
+    itemId: "",
+    pricePerUnit: 0,
+    categoryId: CATEGORY_ID_UNCATEGORIZED,
   };
 
-  @Getter("categoryColorSelectItems") categoryColors!: Array<SelectItem>;
-  @Getter("lists") lists!: Array<List>;
+  @Getter("currencySymbol") currencySymbol!: string;
+  @Getter("categorySelectItems") categories!: Array<List>;
   @Getter("items") items!: Array<Item>;
-  @Getter("editableCategories") categories!: Array<Category>;
   @Getter("saving") saving!: boolean;
-  @Getter("categoryItemsCount") categoryItemsCount!: (
-    categoryId: string
-  ) => number;
-
-  @Action("upsertCategory") upsertCategory!: (
-    request: UpsertCategoryRequest
+  @Getter("itemListsCount") itemListsCount!: (itemId: string) => number;
+  @Getter("currency") currency!: string;
+  @Getter("findCategoryNameByItemId") categoryNameByItemId!: (
+    itemId: string
+  ) => Category;
+  @Action("upsertItem") upsertItem!: (
+    request: UpsertItemRequest
   ) => Promise<void>;
-  @Action("deleteCategory") deleteCategory!: (
-    categoryId: string
-  ) => Promise<void>;
+  @Action("deleteItem") deleteItem!: (itemId: string) => Promise<void>;
   @Action("setTitle") setTitle!: (title: string) => void;
   @Action("loadState") loadState!: () => Promise<void>;
 
@@ -242,14 +238,14 @@ export default class ManageCategories extends Vue {
   }
 
   get formTitle(): string {
-    return this.editedCategory.id === this.defaultCategory.id
-      ? "Add Category"
-      : "Edit Category";
+    return this.editedItem.itemId === this.defaultItem.itemId
+      ? "Add Item"
+      : "Edit Item";
   }
 
   mounted(): void {
     this.loadState();
-    this.setTitle("Manage Categories");
+    this.setTitle("Manage Items");
   }
 
   closePopup(): void {
@@ -265,33 +261,36 @@ export default class ManageCategories extends Vue {
   }
 
   async onSave(): Promise<void> {
-    await this.upsertCategory({
-      name: this.editedCategory.name,
-      id: this.editedCategory.id,
-      color: this.editedCategory.color,
-    });
+    await this.upsertItem({ ...this.editedItem });
     this.dialog = false;
     this.clearForm();
   }
 
-  onDeleteList(category: Category): void {
-    this.editedCategory = { ...category };
+  onDeleteItem(item: Item): void {
+    this.editedItem = { ...item, itemId: item.id };
     this.dialogDelete = true;
   }
 
   onDeleteListConfirm(): void {
-    this.deleteCategory(this.editedCategory.id);
+    this.deleteItem(this.editedItem.itemId);
     this.closeDeleteDialog();
   }
 
-  onEditCategory(category: Category): void {
-    this.editedCategory = { ...category };
+  onEditItem(item: Item): void {
+    this.editedItem = { ...item, itemId: item.id };
     this.dialog = true;
   }
 
+  formatCurrency(value: number): string {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: this.currency,
+    }).format(value);
+  }
+
   clearForm(): void {
-    this.editedCategory = {
-      ...this.defaultCategory,
+    this.editedItem = {
+      ...this.defaultItem,
     };
   }
 }

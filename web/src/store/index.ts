@@ -112,6 +112,13 @@ export interface UpsertListRequest {
   icon: string;
 }
 
+export interface UpsertItemRequest {
+  itemId: string;
+  pricePerUnit: number;
+  categoryId: string;
+  name: string;
+}
+
 export interface UpdateItemRequest {
   name: string;
   categoryId: string;
@@ -268,7 +275,7 @@ export default new Vuex.Store({
       state.lists = [...state.lists];
     },
 
-    updateListItemId(
+    updateItemId(
       state: State,
       input: { oldItemId: string; newItemId: string }
     ) {
@@ -285,6 +292,13 @@ export default new Vuex.Store({
         }
       );
       state.lists = [...state.lists];
+
+      state.items = state.items.map((item: Item) => {
+        if (item.id === input.oldItemId) {
+          item.id = input.newItemId;
+        }
+        return item;
+      });
     },
 
     updateCategoryId(
@@ -334,6 +348,19 @@ export default new Vuex.Store({
           item.categoryId = CATEGORY_ID_UNCATEGORIZED;
         }
         return item;
+      });
+    },
+
+    deleteItem(state: State, itemId: string) {
+      state.items = state.items.filter((item: Item) => {
+        return item.id !== itemId;
+      });
+
+      state.lists = state.lists.map((list) => {
+        list.items = list.items.filter((item: ListItem) => {
+          return item.itemId !== itemId;
+        });
+        return list;
       });
     },
 
@@ -483,6 +510,29 @@ export default new Vuex.Store({
       commit("setSaving", false);
     },
 
+    async deleteItem({ commit, getters }, itemId: string) {
+      commit("setSaving", true);
+      const item = getters.findItemById(itemId);
+      await commit("deleteItem", itemId);
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            categories: getters.categories,
+            items: getters.items,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setNotification", {
+        type: "info",
+        message: `${item?.name ?? "Item"} has been deleted successfully`,
+      });
+
+      commit("setSaving", false);
+    },
+
     async deleteCategory({ commit, getters }, categoryId: string) {
       commit("setSaving", true);
 
@@ -583,8 +633,8 @@ export default new Vuex.Store({
       const categoryIsUpdated = getters.nameToId(request.name) !== category.id;
       if (categoryIsUpdated) {
         await commit("updateCategoryId", {
-          oldItemId: request.id,
-          newItemId: getters.nameToId(request.name),
+          oldCategoryId: request.id,
+          newCategoryId: getters.nameToId(request.name),
         });
       }
 
@@ -616,7 +666,7 @@ export default new Vuex.Store({
           id: getters.nameToId(name),
           name: name.trim(),
           pricePerUnit: 0,
-          categoryId: getters.findCategoryByItemId(getters.nameToId),
+          categoryId: getters.findCategoryIdByItemId(getters.nameToId),
         };
         await commit("upsertItem", item);
       }
@@ -661,6 +711,43 @@ export default new Vuex.Store({
     disableNotification({ commit }) {
       commit("disableNotification");
     },
+
+    async upsertItem({ commit, getters }, request: UpsertItemRequest) {
+      commit("setSaving", true);
+      let item = getters.findItemById(request.itemId);
+      if (item === undefined) {
+        item = {
+          id: getters.nameToId(request.name),
+        };
+      }
+
+      item.name = request.name.trim();
+      item.pricePerUnit = request.pricePerUnit;
+      item.categoryId = request.categoryId;
+      await commit("upsertItem", item);
+
+      if (getters.nameToId(request.name) !== item.id) {
+        await commit("updateItemId", {
+          oldItemId: request.itemId,
+          newItemId: getters.nameToId(request.name),
+        });
+      }
+
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            lists: getters.lists,
+            categories: getters.categories,
+            items: getters.items,
+          },
+          { merge: true }
+        );
+      }
+
+      commit("setSaving", false);
+    },
+
     async updateItem({ commit, getters }, request: UpdateItemRequest) {
       commit("setSaving", true);
       const item: Item = {
@@ -1000,10 +1087,11 @@ export default new Vuex.Store({
           if (category === undefined) {
             return;
           }
-          categories.add(category.name);
+          categories.add(category.name.toUpperCase());
         });
 
         const sortedCategories = Array.from(categories).sort();
+
         sortedCategories.forEach((categoryName: string) => {
           const category = getters.findCategoryByName(categoryName);
           if (category === undefined) {
@@ -1045,7 +1133,7 @@ export default new Vuex.Store({
         });
       },
 
-    findCategoryByItemId:
+    findCategoryIdByItemId:
       (state: State, getters) =>
       (itemId: string): string => {
         const item = getters.findItemById(itemId);
@@ -1053,6 +1141,19 @@ export default new Vuex.Store({
           return item.categoryId;
         }
         return CATEGORY_ID_UNCATEGORIZED;
+      },
+
+    findCategoryNameByItemId:
+      (state: State, getters) =>
+      (itemId: string): string => {
+        const item = getters.findItemById(itemId);
+        if (item !== undefined) {
+          return (
+            getters.findCategoryById(item.categoryId)?.name ??
+            defaultCategory.name
+          );
+        }
+        return defaultCategory.name;
       },
 
     findCategoryByName:
@@ -1154,6 +1255,22 @@ export default new Vuex.Store({
             return sum + 1;
           }
           return sum;
+        }, 0);
+      },
+
+    itemListsCount:
+      (state: State) =>
+      (itemId: string): number => {
+        return state.lists.reduce((sum: number, list: List) => {
+          return (
+            sum +
+            list.items.reduce((value: number, item: ListItem) => {
+              if (item.itemId === itemId && value === 0) {
+                return 1;
+              }
+              return 0;
+            }, 0)
+          );
         }, 0);
       },
 
