@@ -124,10 +124,15 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <v-divider class="my-4"></v-divider>
-      <p class="text--secondary subtitle-1 text-center mt-10">
-        {{ version }}
-      </p>
+      <div class="d-flex justify-center mt-5">
+        <a
+          class="text-decoration-none subtitle-2 text--secondary"
+          :href="githubLInk"
+          target="_blank"
+        >
+          {{ version }}
+        </a>
+      </div>
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>
@@ -224,6 +229,10 @@ export default class App extends Vue {
 
   get version(): string {
     return process.env.VUE_APP_COMMIT_HASH.slice(0, 7);
+  }
+
+  get githubLInk(): string {
+    return process.env.VUE_APP_GITHUB_LINK;
   }
 
   get navDrawerActive(): boolean {
@@ -333,7 +342,7 @@ export default class App extends Vue {
       .then(() => {
         this.addNotification({
           type: "success",
-          message: `Update successful! The ${getPlatformName()} will reload in a few seconds.`,
+          message: `This ${getPlatformName()} will reload in a few seconds.`,
         });
         setTimeout(() => {
           window.location.reload();
@@ -362,6 +371,12 @@ export default class App extends Vue {
 
   .page-title {
     transition: margin 100ms ease-out;
+  }
+
+  a.text--secondary {
+    &:hover {
+      color: #2196f3 !important;
+    }
   }
 
   &--drawer--open {
