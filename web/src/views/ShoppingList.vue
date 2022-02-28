@@ -61,7 +61,6 @@
                         )
                       }}</v-list-item-subtitle>
                     </v-list-item-content>
-                    <v-spacer></v-spacer>
                     <v-list-item-action>
                       <v-btn icon @click="deleteListItem(item.listItem.itemId)">
                         <v-icon color="error">{{ deleteIcon }}</v-icon>
@@ -117,7 +116,6 @@
                           )
                         }}</v-list-item-subtitle>
                       </v-list-item-content>
-                      <v-spacer></v-spacer>
                       <v-list-item-action>
                         <v-btn
                           icon
@@ -444,15 +442,19 @@ export default class ShoppingList extends Vue {
   }
 
   onChange(chosenItem: string | SelectItem): void {
+    let old = "";
     if (!this.isBlur) {
       if (typeof chosenItem == "string") {
+        if (chosenItem.trim().length > 15) {
+          old = chosenItem.trim();
+        }
         this.addItem(chosenItem);
       } else {
         this.addItem(chosenItem.text);
       }
     }
     this.$nextTick(() => {
-      this.itemName = "";
+      this.itemName = old;
     });
   }
 }

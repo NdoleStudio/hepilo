@@ -615,6 +615,7 @@ export default new Vuex.Store({
         await setDoc(
           doc(getFirestore(), COLLECTION_STATE, getters.user.id),
           {
+            lists: getters.lists,
             selectedListId: listId,
           },
           { merge: true }
@@ -705,6 +706,16 @@ export default new Vuex.Store({
 
     async addItem({ commit, getters }, name: string) {
       commit("setSaving", true);
+
+      if (name.trim().length > 15) {
+        commit("setNotification", {
+          type: "error",
+          message: `You name must be maximum 15 characters`,
+        });
+        commit("setSaving", false);
+        return;
+      }
+
       if (!getters.hasItem(name)) {
         const item: Item = {
           id: getters.nameToId(name),

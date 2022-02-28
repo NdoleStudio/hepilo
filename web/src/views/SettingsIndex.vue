@@ -57,7 +57,7 @@ import { dialogWidth } from "@/plugins/vuetify";
 import { mdiClose } from "@mdi/js";
 import { DEFAULT_CURRENCY } from "@/plugins/intl";
 import { Action, Getter } from "vuex-class";
-import { SelectItem } from "@/store";
+import { NotificationRequest, SelectItem } from "@/store";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
 
@@ -73,6 +73,9 @@ export default class SettingsIndex extends Vue {
   @Getter("currencySelectItems") currencies!: Array<SelectItem>;
   @Action("setCurrency") setCurrency!: (currency: string) => void;
   @Action("setTitle") setTitle!: (title: string) => void;
+  @Action("addNotification") addNotification!: (
+    request: NotificationRequest
+  ) => void;
   @Action("deleteAccount") deleteAccount!: (userId: string) => Promise<void>;
 
   get dialogWidth(): string {
@@ -100,9 +103,31 @@ export default class SettingsIndex extends Vue {
   }
 
   async onDeleteListConfirm(): Promise<void> {
-    await this.deleteAccount(getFirebaseAuth().currentUser?.uid as string);
+    try {
+      await this.deleteAccount(getFirebaseAuth().currentUser?.uid as string);
+      await getFirebaseAuth().currentUser?.delete();
+    } catch (e) {
+      if (e.code != "auth/requires-recent-login") {
+        throw e;
+      }
+      // The user's credential is too old. They need to sign in again.
+      getFirebaseAuth()
+        .signOut()
+        .then(() => {
+          // The timeout allows the message to be displayed after the UI has
+          // changed to the signed out state.
+          this.addNotification({
+            type: "success",
+            message: "Please sign in again to delete your account.",
+          });
+
+          this.$router.push({
+            name: this.$constants.ROUTE_NAMES.SETTINGS_INDEX,
+          });
+        });
+      return;
+    }
     splitbee.reset();
-    await getFirebaseAuth().currentUser?.delete();
     this.closeDeleteDialog();
     await this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
   }

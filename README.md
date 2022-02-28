@@ -1,6 +1,6 @@
-# hepilo
+# Hepilo
 
-Grocery Shopping List App with Prices and Categories
+Shopping List App with Prices and Categories
 
 ## TO DO
 
@@ -8,7 +8,7 @@ Grocery Shopping List App with Prices and Categories
 - [x] Multiple Lists Support
 - [x] Items/Categories/Lists list management
 - [x] Settings Page
-- [ ] Database Rules
+- [x] Database Rules
 - [ ] Autofill items/Categories
 - [ ] Fix terms and conditions
 - [ ] Add Sentry
