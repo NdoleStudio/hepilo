@@ -48,7 +48,16 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <settings-menu-item></settings-menu-item>
+            <v-list-item :to="{ name: $constants.ROUTE_NAMES.SETTINGS_INDEX }">
+              <v-list-item-icon class="pl-2">
+                <v-icon dense>{{ settingsIcon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content class="ml-n3">
+                <v-list-item-title class="pr-16 py-1">
+                  <span class="pr-16"> Settings </span>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item @click="logout">
               <v-list-item-icon class="pl-2">
                 <v-icon dense>{{ logoutIcon }}</v-icon>
@@ -165,6 +174,7 @@ import { Component } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import {
   mdiAccount,
+  mdiAccountCog,
   mdiArchiveCogOutline,
   mdiCheck,
   mdiInformation,
@@ -179,7 +189,6 @@ import splitbee from "@/plugins/splitbee";
 import { User, Notification, NotificationRequest, List } from "@/store";
 import { getPlatformName } from "@/plugins/utils";
 import AddListButton from "@/components/AddListButton.vue";
-import SettingsMenuItem from "@/components/SettingsMenuItem.vue";
 
 interface MenuItem {
   name: string;
@@ -192,7 +201,7 @@ interface MenuItem {
 }
 
 @Component({
-  components: { SettingsMenuItem, AddListButton },
+  components: { AddListButton },
 })
 export default class App extends Vue {
   logoutIcon: string = mdiLogout;
@@ -200,6 +209,7 @@ export default class App extends Vue {
   tickIcon: string = mdiCheck;
   infoIcon: string = mdiInformation;
   refreshIcon: string = mdiRefresh;
+  settingsIcon: string = mdiAccountCog;
 
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;

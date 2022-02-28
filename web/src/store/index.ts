@@ -1,7 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import shortUUID from "short-uuid";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import {
   CURRENCY_LIST,
   DEFAULT_CURRENCY,
@@ -417,6 +423,18 @@ export default new Vuex.Store({
       await commit("setLoading", loading);
     },
 
+    async deleteAccount({ commit, dispatch }, userId: string) {
+      await commit("setSaving", true);
+      await dispatch("resetState");
+      await deleteDoc(doc(getFirestore(), COLLECTION_STATE, userId));
+
+      commit("setNotification", {
+        type: "success",
+        message: `Your account has been deleted successfully`,
+      });
+      await commit("setSaving", false);
+    },
+
     async setCurrency({ commit, getters }, currency: string) {
       await commit("setSaving", true);
 
@@ -776,12 +794,10 @@ export default new Vuex.Store({
 
     async updateItem({ commit, getters }, request: UpdateItemRequest) {
       commit("setSaving", true);
-      const item: Item = {
-        id: getters.nameToId(request.name),
-        name: request.name.trim(),
-        pricePerUnit: request.pricePerUnit,
-        categoryId: request.categoryId,
-      };
+      const item = getters.findItemById(request.itemId);
+      item.name = request.name.trim();
+      item.pricePerUnit = request.pricePerUnit;
+      item.categoryId = request.categoryId;
       await commit("upsertItem", item);
 
       const listItem: ListItem = {
@@ -793,7 +809,7 @@ export default new Vuex.Store({
       await commit("upsertListItem", listItem);
 
       if (getters.nameToId(request.name) !== request.itemId) {
-        await commit("updateListItemId", {
+        await commit("updateItemId", {
           oldItemId: request.itemId,
           newItemId: getters.nameToId(request.name),
         });
@@ -954,8 +970,8 @@ export default new Vuex.Store({
       await commit("setLoadingState", false);
     },
 
-    resetState({ commit, getters }) {
-      commit("setState", {
+    async resetState({ commit, getters }) {
+      await commit("setState", {
         lists: [],
         categories: [defaultCategory],
         items: [],

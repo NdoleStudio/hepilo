@@ -9,6 +9,7 @@ import ShoppingListIndex from "@/views/ShoppingListIndex.vue";
 import ManageLists from "@/views/ManageLists.vue";
 import ManageCategories from "@/views/ManageCategories.vue";
 import ManageItems from "@/views/ManageItems.vue";
+import SettingsIndex from "@/views/SettingsIndex.vue";
 
 Vue.use(VueRouter);
 
@@ -75,7 +76,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/settings",
     name: ROUTE_NAMES.SETTINGS_INDEX,
-    component: ShoppingListIndex,
+    component: SettingsIndex,
     meta: {
       auth: true,
     },
