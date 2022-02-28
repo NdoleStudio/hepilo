@@ -114,13 +114,10 @@ export default class SettingsIndex extends Vue {
       getFirebaseAuth()
         .signOut()
         .then(() => {
-          // The timeout allows the message to be displayed after the UI has
-          // changed to the signed out state.
           this.addNotification({
-            type: "success",
+            type: "info",
             message: "Please sign in again to delete your account.",
           });
-
           this.$router.push({
             name: this.$constants.ROUTE_NAMES.LOGIN,
           });
