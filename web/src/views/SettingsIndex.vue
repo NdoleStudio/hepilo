@@ -122,7 +122,7 @@ export default class SettingsIndex extends Vue {
           });
 
           this.$router.push({
-            name: this.$constants.ROUTE_NAMES.SETTINGS_INDEX,
+            name: this.$constants.ROUTE_NAMES.LOGIN,
           });
         });
       return;
