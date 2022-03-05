@@ -25,19 +25,17 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-export const captureSentryException = async (exception: any) => {
+export const captureSentryError = (error: Error) => {
   const user = getFirebaseAuth().currentUser;
   if (user) {
     Sentry.setUser({ id: user.uid });
   } else {
     Sentry.setUser(null);
   }
-  console.error(exception);
-  Sentry.captureException(exception);
+  console.error(error);
+  Sentry.captureException(error);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const captureSentryMessage = (message: string): void => {
   const user = getFirebaseAuth().currentUser;
   if (user) {

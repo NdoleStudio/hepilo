@@ -11,8 +11,8 @@ Shopping List App with Prices and Categories
 - [x] Database Rules
 - [x] Autofill items/Categories
 - [x] Fix terms and conditions
-- [ ] Add Sentry
+- [x] Add Sentry
 - [ ] Landing Page
 - [ ] Add explainer how to use the app
-- [ ] Add Demo Page
+- [ ] Add No Login Demo Page
 - [ ] Multiple Language Support

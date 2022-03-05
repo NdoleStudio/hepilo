@@ -16,6 +16,7 @@ import {
 import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from "@mdi/js";
 import { isMobile } from "@/plugins/utils";
 import defaultCategories from "@/assets/categories.json";
+import { captureSentryError } from "@/plugins/sentry";
 
 Vue.use(Vuex);
 
@@ -1119,7 +1120,7 @@ export default new Vuex.Store({
       return -1;
     },
 
-    selectedList(state: State): List {
+    selectedList(state: State, getters): List {
       const selectedList = state.lists.find(
         (list) => list.id === state.selectedListId
       );
@@ -1128,8 +1129,10 @@ export default new Vuex.Store({
       }
 
       if (selectedList == undefined) {
-        console.error(
-          `cannot fetch selected list with id: ${state.selectedListId}`
+        captureSentryError(
+          new Error(
+            `[userID:${getters.user?.id}]cannot fetch selected list with id: ${state.selectedListId}`
+          )
         );
         return LIST_DEFAULT;
       }
