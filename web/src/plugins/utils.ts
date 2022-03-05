@@ -19,6 +19,12 @@ export const getPlatformName = (): string => {
   return "website";
 };
 
+export const isMobile = (): boolean => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+};
+
 export const isDarkModeOn = (): boolean => {
   return (
     window.matchMedia &&

@@ -14,6 +14,7 @@ import {
   getDefaultCurrency,
 } from "@/plugins/intl";
 import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from "@mdi/js";
+import { isMobile } from "@/plugins/utils";
 
 Vue.use(Vuex);
 
@@ -972,7 +973,8 @@ export default new Vuex.Store({
           stateSnapshot.data().selectedListId ?? getters.selectedListId,
         stateLoaded: false,
         navDrawerOpen:
-          stateSnapshot.data().navDrawerOpen ?? getters.navDrawerOpen,
+          (stateSnapshot.data().navDrawerOpen ?? getters.navDrawerOpen) &&
+          !isMobile(),
         cartPanelOpen:
           stateSnapshot.data().cartPanelOpen ?? getters.cartPanelOpen,
       });

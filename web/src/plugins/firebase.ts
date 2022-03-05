@@ -26,9 +26,7 @@ export const getCurrentUser = (): Promise<User | null> => {
       unsubscribe();
       if (user) {
         splitbee.user.set({
-          email: user?.email,
-          name: user?.displayName,
-          userId: user?.uid,
+          email: user?.uid,
         });
       }
 
