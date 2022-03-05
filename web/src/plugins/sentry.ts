@@ -4,16 +4,16 @@ import * as Sentry from "@sentry/vue";
 import Vue from "vue";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { Integrations } from "@sentry/tracing";
+import { BrowserTracing } from "@sentry/tracing";
 import router from "../router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 
 Sentry.init({
   dsn: process.env.VUE_APP_SENTRY_DSN || undefined,
   integrations: [
-    new Integrations.BrowserTracing({
+    new BrowserTracing({
       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: [process.env.VUE_APP_SENTRY_TRACE_ORIGIN],
+      tracingOrigins: [process.env.VUE_APP_SENTRY_TRACE_ORIGIN, /^\//],
     }),
   ],
   Vue: Vue,
