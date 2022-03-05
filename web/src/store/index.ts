@@ -15,6 +15,7 @@ import {
 } from "@/plugins/intl";
 import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from "@mdi/js";
 import { isMobile } from "@/plugins/utils";
+import defaultCategories from "@/assets/categories.json";
 
 Vue.use(Vuex);
 
@@ -156,7 +157,6 @@ const CATEGORY_COLORS = new Set<string>([
   "blue",
   "light-blue",
   "cyan",
-  "teal",
   "green",
   "light-green",
   "lime",
@@ -166,6 +166,7 @@ const CATEGORY_COLORS = new Set<string>([
   "deep-orange",
   "brown",
   "blue-grey",
+  "teal",
 ]);
 
 const defaultNotificationTimeout = 3000;
@@ -504,6 +505,8 @@ export default new Vuex.Store({
         return;
       }
 
+      const item = getters.findItemById(itemId);
+
       commit("setSaving", true);
       await setDoc(
         doc(getFirestore(), COLLECTION_STATE, getters.user.id),
@@ -512,6 +515,12 @@ export default new Vuex.Store({
         },
         { merge: true }
       );
+
+      commit("setNotification", {
+        type: "info",
+        message: `${item?.name ?? "Item"} has been deleted successfully`,
+      });
+
       commit("setSaving", false);
     },
 
@@ -906,6 +915,41 @@ export default new Vuex.Store({
       commit("setNotification", request);
     },
 
+    setDefaultItems({ commit, getters }) {
+      const items: Array<Item> = [];
+      const categories: Array<Category> = [defaultCategory];
+      const colors = Array.from(CATEGORY_COLORS);
+      Object.entries(defaultCategories).forEach(([key, value], index) => {
+        categories.push({
+          color: colors[index],
+          id: getters.nameToId(key),
+          name: key,
+        });
+
+        value.forEach((item: string) => {
+          items.push({
+            categoryId: getters.nameToId(key),
+            id: getters.nameToId(item),
+            name: getters.toTitleCase(item),
+            pricePerUnit: 0,
+          });
+        });
+      });
+
+      console.log(items, categories);
+
+      commit("setState", {
+        lists: getters.lists,
+        selectedListId: getters.selectedListId,
+        categories: categories,
+        items: items,
+        currency: getters.currency,
+        stateLoaded: true,
+        navDrawerOpen: getters.navDrawerOpen,
+        cartPanelOpen: getters.cartPanelOpen,
+      });
+    },
+
     async sanitizeState({ commit, getters }) {
       let lists = [...getters.lists];
       let selectedListId = getters.selectedListId;
@@ -944,9 +988,9 @@ export default new Vuex.Store({
       if (getters.stateLoaded) {
         return;
       }
-
-      if (getters.user === null) {
+      if (!getters.isLoggedIn) {
         await commit("setCurrency", await getDefaultCurrency());
+        await dispatch("setDefaultItems");
         await dispatch("sanitizeState");
         return;
       }
@@ -959,6 +1003,7 @@ export default new Vuex.Store({
 
       if (!stateSnapshot.exists()) {
         await commit("setCurrency", await getDefaultCurrency());
+        await dispatch("setDefaultItems");
         await dispatch("sanitizeState");
         await commit("setLoadingState", false);
         return;
@@ -1388,21 +1433,31 @@ export default new Vuex.Store({
 
     categoryColorSelectItems(): Array<SelectItem> {
       const items: Array<SelectItem> = [];
-      CATEGORY_COLORS.forEach((value) => {
-        items.push({
-          value: value,
-          text: value
-            .split("-")
-            .map(
-              (item) =>
-                item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase()
-            )
-            .join(" "),
+      Array.from(CATEGORY_COLORS)
+        .sort()
+        .forEach((value) => {
+          items.push({
+            value: value,
+            text: value
+              .split("-")
+              .map(
+                (item) =>
+                  item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase()
+              )
+              .join(" "),
+          });
         });
-      });
       return items;
     },
 
+    toTitleCase: () => (value: string) => {
+      return value
+        .split(" ")
+        .map(
+          (item) => item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase()
+        )
+        .join(" ");
+    },
     autocompleteItems(state: State, getters): Array<SelectItem> {
       return state.items
         .filter((item: Item) => !getters.listHasItemId(item.id))

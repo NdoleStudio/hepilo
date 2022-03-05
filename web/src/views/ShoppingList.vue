@@ -9,6 +9,7 @@
           @focus="onFocus"
           :items="autocompleteItems"
           solo
+          :auto-select-first="true"
           v-model="itemName"
           placeholder="Add Item"
           :prepend-inner-icon="addIcon"
@@ -52,9 +53,12 @@
                       ></v-checkbox>
                     </v-list-item-action>
                     <v-list-item-content>
-                      <v-list-item-title>{{
-                        item.item.name
-                      }}</v-list-item-title>
+                      <v-list-item-title>
+                        {{ item.item.name }}
+                        <span v-if="item.listItem.quantity > 1">
+                          ({{ item.listItem.quantity }})
+                        </span>
+                      </v-list-item-title>
                       <v-list-item-subtitle class="caption">{{
                         formatCurrency(
                           item.listItem.quantity * item.item.pricePerUnit
@@ -108,8 +112,12 @@
                       <v-list-item-content>
                         <v-list-item-title
                           class="text-decoration-line-through text--secondary"
-                          >{{ item.item.name }}</v-list-item-title
                         >
+                          {{ item.item.name }}
+                          <span v-if="item.listItem.quantity > 1">
+                            ({{ item.listItem.quantity }})
+                          </span>
+                        </v-list-item-title>
                         <v-list-item-subtitle class="caption">{{
                           formatCurrency(
                             item.listItem.quantity * item.item.pricePerUnit
