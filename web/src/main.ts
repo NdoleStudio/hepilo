@@ -7,6 +7,7 @@ import vuetify from "./plugins/vuetify";
 import { Constants } from "@/plugins/constants";
 import "@/plugins/firebase";
 import "@/plugins/splitbee";
+import "@/plugins/sentry";
 
 Vue.config.productionTip = false;
 

@@ -22,6 +22,9 @@ jobs:
           VUE_APP_GITHUB_LINK: https://github.com/NdoleStudio/hepilo
           VUE_APP_SITE_URL: https://hepilo.com
           VUE_APP_SITE_NAME: Hepilo
+          VUE_APP_SENTRY_DSN: https://1e5300c5ad8449968a2edbd2fb25e255@o291224.ingest.sentry.io/6244114
+          VUE_APP_SENTRY_TRACE_ORIGIN: heplo.com
+          VUE_APP_SENTRY_PROJECT_NAME: hepilo
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

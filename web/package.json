@@ -9,6 +9,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@sentry/tracing": "^6.18.1",
+    "@sentry/types": "^6.18.1",
+    "@sentry/vue": "^6.18.1",
     "@splitbee/web": "^0.3.0",
     "core-js": "^3.6.5",
     "firebase": "^9.6.4",
