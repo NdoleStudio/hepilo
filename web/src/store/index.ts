@@ -507,7 +507,7 @@ export default new Vuex.Store({
 
     async setNavDrawer({ commit, getters }, state: boolean) {
       await commit("setNavDrawer", state);
-      if (!getters.isLoggedIn) {
+      if (!getters.isLoggedIn || !getters.stateLoaded) {
         return;
       }
 
@@ -975,8 +975,6 @@ export default new Vuex.Store({
           });
         });
       });
-
-      console.log(items, categories);
 
       commit("setState", {
         lists: getters.lists,
