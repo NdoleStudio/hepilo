@@ -55,8 +55,17 @@
                     <v-list-item-content>
                       <v-list-item-title>
                         {{ item.item.name }}
-                        <span v-if="item.listItem.quantity > 1">
-                          ({{ item.listItem.quantity }})
+                        <span
+                          v-if="item.listItem.quantity > 1 || item.item.unit"
+                          class="text--secondary"
+                        >
+                          ({{
+                            item.listItem.quantity +
+                            (item.item.unit
+                              ? " " +
+                                unitName(item.item.unit, item.listItem.quantity)
+                              : "")
+                          }})
                         </span>
                       </v-list-item-title>
                       <v-list-item-subtitle class="caption">{{
@@ -114,8 +123,20 @@
                           class="text-decoration-line-through text--secondary"
                         >
                           {{ item.item.name }}
-                          <span v-if="item.listItem.quantity > 1">
-                            ({{ item.listItem.quantity }})
+                          <span
+                            v-if="item.listItem.quantity > 1 || item.item.unit"
+                            class="text--secondary"
+                          >
+                            ({{
+                              item.listItem.quantity +
+                              (item.item.unit
+                                ? " " +
+                                  unitName(
+                                    item.item.unit,
+                                    item.listItem.quantity
+                                  )
+                                : "")
+                            }})
                           </span>
                         </v-list-item-title>
                         <v-list-item-subtitle class="caption">{{
@@ -194,18 +215,28 @@
               placeholder="e.g Bread"
               outlined
             ></v-text-field>
-            <v-text-field
-              class="mt-2"
-              :disabled="saving"
-              aria-required="true"
-              v-model="formQuantity"
-              :rules="formQuantityRules"
-              label="Quantity"
-              type="number"
-              persistent-placeholder
-              placeholder="e.g 1"
-              outlined
-            ></v-text-field>
+            <div class="d-flex mt-2">
+              <v-text-field
+                :disabled="saving"
+                aria-required="true"
+                v-model="formQuantity"
+                :rules="formQuantityRules"
+                label="Quantity"
+                type="number"
+                persistent-placeholder
+                placeholder="e.g 1"
+                outlined
+              ></v-text-field>
+              <v-select
+                class="ml-3"
+                :disabled="saving"
+                :items="itemUnits"
+                v-model="formUnit"
+                outlined
+                clearable
+                label="Unit"
+              ></v-select>
+            </div>
             <v-text-field
               class="mt-2"
               :disabled="saving"
@@ -288,6 +319,7 @@ export default class ShoppingList extends Vue {
   formName = "";
   formAddedToCart = false;
   formCategoryId = CATEGORY_ID_UNCATEGORIZED;
+  formUnit = "";
   formNameRules = [
     (value: string | null): boolean | string =>
       (!!value && value.trim() != "") || "Name is required",
@@ -323,10 +355,12 @@ export default class ShoppingList extends Vue {
   @Getter("cartTotal") cartTotal!: number;
   @Getter("listTotal") listTotal!: number;
   @Getter("currency") currency!: string;
+  @Getter("itemUnitSelectItems") itemUnits!: string;
   @Getter("saving") saving!: boolean;
   @Getter("currencySymbol") currencySymbol!: string;
   @Getter("loadingState") loadingState!: boolean;
   @Getter("listExists") listExists!: (listId: string) => boolean;
+  @Getter("itemUnitName") unitName!: (unit: string, quantity: number) => string;
   @Getter("formatCurrency") formatCurrency!: (value: number) => string;
   @Getter("autocompleteItems") autocompleteItems!: Array<SelectItem>;
   @Getter("categorySelectItems") categorySelectItems!: Array<SelectItem>;
@@ -364,6 +398,7 @@ export default class ShoppingList extends Vue {
     this.formCategoryId = CATEGORY_ID_UNCATEGORIZED;
     this.formPricePerUnit = 0.0;
     this.formAddedToCart = false;
+    this.formUnit = "";
   }
 
   setFormItem(item: MaterializedListItem): void {
@@ -374,6 +409,7 @@ export default class ShoppingList extends Vue {
     this.formCategoryId = item.item.categoryId;
     this.formPricePerUnit = item.item.pricePerUnit;
     this.formAddedToCart = item.listItem.addedToCart;
+    this.formUnit = item.item.unit ?? "";
   }
 
   mounted(): void {
@@ -434,6 +470,7 @@ export default class ShoppingList extends Vue {
       categoryId: this.formCategoryId,
       quantity: this.formQuantity,
       notes: this.formNotes,
+      unit: this.formUnit,
       pricePerUnit: this.formPricePerUnit,
       addedToCart: this.formAddedToCart,
     });

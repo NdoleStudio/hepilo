@@ -83,6 +83,7 @@ export interface SelectItem {
 export interface Item {
   id: string;
   name: string;
+  unit: string | null;
   pricePerUnit: number;
   categoryId: string;
 }
@@ -128,6 +129,7 @@ export interface UpsertItemRequest {
   itemId: string;
   pricePerUnit: number;
   categoryId: string;
+  unit: string | null;
   name: string;
 }
 
@@ -138,6 +140,7 @@ export interface UpdateItemRequest {
   quantity: number;
   addedToCart: boolean;
   notes: string;
+  unit: string | null;
   itemId: string;
 }
 
@@ -167,6 +170,34 @@ const CATEGORY_COLORS = new Set<string>([
   "brown",
   "blue-grey",
   "teal",
+]);
+
+const ITEM_UNITS = new Set<string>([
+  "g",
+  "kg",
+  "l",
+  "ml",
+  "lbs",
+  "oz",
+  "cup",
+  "bag",
+  "gallon",
+  "box",
+  "bottle",
+  "piece",
+  "pack",
+  "crate",
+]);
+
+const PLURAL_ITEM_UNITS = new Map<string, string>([
+  ["cup", "cups"],
+  ["bag", "bags"],
+  ["gallon", "gallons"],
+  ["box", "boxes"],
+  ["bottle", "bottles"],
+  ["piece", "pieces"],
+  ["pack", "packs"],
+  ["crate", "crates"],
 ]);
 
 const defaultNotificationTimeout = 3000;
@@ -730,6 +761,7 @@ export default new Vuex.Store({
         const item: Item = {
           id: getters.nameToId(name),
           name: name.trim(),
+          unit: null,
           pricePerUnit: 0,
           categoryId: getters.findCategoryIdByItemId(getters.nameToId),
         };
@@ -786,6 +818,7 @@ export default new Vuex.Store({
         };
       }
 
+      item.unit = ITEM_UNITS.has(request.unit ?? "") ? request.unit : null;
       item.name = request.name.trim();
       item.pricePerUnit = request.pricePerUnit;
       item.categoryId = request.categoryId;
@@ -819,6 +852,7 @@ export default new Vuex.Store({
       item.name = request.name.trim();
       item.pricePerUnit = request.pricePerUnit;
       item.categoryId = request.categoryId;
+      item.unit = ITEM_UNITS.has(request.unit ?? "") ? request.unit : null;
       await commit("upsertItem", item);
 
       const listItem: ListItem = {
@@ -928,6 +962,7 @@ export default new Vuex.Store({
 
         value.forEach((item: string) => {
           items.push({
+            unit: null,
             categoryId: getters.nameToId(key),
             id: getters.nameToId(item),
             name: getters.toTitleCase(item),
@@ -1449,7 +1484,16 @@ export default new Vuex.Store({
         });
       return items;
     },
-
+    itemUnitSelectItems(): Array<SelectItem> {
+      return Array.from(ITEM_UNITS)
+        .sort()
+        .map((unit) => {
+          return {
+            text: unit,
+            value: unit,
+          };
+        });
+    },
     toTitleCase: () => (value: string) => {
       return value
         .split(" ")
@@ -1457,6 +1501,15 @@ export default new Vuex.Store({
           (item) => item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase()
         )
         .join(" ");
+    },
+    itemUnitName: () => (unit: string, quantity: number | string) => {
+      if (quantity === 1 || quantity === "1") {
+        return unit;
+      }
+      if (PLURAL_ITEM_UNITS.has(unit)) {
+        return PLURAL_ITEM_UNITS.get(unit);
+      }
+      return unit;
     },
     autocompleteItems(state: State, getters): Array<SelectItem> {
       return state.items

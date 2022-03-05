@@ -60,6 +60,14 @@
                     outlined
                     label="Category"
                   ></v-select>
+                  <v-select
+                    :disabled="saving"
+                    :items="itemUnits"
+                    v-model="editedItem.unit"
+                    outlined
+                    clearable
+                    label="Unit"
+                  ></v-select>
                 </v-form>
               </v-card-text>
               <v-card-actions class="mt-n8">
@@ -206,6 +214,7 @@ export default class ManageItems extends Vue {
   dialogDelete = false;
   editedItem: UpsertItemRequest = {
     name: "",
+    unit: "",
     itemId: "",
     pricePerUnit: 0,
     categoryId: CATEGORY_ID_UNCATEGORIZED,
@@ -214,12 +223,14 @@ export default class ManageItems extends Vue {
   defaultItem: UpsertItemRequest = {
     name: "",
     itemId: "",
+    unit: "",
     pricePerUnit: 0,
     categoryId: CATEGORY_ID_UNCATEGORIZED,
   };
   @Getter("currencySymbol") currencySymbol!: string;
   @Getter("categorySelectItems") categories!: Array<List>;
   @Getter("items") items!: Array<Item>;
+  @Getter("itemUnitSelectItems") itemUnits!: string;
   @Getter("saving") saving!: boolean;
   @Getter("itemListsCount") itemListsCount!: (itemId: string) => number;
   @Getter("currency") currency!: string;
