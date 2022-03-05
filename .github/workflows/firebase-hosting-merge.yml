@@ -22,6 +22,8 @@ jobs:
           VUE_APP_APP_SUPPORT_EMAIL: arnold@ndolestudio.com
           VUE_APP_RECAPTCHA_SITE_KEY: 6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA
           VUE_APP_GITHUB_LINK: https://github.com/NdoleStudio/hepilo
+          VUE_APP_SITE_URL: https://hepilo.com
+          VUE_APP_SITE_NAME: Hepilo
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

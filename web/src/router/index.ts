@@ -10,6 +10,8 @@ import ManageLists from "@/views/ManageLists.vue";
 import ManageCategories from "@/views/ManageCategories.vue";
 import ManageItems from "@/views/ManageItems.vue";
 import SettingsIndex from "@/views/SettingsIndex.vue";
+import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
+import TermsAndConditions from "@/views/TermsAndConditions.vue";
 
 Vue.use(VueRouter);
 
@@ -20,6 +22,8 @@ export const ROUTE_NAMES = {
   MANAGE_ITEMS: "ManageItems",
   MANAGE_CATEGORIES: "ManageCategories",
   SETTINGS_INDEX: "IndexSettings",
+  PRIVACY_POLICY: "PrivacyPolicy",
+  TERMS_AND_CONDITIONS: "TermsAndConditions",
   LOGIN: "Login",
   HOME: "Home",
 };
@@ -32,6 +36,16 @@ const routes: Array<RouteConfig> = [
     meta: {
       guest: true,
     },
+  },
+  {
+    path: "/privacy-policy",
+    name: ROUTE_NAMES.PRIVACY_POLICY,
+    component: PrivacyPolicy,
+  },
+  {
+    path: "/terms-and-conditions",
+    name: ROUTE_NAMES.TERMS_AND_CONDITIONS,
+    component: TermsAndConditions,
   },
   {
     path: "/lists/:listId",

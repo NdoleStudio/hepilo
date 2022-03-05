@@ -7,7 +7,7 @@
           max-width="100"
           src="@/assets/logo.png"
         ></v-img>
-        <v-card>
+        <v-card max-width="360" class="mx-auto">
           <v-card-text>
             <div id="firebaseui-auth-container" ref="authContainer"></div>
             <v-progress-circular
@@ -32,7 +32,8 @@ import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
 import firebase from "@/plugins/firebase";
 import { getAuth, ProviderId } from "firebase/auth";
-import { Action } from "vuex-class";
+import { Action, Getter } from "vuex-class";
+import { AppData } from "@/store";
 
 @Component
 export default class Login extends Vue {
@@ -40,6 +41,7 @@ export default class Login extends Vue {
   firebaseUIInitialized = false;
 
   @Action("setTitle") setTitle!: (title: string) => void;
+  @Getter("appData") appData!: AppData;
 
   beforeDestroy(): void {
     if (this.ui) {
@@ -80,18 +82,16 @@ export default class Login extends Vue {
           });
         },
       },
-      // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-      signInFlow: "popup",
-      signInSuccessUrl: "https://nyangapay.com/user/profile",
+      signInSuccessUrl: this.appData.url,
       signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
         ProviderId.GOOGLE,
         ProviderId.PASSWORD,
       ],
       // Terms of service url.
-      tosUrl: "https://nyangapay.com/privacy-policy",
+      tosUrl: this.appData.url + "/terms-and-conditions",
       // Privacy policy url.
-      privacyPolicyUrl: "https://nyangapay.com/terms-and-conditions",
+      privacyPolicyUrl: this.appData.url + "/privacy-policy",
     };
   }
 }

@@ -133,6 +133,11 @@ export interface UpsertItemRequest {
   name: string;
 }
 
+export type AppData = {
+  url: string;
+  name: string;
+};
+
 export interface UpdateItemRequest {
   name: string;
   categoryId: string;
@@ -1501,6 +1506,16 @@ export default new Vuex.Store({
           (item) => item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase()
         )
         .join(" ");
+    },
+    appData(): AppData {
+      let url = process.env.VUE_APP_SITE_URL as string;
+      if (url.length > 0 && url[url.length - 1] === "/") {
+        url = url.substr(0, url.length - 1);
+      }
+      return {
+        url: url,
+        name: process.env.VUE_APP_SITE_NAME,
+      };
     },
     itemUnitName: () => (unit: string, quantity: number | string) => {
       if (quantity === 1 || quantity === "1") {
