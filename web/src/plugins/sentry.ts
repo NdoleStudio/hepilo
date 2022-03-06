@@ -25,7 +25,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-export const captureSentryError = (error: Error) => {
+export const captureSentryError = (error: Error): void => {
   const user = getFirebaseAuth().currentUser;
   if (user) {
     Sentry.setUser({ id: user.uid });
