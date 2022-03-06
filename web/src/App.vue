@@ -402,6 +402,10 @@ export default class App extends Vue {
       .then(() => {
         this.resetState();
         splitbee.reset();
+        this.addNotification({
+          type: "success",
+          message: "You have successfully logged out",
+        });
         this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
       });
   }
