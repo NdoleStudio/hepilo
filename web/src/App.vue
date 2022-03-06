@@ -33,7 +33,11 @@
       </v-container>
       <v-btn
         color="primary"
-        v-if="!isLoggedIn && $constants.ROUTE_NAMES.LOGIN !== $route.name"
+        v-if="
+          !isLoggedIn &&
+          $constants.ROUTE_NAMES.LOGIN !== $route.name &&
+          !loading
+        "
         :to="{ name: $constants.ROUTE_NAMES.LOGIN }"
       >
         Get Started
