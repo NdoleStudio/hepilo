@@ -125,13 +125,28 @@
         </v-list-item-group>
       </v-list>
       <div class="d-flex justify-center mt-5">
-        <a
-          class="text-decoration-none subtitle-2 text--secondary"
-          :href="githubLInk"
-          target="_blank"
-        >
-          {{ version }}
+        <a :href="githubLInk">
+          <img
+            alt="GitHub Repo stars"
+            src="https://img.shields.io/github/stars/NdoleStudio/hepilo?style=social"
+          />
         </a>
+      </div>
+      <div class="d-flex justify-center">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <a
+              class="text-decoration-none subtitle-2 text--secondary"
+              :href="githubLInk"
+              target="_blank"
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ version }}
+            </a>
+          </template>
+          <span>version</span>
+        </v-tooltip>
       </div>
     </v-navigation-drawer>
     <v-main>

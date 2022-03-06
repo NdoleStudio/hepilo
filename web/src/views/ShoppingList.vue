@@ -75,9 +75,19 @@
                       }}</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action>
-                      <v-btn icon @click="deleteListItem(item.listItem.itemId)">
-                        <v-icon color="error">{{ deleteIcon }}</v-icon>
-                      </v-btn>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            icon
+                            @click="deleteListItem(item.listItem.itemId)"
+                          >
+                            <v-icon color="error">{{ deleteIcon }}</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Delete</span>
+                      </v-tooltip>
                     </v-list-item-action>
                   </v-list-item>
                 </v-list-item-group>
