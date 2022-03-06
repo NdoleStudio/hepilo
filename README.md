@@ -13,6 +13,20 @@ Shopping List App with Prices and Categories
 - [x] Fix terms and conditions
 - [x] Add Sentry
 - [ ] Landing Page
+- [ ] Fix light mode
 - [ ] Add explainer how to use the app
 - [ ] Add No Login Demo Page
+- [ ] Create blog with notion
 - [ ] Multiple Language Support
+
+## Marketing Plan
+
+- [ ] Create blog post with "WHY"
+- [ ] Post blog post on reddit groups
+- [ ] Post blog post on facebook groups
+- [ ] Post blog post on hacker rank
+- [ ] Post app on product hunt
+- [ ] Cold contact bloggers about app (email, twitter)
+- [ ] Create alternative to "Out of Milk" blog post
+- [ ] Edit Readme on Github
+- [ ] Create "How to Install" blog post
