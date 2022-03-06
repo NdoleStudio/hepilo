@@ -128,18 +128,19 @@
         <v-container>
           <v-row align="center" class="mt-5 mb-5">
             <v-col class="text-center">
-              <h1 class="text-h4 mb-4">We are social</h1>
+              <h1 class="text-h4 mb-4">I am social</h1>
               <h2 class="text--secondary text-h6 mt-2 mb-4">
                 Follow me on twitter to stay updated on the latest features
               </h2>
-              <a
-                href="https://twitter.com/ndolestudio?ref_src=twsrc%5Etfw"
-                class="twitter-follow-button"
-                data-show-count="true"
-                data-size="large"
-                >Follow @NdoleStudio</a
+              <v-btn
+                class="text-none"
+                color="#1DA1F2"
+                href="https://twitter.com/intent/follow?screen_name=NdoleStudio"
               >
-              <ul class="mt-10 mb-n6">
+                <v-icon>{{ twitterIcon }}</v-icon>
+                Follow @NdoleStudio
+              </v-btn>
+              <ul class="mt-6 mb-n6">
                 <li class="d-inline text-decoration-none">
                   <router-link
                     class="text-decoration-none text--secondary"
@@ -169,7 +170,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import "firebaseui/dist/firebaseui.css";
-import { mdiCheckCircle, mdiGithub, mdiLogin } from "@mdi/js";
+import { mdiCheckCircle, mdiGithub, mdiLogin, mdiTwitter } from "@mdi/js";
 import { Action } from "vuex-class";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -179,6 +180,7 @@ import Typewriter from "typewriter-effect/dist/core";
 export default class Home extends Vue {
   loginIcon: string = mdiLogin;
   githubIcon: string = mdiGithub;
+  twitterIcon: string = mdiTwitter;
   @Action("setTitle") setTitle!: (title: string) => void;
 
   tickIcon: string = mdiCheckCircle;
