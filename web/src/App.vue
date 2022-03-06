@@ -173,18 +173,19 @@
         :timeout="notification.timeout"
       >
         <v-icon
-          v-if="notification.type === 'success'"
+          v-if="notification.type === 'success' && $vuetify.breakpoint.lgAndUp"
           :color="notification.type"
           >{{ tickIcon }}</v-icon
         >
         <v-icon
-          v-if="notification.type === 'info'"
+          v-if="notification.type === 'info' && $vuetify.breakpoint.lgAndUp"
           :color="notification.type"
           >{{ infoIcon }}</v-icon
         >
         {{ notification.message }}
         <template v-slot:action="{ attrs }">
           <v-btn
+            v-if="$vuetify.breakpoint.lgAndUp"
             :color="notification.type"
             text
             v-bind="attrs"
@@ -403,7 +404,7 @@ export default class App extends Vue {
         this.resetState();
         splitbee.reset();
         this.addNotification({
-          type: "success",
+          type: "info",
           message: "You have successfully logged out",
         });
         this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
