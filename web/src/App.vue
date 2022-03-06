@@ -173,12 +173,12 @@
         :timeout="notification.timeout"
       >
         <v-icon
-          v-if="notification.type === 'success' && $vuetify.breakpoint.lgAndUp"
+          v-if="notification.type === 'success'"
           :color="notification.type"
           >{{ tickIcon }}</v-icon
         >
         <v-icon
-          v-if="notification.type === 'info' && $vuetify.breakpoint.lgAndUp"
+          v-if="notification.type === 'info'"
           :color="notification.type"
           >{{ infoIcon }}</v-icon
         >
