@@ -9,6 +9,14 @@
         v-if="isLoggedIn"
         @click="setNavDrawer(!navDrawerActive)"
       ></v-app-bar-nav-icon>
+      <div
+        class="d-flex align-center cursor-pointer"
+        @click="goHome"
+        v-if="!isLoggedIn"
+      >
+        <v-img max-height="60" max-width="60" src="@/assets/logo.png"></v-img>
+        <h4 class="ml-2 text-h4">{{ appData.name }}</h4>
+      </div>
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
@@ -23,6 +31,13 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-btn
+        color="primary"
+        v-if="!isLoggedIn && $constants.ROUTE_NAMES.LOGIN !== $route.name"
+        :to="{ name: $constants.ROUTE_NAMES.LOGIN }"
+      >
+        Get Started
+      </v-btn>
       <v-menu left bottom v-if="isLoggedIn">
         <template v-slot:activator="{ on }">
           <v-btn icon x-large v-on="on">
@@ -106,7 +121,7 @@
         <add-list-button></add-list-button>
       </div>
       <v-divider class="mt-4"></v-divider>
-      <v-list shaped>
+      <v-list shaped v-if="isLoggedIn">
         <v-list-item-group color="primary">
           <v-list-item
             link
@@ -193,6 +208,7 @@ import {
   mdiArchiveCogOutline,
   mdiCheck,
   mdiInformation,
+  mdiLogin,
   mdiLogout,
   mdiPlaylistEdit,
   mdiRefresh,
@@ -201,7 +217,13 @@ import {
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
-import { User, Notification, NotificationRequest, List } from "@/store";
+import {
+  User,
+  Notification,
+  NotificationRequest,
+  List,
+  AppData,
+} from "@/store";
 import { getPlatformName } from "@/plugins/utils";
 import AddListButton from "@/components/AddListButton.vue";
 
@@ -225,7 +247,9 @@ export default class App extends Vue {
   infoIcon: string = mdiInformation;
   refreshIcon: string = mdiRefresh;
   settingsIcon: string = mdiAccountCog;
+  loginIcon: string = mdiLogin;
 
+  @Getter("appData") appData!: AppData;
   @Getter("loading") loading!: boolean;
   @Getter("title") title!: boolean;
   @Getter("user") user!: User;
@@ -338,6 +362,12 @@ export default class App extends Vue {
     }
   }
 
+  goHome(): void {
+    this.$router.push({
+      name: this.$constants.ROUTE_NAMES.HOME,
+    });
+  }
+
   refreshApp(): void {
     if (!("serviceWorker" in navigator)) {
       return;
@@ -392,6 +422,10 @@ export default class App extends Vue {
     &:hover {
       color: #2196f3 !important;
     }
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
   }
 
   &--drawer--open {

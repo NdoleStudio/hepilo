@@ -2,11 +2,7 @@
   <v-container fill-height fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" md="4" xl="3" class="mt-n16">
-        <v-img
-          class="mx-auto mt-n16"
-          max-width="100"
-          src="@/assets/logo.png"
-        ></v-img>
+        <h3 class="text-h2 text-center mb-4">Login</h3>
         <v-card max-width="360" class="mx-auto">
           <v-card-text>
             <div id="firebaseui-auth-container" ref="authContainer"></div>

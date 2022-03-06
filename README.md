@@ -12,7 +12,7 @@ Shopping List App with Prices and Categories
 - [x] Autofill items/Categories
 - [x] Fix terms and conditions
 - [x] Add Sentry
-- [ ] Landing Page
+- [x] Landing Page
 - [ ] Fix light mode
 - [ ] Add explainer how to use the app
 - [ ] Add No Login Demo Page
