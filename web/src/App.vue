@@ -13,7 +13,7 @@
       <div
         class="d-flex align-center cursor-pointer"
         @click="goHome"
-        v-if="!isLoggedIn"
+        v-if="!isLoggedIn && !loading"
       >
         <v-img max-height="60" max-width="60" src="@/assets/logo.png"></v-img>
         <h4 class="ml-2 text-h4">{{ appData.name }}</h4>
@@ -21,7 +21,13 @@
       <v-container>
         <v-row>
           <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-            <v-toolbar-title class="pl-2 text-h4">
+            <v-toolbar-title
+              class="pl-2"
+              :class="{
+                'text-h4': $vuetify.breakpoint.mdAndUp,
+                'text-h5': !$vuetify.breakpoint.mdAndUp,
+              }"
+            >
               <div
                 class="page-title"
                 :style="{ 'margin-left': titleLeftPadding + 'px' }"
