@@ -2,6 +2,7 @@
   <v-app :class="{ 'v-application--drawer--open': navDrawerActive }">
     <v-app-bar
       app
+      :dark="$vuetify.theme.dark"
       clipped-left
       :color="$vuetify.theme.dark ? 'grey darken-4' : 'primary'"
     >
