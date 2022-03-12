@@ -70,7 +70,9 @@
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16 py-1">
-                  <span class="pr-16"> Refresh </span>
+                  <span :class="{ 'pr-16': $vuetify.breakpoint.mdAndUp }">
+                    Refresh
+                  </span>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -80,7 +82,9 @@
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16 py-1">
-                  <span class="pr-16"> Settings </span>
+                  <span :class="{ 'pr-16': $vuetify.breakpoint.mdAndUp }">
+                    Settings
+                  </span>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -90,7 +94,9 @@
               </v-list-item-icon>
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16">
-                  <span class="pr-16"> Logout </span>
+                  <span :class="{ 'pr-16': $vuetify.breakpoint.mdAndUp }">
+                    Logout
+                  </span>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
