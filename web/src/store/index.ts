@@ -763,6 +763,13 @@ export default new Vuex.Store({
         return;
       }
 
+      let quantity = 1;
+      const nameQuantity = parseFloat(name.split(" ")[0]);
+      if (!isNaN(nameQuantity) && nameQuantity > 0) {
+        quantity = nameQuantity;
+        name = name.split(" ").slice(1).join(" ");
+      }
+
       if (!getters.hasItem(name)) {
         const item: Item = {
           id: getters.nameToId(name),
@@ -779,7 +786,7 @@ export default new Vuex.Store({
           itemId: getters.nameToId(name),
           notes: "",
           addedToCart: false,
-          quantity: 1,
+          quantity: quantity,
         };
         await commit("upsertListItem", listItem);
       }
@@ -1533,6 +1540,7 @@ export default new Vuex.Store({
         .map((item: Item) => {
           return {
             value: item.name,
+            unit: item.unit,
             text: item.name,
           };
         });

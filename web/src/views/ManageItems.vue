@@ -9,11 +9,21 @@
               items.length === 0 && $vuetify.breakpoint.mdAndDown,
           }"
         >
+          <v-text-field
+            :prepend-inner-icon="searchIcon"
+            solo-inverted
+            placeholder="Search items"
+            dense
+            v-model="formQuery"
+            class="mb-n2 mr-5"
+          ></v-text-field>
           <v-spacer v-if="items.length"></v-spacer>
           <v-dialog v-model="dialog" :max-width="dialogWidth">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" v-bind="attrs" v-on="on" class="mb-4">
-                <v-icon>{{ addIcon }}</v-icon>
+                <v-icon v-if="$vuetify.breakpoint.mdAndUp">
+                  {{ addIcon }}
+                </v-icon>
                 Add Item
               </v-btn>
             </template>
@@ -87,7 +97,9 @@
         <v-card tile>
           <v-card-text class="px-0 py-0">
             <v-list subheader two-line class="pb-0 px-0" nav>
-              <template v-for="(item, index) in items">
+              <template
+                v-for="(item, index) in filteredItems.slice(0, itemSize)"
+              >
                 <v-list-item
                   :key="item.id"
                   @click="onEditItem(item)"
@@ -149,6 +161,13 @@
             </v-list>
           </v-card-text>
         </v-card>
+        <div
+          class="text-center mt-4 mb-4"
+          v-if="canLoadMore"
+          @click="itemSize += 20"
+        >
+          <v-btn color="primary">Load More</v-btn>
+        </div>
         <v-dialog v-model="dialogDelete" :max-width="dialogWidth" width="400">
           <v-card>
             <v-card-title class="text-h5">
@@ -173,7 +192,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import {
-  Category,
   CATEGORY_ID_UNCATEGORIZED,
   Item,
   List,
@@ -182,6 +200,7 @@ import {
 import { dialogWidth } from "@/plugins/vuetify";
 import {
   mdiClose,
+  mdiMagnify,
   mdiPlus,
   mdiSquare,
   mdiSquareEditOutline,
@@ -206,7 +225,10 @@ export default class ManageItems extends Vue {
   ];
   squareIcon: string = mdiSquare;
   formValid = false;
+  formQuery = "";
+  itemSize = 20;
   addIcon: string = mdiPlus;
+  searchIcon: string = mdiMagnify;
   editIcon: string = mdiSquareEditOutline;
   deleteIcon: string = mdiTrashCan;
   closeIcon: string = mdiClose;
@@ -236,7 +258,7 @@ export default class ManageItems extends Vue {
   @Getter("currency") currency!: string;
   @Getter("findCategoryNameByItemId") categoryNameByItemId!: (
     itemId: string
-  ) => Category;
+  ) => string;
   @Action("upsertItem") upsertItem!: (
     request: UpsertItemRequest
   ) => Promise<void>;
@@ -246,6 +268,27 @@ export default class ManageItems extends Vue {
 
   get dialogWidth(): string {
     return dialogWidth(this.$vuetify.breakpoint.name);
+  }
+
+  get canLoadMore(): boolean {
+    return this.filteredItems.length > this.itemSize;
+  }
+
+  get filteredItems(): Array<Item> {
+    const query = this.formQuery.trim().toLowerCase();
+    if (query === "") {
+      return this.items;
+    }
+
+    const items = this.items.filter((item) => {
+      return (
+        item.name.toLowerCase().indexOf(query) !== -1 ||
+        this.categoryNameByItemId(item.id).toLowerCase().indexOf(query) !== -1
+      );
+    });
+
+    console.log("temp", items.length);
+    return items;
   }
 
   get formTitle(): string {

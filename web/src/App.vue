@@ -444,6 +444,11 @@ export default class App extends Vue {
     cursor: pointer;
   }
 
+  .v-select-list {
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
   &--drawer--open {
     @media screen and (min-width: 1264px) {
       .v-snack__wrapper,

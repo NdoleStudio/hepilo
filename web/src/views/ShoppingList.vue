@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
         <v-combobox
-          filled
+          :filter="itemFilter"
           @change="onChange"
           @blur="onBlur"
           @focus="onFocus"
@@ -14,6 +14,21 @@
           placeholder="Add Item"
           :prepend-inner-icon="addIcon"
         >
+          <template v-slot:item="{ item, attrs, on }">
+            <v-list-item v-on="on" v-bind="attrs">
+              <v-list-item-title>
+                {{ item.text }}
+                <span v-if="addFormQuantity > 0" class="text--secondary">
+                  ({{
+                    addFormQuantity.toString() +
+                    (item.unit
+                      ? " " + unitName(item.unit, addFormQuantity)
+                      : "")
+                  }})
+                </span>
+              </v-list-item-title>
+            </v-list-item>
+          </template>
         </v-combobox>
       </v-col>
     </v-row>
@@ -306,6 +321,7 @@ import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
 import {
   Category,
   CATEGORY_ID_UNCATEGORIZED,
+  Item,
   List,
   MaterializedList,
   MaterializedListItem,
@@ -357,6 +373,7 @@ export default class ShoppingList extends Vue {
       (value && value.length <= 300) ||
       "Notes must be less than 300 characters",
   ];
+  addFormQuantity = 0;
 
   @Getter("cartPanel") cartPanel!: number;
   @Getter("listMaterializedItems") listItems!: MaterializedList;
@@ -466,6 +483,7 @@ export default class ShoppingList extends Vue {
   }
 
   onFocus(): void {
+    this.addFormQuantity = 0;
     this.isBlur = false;
   }
 
@@ -496,6 +514,21 @@ export default class ShoppingList extends Vue {
     }, 200);
   }
 
+  itemFilter(item: Item, queryText: string, itemText: string): boolean {
+    if (this.hasQuantity(queryText)) {
+      this.addFormQuantity = parseFloat(queryText.split(" ")[0]);
+      queryText = queryText.split(" ").slice(1).join(" ");
+    }
+    return (
+      itemText.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
+    );
+  }
+
+  hasQuantity(value: string): boolean {
+    const nameQuantity = parseFloat(value.split(" ")[0]);
+    return !isNaN(nameQuantity) && nameQuantity > 0;
+  }
+
   onChange(chosenItem: string | SelectItem): void {
     let old = "";
     if (!this.isBlur) {
@@ -505,7 +538,10 @@ export default class ShoppingList extends Vue {
         }
         this.addItem(chosenItem);
       } else {
-        this.addItem(chosenItem.text);
+        this.addItem(
+          (this.addFormQuantity > 0 ? this.addFormQuantity + " " : "") +
+            chosenItem.text
+        );
       }
     }
     this.$nextTick(() => {
