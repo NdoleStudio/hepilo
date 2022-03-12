@@ -15,8 +15,16 @@
         @click="goHome"
         v-if="!isLoggedIn && !loading"
       >
-        <v-img max-height="60" max-width="60" src="@/assets/logo.png"></v-img>
-        <h4 class="ml-2 text-h4">{{ appData.name }}</h4>
+        <v-img max-height="55" max-width="55" src="@/assets/logo.png"></v-img>
+        <h4
+          class="ml-2"
+          :class="{
+            'text-h4': $vuetify.breakpoint.mdAndUp,
+            'text-h5': !$vuetify.breakpoint.mdAndUp,
+          }"
+        >
+          {{ appData.name }}
+        </h4>
       </div>
       <v-container>
         <v-row>
