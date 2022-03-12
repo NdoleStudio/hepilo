@@ -399,9 +399,9 @@ export default class App extends Vue {
 
   get themeColor(): string {
     if (this.$vuetify.theme.dark) {
-      return "#212121";
+      return "#000000";
     }
-    return "#CDDC39";
+    return "#AFB42B";
   }
 
   goHome(): void {
