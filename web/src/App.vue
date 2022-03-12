@@ -4,7 +4,7 @@
       app
       :dark="$vuetify.theme.dark"
       clipped-left
-      :color="$vuetify.theme.dark ? 'grey darken-4' : 'lime darken-1'"
+      :color="$vuetify.theme.dark ? 'grey darken-4' : 'lime'"
     >
       <v-app-bar-nav-icon
         v-if="isLoggedIn"
@@ -366,6 +366,7 @@ export default class App extends Vue {
   }
 
   mounted(): void {
+    this.setThemeColor();
     this.listenForDarkMode();
   }
 
@@ -375,17 +376,32 @@ export default class App extends Vue {
       // Chrome & Firefox
       darkMediaQuery.addEventListener("change", (event) => {
         this.$vuetify.theme.dark = event.matches;
+        this.setThemeColor();
       });
     } catch (error) {
       try {
         // Safari
         darkMediaQuery.addListener(() => {
           this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+          this.setThemeColor();
         });
       } catch (error) {
         console.error(error);
       }
     }
+  }
+
+  setThemeColor(): void {
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", this.themeColor);
+  }
+
+  get themeColor(): string {
+    if (this.$vuetify.theme.dark) {
+      return "#212121";
+    }
+    return "#CDDC39";
   }
 
   goHome(): void {
