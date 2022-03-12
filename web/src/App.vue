@@ -493,5 +493,12 @@ export default class App extends Vue {
       }
     }
   }
+
+  .v-expansion-panel-content.px-0 {
+    .v-expansion-panel-content__wrap {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
 }
 </style>

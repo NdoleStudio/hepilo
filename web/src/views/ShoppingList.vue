@@ -123,7 +123,7 @@
                 <v-icon small>{{ cartIcon }}</v-icon>
               </div>
             </v-expansion-panel-header>
-            <v-expansion-panel-content class="mx-n6">
+            <v-expansion-panel-content class="px-0">
               <v-list subheader class="mb-n4 pb-0">
                 <template v-for="categoryItem in cartItems">
                   <v-list-item-group
