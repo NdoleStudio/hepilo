@@ -13,7 +13,7 @@ Shopping List App with Prices and Categories
 - [x] Fix terms and conditions
 - [x] Add Sentry
 - [x] Landing Page
-- [ ] Fix light mode
+- [x] Fix light mode
 - [ ] Add explainer how to use the app
 - [ ] Add No Login Demo Page
 - [ ] Create blog with notion
