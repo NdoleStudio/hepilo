@@ -5,12 +5,7 @@ Vue.use(Vuetify);
 
 export default new Vuetify({
   theme: {
-    dark: true,
-    themes: {
-      light: {
-        primary: "#C6FF00",
-      },
-    },
+    dark: false,
   },
   icons: {
     iconfont: "mdiSvg",

@@ -4,7 +4,7 @@
       app
       :dark="$vuetify.theme.dark"
       clipped-left
-      :color="$vuetify.theme.dark ? 'grey darken-4' : 'primary'"
+      :color="$vuetify.theme.dark ? 'grey darken-4' : 'lime darken-1'"
     >
       <v-app-bar-nav-icon
         v-if="isLoggedIn"
@@ -175,7 +175,7 @@
         </v-tooltip>
       </div>
     </v-navigation-drawer>
-    <v-main>
+    <v-main :class="{ 'grey lighten-4': !$vuetify.theme.dark }">
       <router-view></router-view>
       <v-snackbar
         text

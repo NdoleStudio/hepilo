@@ -9,7 +9,9 @@
             :class="{ 'text-center': $vuetify.breakpoint.mdAndDown }"
           >
             <h1 class="text-h2">
-              <span class="lime--text" id="typewriter">Ultimate</span>
+              <span class="lime--text darken-4 text--darken-2" id="typewriter"
+                >Ultimate</span
+              >
               <br />
               Shopping List
             </h1>
@@ -26,9 +28,9 @@
               Get Started
             </v-btn>
             <div class="mt-4">
-              <v-icon color="lime">{{ tickIcon }}</v-icon>
+              <v-icon color="lime darken-2">{{ tickIcon }}</v-icon>
               FREE to use
-              <v-icon class="ml-4" color="lime">{{ tickIcon }}</v-icon>
+              <v-icon class="ml-4" color="lime darken-2">{{ tickIcon }}</v-icon>
               No credit card required
             </div>
             <v-divider
@@ -97,10 +99,7 @@
               class="d-flex align-center"
               :class="{ 'justify-center': $vuetify.breakpoint.mdAndDown }"
             >
-              <v-btn
-                class="mt-4 mb-4"
-                :to="{ name: $constants.ROUTE_NAMES.LOGIN }"
-              >
+              <v-btn class="mt-4 mb-4" :href="githubLInk">
                 <v-icon>{{ githubIcon }}</v-icon>
                 Github
               </v-btn>
@@ -134,11 +133,11 @@
               </h2>
               <v-btn
                 class="text-none"
-                color="#1DA1F2"
+                color="primary"
                 href="https://twitter.com/intent/follow?screen_name=NdoleStudio"
               >
                 <v-icon>{{ twitterIcon }}</v-icon>
-                Follow @NdoleStudio
+                <span class="text--white">Follow @NdoleStudio</span>
               </v-btn>
               <ul class="mt-6 mb-n6">
                 <li class="d-inline text-decoration-none">

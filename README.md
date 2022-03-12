@@ -21,6 +21,7 @@ Shopping List App with Prices and Categories
 
 ## Marketing Plan
 
+- [ ] Add hepilo to made in cameroon list
 - [ ] Create blog post with "WHY"
 - [ ] Post blog post on reddit groups
 - [ ] Post blog post on facebook groups
