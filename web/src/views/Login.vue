@@ -4,7 +4,7 @@
       <v-col cols="12" md="4" xl="3" class="mt-n16">
         <h3 class="text-h2 text-center mb-4">Login</h3>
         <v-card max-width="360" class="mx-auto">
-          <v-card-text>
+          <v-card-text class="px-0">
             <div id="firebaseui-auth-container" ref="authContainer"></div>
             <v-progress-circular
               v-if="!firebaseUIInitialized"
