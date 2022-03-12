@@ -24,10 +24,10 @@ module.exports = {
   pwa: {
     appleMobileWebAppCapable: "yes",
     name: "Hepilo - Shopping List",
-    themeColor: "#C6FF00",
+    themeColor: "#1a237e",
     manifestOptions: {
-      ["theme_color"]: "#C6FF00",
-      ["background_color"]: "#C6FF00",
+      ["theme_color"]: "#1a237e",
+      ["background_color"]: "#1a237e",
       ["short_name"]: "Hepilo",
     },
   },
