@@ -8,6 +8,7 @@ import { Constants } from "@/plugins/constants";
 import "@/plugins/firebase";
 import "@/plugins/splitbee";
 import "@/plugins/sentry";
+import "driver.js/dist/driver.min.css";
 
 Vue.config.productionTip = false;
 

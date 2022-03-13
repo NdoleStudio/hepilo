@@ -2,34 +2,53 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <v-combobox
-          :filter="itemFilter"
-          @change="onChange"
-          @blur="onBlur"
-          @focus="onFocus"
-          :items="autocompleteItems"
-          solo
-          :auto-select-first="true"
-          v-model="itemName"
-          placeholder="Add Item"
-          :prepend-inner-icon="addIcon"
-        >
-          <template v-slot:item="{ item, attrs, on }">
-            <v-list-item v-on="on" v-bind="attrs">
-              <v-list-item-title>
-                {{ item.text }}
-                <span v-if="addFormQuantity > 0" class="text--secondary">
-                  ({{
-                    addFormQuantity.toString() +
-                    (item.unit
-                      ? " " + unitName(item.unit, addFormQuantity)
-                      : "")
-                  }})
-                </span>
-              </v-list-item-title>
-            </v-list-item>
-          </template>
-        </v-combobox>
+        <div id="add-item-input">
+          <v-combobox
+            :filter="itemFilter"
+            @change="onChange"
+            @blur="onBlur"
+            @focus="onFocus"
+            :items="autocompleteItems"
+            solo
+            :auto-select-first="true"
+            v-model="itemName"
+            placeholder="Add Item"
+            :prepend-inner-icon="addIcon"
+          >
+            <template v-slot:item="{ item, attrs, on }">
+              <v-list-item v-on="on" v-bind="attrs">
+                <v-list-item-title>
+                  {{ item.text }}
+                  <span v-if="addFormQuantity > 0" class="text--secondary">
+                    ({{
+                      addFormQuantity.toString() +
+                      (item.unit
+                        ? " " + unitName(item.unit, addFormQuantity)
+                        : "")
+                    }})
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-combobox>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row v-if="listItems.length === 0 && cartItems.length === 0">
+      <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+        <div class="text-center">
+          <v-img
+            class="mx-auto mb-4"
+            max-height="150"
+            contain
+            src="@/assets/empty-list.svg"
+          ></v-img>
+          <h3 class="text-h6">Your List is Empty</h3>
+          <p class="text--secondary">
+            Start adding things that you need to make sure nothing is left
+            behind.
+          </p>
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="listItems.length > 0">
@@ -43,13 +62,17 @@
                 v-if="saving"
                 color="deep-purple accent-4"
               ></v-progress-linear>
-              <template v-for="categoryItem in listItems">
-                <v-subheader
-                  class="text-button"
-                  :class="categoryClass(categoryItem.category)"
+              <template v-for="(categoryItem, index) in listItems">
+                <div
+                  :id="'list-category-title-' + index"
                   :key="'header-' + categoryItem.category.id"
-                  >{{ categoryItem.category.name }}</v-subheader
                 >
+                  <v-subheader
+                    class="text-button"
+                    :class="categoryClass(categoryItem.category)"
+                    >{{ categoryItem.category.name }}</v-subheader
+                  >
+                </div>
                 <v-list-item-group
                   class="left-color"
                   v-model="selectedItem"
@@ -57,17 +80,21 @@
                 >
                   <v-list-item
                     @click="itemClicked(item)"
-                    v-for="item in categoryItem.items"
+                    v-for="(item, listIndex) in categoryItem.items"
                     :key="item.item.id"
                   >
-                    <v-list-item-action>
+                    <v-list-item-action
+                      :id="'list-item-checkbox-' + index + '-' + listIndex"
+                    >
                       <v-checkbox
                         @click.stop
                         @change="addToCart(item.item.id)"
                         :disabled="saving"
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-content>
+                    <v-list-item-content
+                      :id="'list-item-details-' + index + '-' + listIndex"
+                    >
                       <v-list-item-title>
                         {{ item.item.name }}
                         <span
@@ -89,7 +116,9 @@
                         )
                       }}</v-list-item-subtitle>
                     </v-list-item-content>
-                    <v-list-item-action>
+                    <v-list-item-action
+                      :id="'list-item-delete-' + index + '-' + listIndex"
+                    >
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
@@ -329,6 +358,7 @@ import {
   UpdateItemRequest,
 } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
+import Driver from "driver.js";
 
 @Component
 export default class ShoppingList extends Vue {
@@ -456,6 +486,10 @@ export default class ShoppingList extends Vue {
         }
       }
     });
+
+    setTimeout(() => {
+      this.loadIntroductions();
+    }, 2000);
   }
 
   @Watch("$route.params.listId")
@@ -491,6 +525,72 @@ export default class ShoppingList extends Vue {
     this.isBlur = true;
   }
 
+  loadIntroductions(): void {
+    const driver = new Driver({
+      onReset: () => {
+        console.log("resetting");
+      },
+    });
+    // Define the steps for introduction
+    driver.defineSteps([
+      {
+        element: "#add-item-input",
+        popover: {
+          title: "Add Item",
+          description: `Add an item to your shopping list.<br/>Type <b>10 Bananas</b> to add banana in your shopping list with quantity of <b>10</b>.`,
+        },
+      },
+      {
+        element: "#list-category-title-0",
+        popover: {
+          title: "Categories",
+          description: `Shopping list items are grouped by categories with <em>fancy colors</em>.`,
+        },
+      },
+      {
+        element: "#list-item-details-0-0",
+        popover: {
+          title: "Edit Item",
+          description: `Change the price or quantity of items in your shopping list`,
+        },
+      },
+      {
+        element: "#list-item-checkbox-0-0",
+        popover: {
+          title: "Move to Cart",
+          description: `Move items from your list to the shopping cart.`,
+        },
+      },
+      {
+        element: "#list-item-delete-0-0",
+        popover: {
+          title: "Delete Item",
+          description: `Remove items from your list.`,
+        },
+      },
+      {
+        element: "#header-drawer-btn",
+        stageBackground: "transparent",
+        popover: {
+          title: "List Settings",
+          position: "right",
+          description: `Add multiple shopping lists and manage your items and categories`,
+        },
+      },
+      {
+        element: "#header-account-settings",
+        stageBackground: "transparent",
+        popover: {
+          title: "Account Settings",
+          description: `Logout, manage your settings even delete your account`,
+          position: "left",
+        },
+      },
+    ]);
+    // Start the introduction
+    driver.start();
+  }
+
   onSave(): void {
     this.updateItem({
       itemId: this.formItemId,
@@ -518,6 +618,8 @@ export default class ShoppingList extends Vue {
     if (this.hasQuantity(queryText)) {
       this.addFormQuantity = parseFloat(queryText.split(" ")[0]);
       queryText = queryText.split(" ").slice(1).join(" ");
+    } else {
+      this.addFormQuantity = 0;
     }
     return (
       itemText.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1

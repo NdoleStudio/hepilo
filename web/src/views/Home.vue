@@ -9,7 +9,7 @@
             :class="{ 'text-center': $vuetify.breakpoint.mdAndDown }"
           >
             <h1 class="text-h2">
-              <span class="lime--text darken-4 text--darken-2" id="typewriter"
+              <span class="lime--text text--darken-2" id="typewriter"
                 >Ultimate</span
               >
               <br />

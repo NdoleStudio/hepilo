@@ -8,6 +8,7 @@
     >
       <v-app-bar-nav-icon
         v-if="isLoggedIn"
+        id="header-drawer-btn"
         @click="setNavDrawer(!navDrawerActive)"
       ></v-app-bar-nav-icon>
       <div
@@ -59,7 +60,7 @@
       </v-btn>
       <v-menu left bottom v-if="isLoggedIn">
         <template v-slot:activator="{ on }">
-          <v-btn icon x-large v-on="on">
+          <v-btn icon x-large v-on="on" id="header-account-settings">
             <v-avatar size="30" color="black">
               <img
                 :src="user.photoURL"
@@ -500,5 +501,8 @@ export default class App extends Vue {
       padding-right: 0;
     }
   }
+}
+html {
+  overflow-y: auto;
 }
 </style>
