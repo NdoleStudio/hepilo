@@ -1009,10 +1009,77 @@ export default new Vuex.Store({
         selectedListId: getters.selectedListId,
         categories: categories,
         items: items,
+        showIntro: getters.showIntro,
         currency: getters.currency,
         stateLoaded: true,
         navDrawerOpen: getters.navDrawerOpen,
         cartPanelOpen: getters.cartPanelOpen,
+      });
+    },
+
+    async prepareDemoList({ dispatch, getters }) {
+      await dispatch("addItem", "Butter");
+      await dispatch("addItem", "Beer");
+      await dispatch("addItem", "Chicken");
+      await dispatch("addItem", "Milk");
+      await dispatch("addItem", "Potatoes");
+
+      dispatch("updateItem", {
+        name: "Butter",
+        categoryId: getters.findCategoryIdByItemId(getters.nameToId("Butter")),
+        pricePerUnit: 10.6,
+        quantity: 0.25,
+        addedToCart: false,
+        notes: "Unsalted",
+        unit: "kg",
+        itemId: getters.nameToId("Butter"),
+      });
+      dispatch("updateItem", {
+        name: "Beer",
+        categoryId: getters.findCategoryIdByItemId(getters.nameToId("Beer")),
+        pricePerUnit: 0.99,
+        quantity: 6,
+        addedToCart: false,
+        notes: "Heineken",
+        unit: "bottle",
+        itemId: getters.nameToId("Beer"),
+      });
+      dispatch("updateItem", {
+        name: "Milk",
+        categoryId: getters.findCategoryIdByItemId(getters.nameToId("Milk")),
+        pricePerUnit: 1.99,
+        quantity: 2,
+        addedToCart: false,
+        notes: "Oat Milk",
+        unit: "gallon",
+        itemId: getters.nameToId("Milk"),
+      });
+      dispatch("updateItem", {
+        name: "Potatoes",
+        categoryId: getters.findCategoryIdByItemId(
+          getters.nameToId("Potatoes")
+        ),
+        pricePerUnit: 4.99,
+        quantity: 1,
+        addedToCart: false,
+        notes: "Potatoes",
+        unit: "bag",
+        itemId: getters.nameToId("Potatoes"),
+      });
+      dispatch("updateItem", {
+        name: "Chicken",
+        categoryId: getters.findCategoryIdByItemId(getters.nameToId("Chicken")),
+        pricePerUnit: 5.5,
+        quantity: 1,
+        addedToCart: true,
+        notes: "Drumsticks",
+        unit: "kg",
+        itemId: getters.nameToId("Chicken"),
+      });
+
+      dispatch("addNotification", {
+        type: "info",
+        message: "List has been populated successfully",
       });
     },
 
@@ -1059,6 +1126,7 @@ export default new Vuex.Store({
         await commit("setCurrency", await getDefaultCurrency());
         await dispatch("setDefaultItems");
         await dispatch("sanitizeState");
+        await dispatch("prepareDemoList");
         return;
       }
 
@@ -1154,7 +1222,10 @@ export default new Vuex.Store({
       const selectedList = state.lists.find(
         (list) => list.id === state.selectedListId
       );
-      if (selectedList == undefined && !state.stateLoaded) {
+      if (
+        selectedList == undefined &&
+        (!state.stateLoaded || !getters.isLoggedIn)
+      ) {
         return LIST_DEFAULT;
       }
 
@@ -1496,14 +1567,19 @@ export default new Vuex.Store({
     },
 
     currencySelectItems(): Array<SelectItem> {
-      return CURRENCY_LIST.map(
-        (currency: { code: string; description: string }) => {
-          return {
-            text: currency.description,
-            value: currency.code,
-          };
+      return CURRENCY_LIST.sort(
+        (
+          a: { code: string; description: string },
+          b: { code: string; description: string }
+        ): number => {
+          return a.description.localeCompare(b.description);
         }
-      );
+      ).map((currency: { code: string; description: string }) => {
+        return {
+          text: currency.description,
+          value: currency.code,
+        };
+      });
     },
 
     categoryColorSelectItems(): Array<SelectItem> {

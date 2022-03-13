@@ -31,6 +31,9 @@
             >
           </v-card-actions>
         </v-card>
+        <div class="text-center mt-4">
+          <back-button></back-button>
+        </div>
         <v-dialog v-model="dialogDelete" :max-width="dialogWidth" width="400">
           <v-card>
             <v-card-title class="text-h5">
@@ -60,8 +63,10 @@ import { Action, Getter } from "vuex-class";
 import { NotificationRequest, SelectItem } from "@/store";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
-
-@Component
+import BackButton from "@/components/BackButton.vue";
+@Component({
+  components: { BackButton },
+})
 export default class SettingsIndex extends Vue {
   closeIcon: string = mdiClose;
   dialogDelete = false;

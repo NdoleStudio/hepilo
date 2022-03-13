@@ -2,6 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+        <shopping-list-demo-banner></shopping-list-demo-banner>
         <div id="add-item-input">
           <v-combobox
             :filter="itemFilter"
@@ -359,8 +360,10 @@ import {
 } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import Driver from "driver.js";
-
-@Component
+import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
+@Component({
+  components: { ShoppingListDemoBanner },
+})
 export default class ShoppingList extends Vue {
   itemName = "";
   isBlur = false;

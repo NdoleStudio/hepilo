@@ -2,6 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+        <shopping-list-demo-banner></shopping-list-demo-banner>
         <div
           class="d-flex"
           :class="{
@@ -159,8 +160,10 @@ import {
 import { dialogWidth } from "@/plugins/vuetify";
 import shortUUID from "short-uuid";
 import { mdiClose, mdiPlus, mdiSquareEditOutline, mdiTrashCan } from "@mdi/js";
-
-@Component
+import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
+@Component({
+  components: { ShoppingListDemoBanner },
+})
 export default class ManageLists extends Vue {
   formNameRules = [
     (value: string | null): boolean | string =>

@@ -12,6 +12,7 @@ import ManageItems from "@/views/ManageItems.vue";
 import SettingsIndex from "@/views/SettingsIndex.vue";
 import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
 import TermsAndConditions from "@/views/TermsAndConditions.vue";
+import ShoppingListDemo from "@/views/ShoppingListDemo.vue";
 
 Vue.use(VueRouter);
 
@@ -25,6 +26,7 @@ export const ROUTE_NAMES = {
   PRIVACY_POLICY: "PrivacyPolicy",
   TERMS_AND_CONDITIONS: "TermsAndConditions",
   LOGIN: "Login",
+  SHOPPING_LIST_DEMO: "DemoShoppingList",
   HOME: "Home",
 };
 
@@ -52,7 +54,7 @@ const routes: Array<RouteConfig> = [
     name: ROUTE_NAMES.SHOPPING_LIST_SHOW,
     component: ShoppingList,
     meta: {
-      auth: true,
+      showNav: true,
     },
   },
   {
@@ -61,6 +63,15 @@ const routes: Array<RouteConfig> = [
     component: ShoppingListIndex,
     meta: {
       auth: true,
+      showNav: true,
+    },
+  },
+  {
+    path: "/demo",
+    name: ROUTE_NAMES.SHOPPING_LIST_DEMO,
+    component: ShoppingListDemo,
+    meta: {
+      showNav: true,
     },
   },
   {
@@ -68,7 +79,7 @@ const routes: Array<RouteConfig> = [
     name: ROUTE_NAMES.MANAGE_LISTS,
     component: ManageLists,
     meta: {
-      auth: true,
+      showNav: true,
     },
   },
   {
@@ -76,7 +87,7 @@ const routes: Array<RouteConfig> = [
     name: ROUTE_NAMES.MANAGE_CATEGORIES,
     component: ManageCategories,
     meta: {
-      auth: true,
+      showNav: true,
     },
   },
   {
@@ -84,7 +95,7 @@ const routes: Array<RouteConfig> = [
     name: ROUTE_NAMES.MANAGE_ITEMS,
     component: ManageItems,
     meta: {
-      auth: true,
+      showNav: true,
     },
   },
   {
@@ -92,7 +103,7 @@ const routes: Array<RouteConfig> = [
     name: ROUTE_NAMES.SETTINGS_INDEX,
     component: SettingsIndex,
     meta: {
-      auth: true,
+      showNav: true,
     },
   },
   {

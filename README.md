@@ -15,7 +15,7 @@ Shopping List App with Prices and Categories
 - [x] Landing Page
 - [x] Fix light mode
 - [x] Add explainer how to use the app
-- [ ] Add No Login Demo Page
+- [x] Add No Login Demo Page
 - [ ] Create blog with notion
 - [ ] Multiple Language Support
 

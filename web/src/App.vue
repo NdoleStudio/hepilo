@@ -1,5 +1,9 @@
 <template>
-  <v-app :class="{ 'v-application--drawer--open': navDrawerActive }">
+  <v-app
+    :class="{
+      'v-application--drawer--open': navDrawerActive,
+    }"
+  >
     <v-app-bar
       app
       :dark="$vuetify.theme.dark"
@@ -7,14 +11,14 @@
       :color="$vuetify.theme.dark ? 'grey darken-4' : 'lime'"
     >
       <v-app-bar-nav-icon
-        v-if="isLoggedIn"
+        v-if="$route.meta.showNav"
         id="header-drawer-btn"
         @click="setNavDrawer(!navDrawerActive)"
       ></v-app-bar-nav-icon>
       <div
         class="d-flex align-center cursor-pointer"
         @click="goHome"
-        v-if="!isLoggedIn && !loading"
+        v-if="!isLoggedIn && !loading && !$route.meta.showNav"
       >
         <v-img max-height="55" max-width="55" src="@/assets/logo.png"></v-img>
         <h4
@@ -52,22 +56,23 @@
         v-if="
           !isLoggedIn &&
           $constants.ROUTE_NAMES.LOGIN !== $route.name &&
-          !loading
+          !loading &&
+          !$route.meta.showNav
         "
         :to="{ name: $constants.ROUTE_NAMES.LOGIN }"
       >
         Get Started
       </v-btn>
-      <v-menu left bottom v-if="isLoggedIn">
+      <v-menu left bottom v-if="$route.meta.showNav">
         <template v-slot:activator="{ on }">
           <v-btn icon x-large v-on="on" id="header-account-settings">
-            <v-avatar size="30" color="black">
+            <v-avatar size="36" color="black">
               <img
                 :src="user.photoURL"
                 :alt="user.name"
                 v-if="hasProfilePicture"
               />
-              <v-icon v-else>{{ accountIcon }}</v-icon>
+              <span class="white--text text-h5" v-else>A</span>
             </v-avatar>
           </v-btn>
         </template>
@@ -104,7 +109,8 @@
               <v-list-item-content class="ml-n3">
                 <v-list-item-title class="pr-16">
                   <span :class="{ 'pr-16': $vuetify.breakpoint.mdAndUp }">
-                    Logout
+                    <span v-if="isLoggedIn">Logout</span>
+                    <span v-else>Exit Demo</span>
                   </span>
                 </v-list-item-title>
               </v-list-item-content>
@@ -147,7 +153,7 @@
         <add-list-button></add-list-button>
       </div>
       <v-divider class="mt-4"></v-divider>
-      <v-list shaped v-if="isLoggedIn">
+      <v-list shaped v-if="$route.meta.showNav">
         <v-list-item-group color="primary">
           <v-list-item
             link
@@ -278,11 +284,11 @@ export default class App extends Vue {
 
   @Getter("appData") appData!: AppData;
   @Getter("loading") loading!: boolean;
-  @Getter("title") title!: boolean;
+  @Getter("title") title!: string;
   @Getter("user") user!: User;
   @Getter("navDrawerOpen") navDrawerOpen!: boolean;
   @Getter("notification") notification!: Notification;
-  @Getter("isLoggedIn") isLoggedIn!: User;
+  @Getter("isLoggedIn") isLoggedIn!: boolean;
   @Getter("listIcon") listIcon!: (name: string) => string;
   @Getter("hasProfilePicture") hasProfilePicture!: boolean;
   @Getter("lists") lists!: Array<List>;
@@ -302,7 +308,7 @@ export default class App extends Vue {
   }
 
   get navDrawerActive(): boolean {
-    return this.navDrawerOpen;
+    return this.navDrawerOpen && this.$route.meta?.showNav === true;
   }
 
   set navDrawerActive(value: boolean) {

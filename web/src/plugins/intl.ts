@@ -19,7 +19,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "AFN",
-    description: "Afghan Afghani**",
+    description: "Afghan Afghani",
   },
   {
     code: "ALL",
@@ -35,11 +35,11 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "AOA",
-    description: "Angolan Kwanza**",
+    description: "Angolan Kwanza",
   },
   {
     code: "ARS",
-    description: "Argentine Peso**",
+    description: "Argentine Peso",
   },
   {
     code: "AUD",
@@ -83,11 +83,11 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "BOB",
-    description: "Bolivian Boliviano**",
+    description: "Bolivian Boliviano",
   },
   {
     code: "BRL",
-    description: "Brazilian Real**",
+    description: "Brazilian Real",
   },
   {
     code: "BSD",
@@ -115,7 +115,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "CLP",
-    description: "Chilean Peso**",
+    description: "Chilean Peso",
   },
   {
     code: "CNY",
@@ -123,23 +123,23 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "COP",
-    description: "Colombian Peso**",
+    description: "Colombian Peso",
   },
   {
     code: "CRC",
-    description: "Costa Rican Colón**",
+    description: "Costa Rican Colón",
   },
   {
     code: "CVE",
-    description: "Cape Verdean Escudo**",
+    description: "Cape Verdean Escudo",
   },
   {
     code: "CZK",
-    description: "Czech Koruna**",
+    description: "Czech Koruna",
   },
   {
     code: "DJF",
-    description: "Djiboutian Franc**",
+    description: "Djiboutian Franc",
   },
   {
     code: "DKK",
@@ -171,7 +171,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "FKP",
-    description: "Falkland Islands Pound**",
+    description: "Falkland Islands Pound",
   },
   {
     code: "GBP",
@@ -191,11 +191,11 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "GNF",
-    description: "Guinean Franc**",
+    description: "Guinean Franc",
   },
   {
     code: "GTQ",
-    description: "Guatemalan Quetzal**",
+    description: "Guatemalan Quetzal",
   },
   {
     code: "GYD",
@@ -207,7 +207,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "HNL",
-    description: "Honduran Lempira**",
+    description: "Honduran Lempira",
   },
   {
     code: "HRK",
@@ -219,7 +219,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "HUF",
-    description: "Hungarian Forint**",
+    description: "Hungarian Forint",
   },
   {
     code: "IDR",
@@ -231,7 +231,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "INR",
-    description: "Indian Rupee**",
+    description: "Indian Rupee",
   },
   {
     code: "ISK",
@@ -275,7 +275,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "LAK",
-    description: "Lao Kip**",
+    description: "Lao Kip",
   },
   {
     code: "LBP",
@@ -323,7 +323,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "MUR",
-    description: "Mauritian Rupee**",
+    description: "Mauritian Rupee",
   },
   {
     code: "MVR",
@@ -335,7 +335,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "MXN",
-    description: "Mexican Peso**",
+    description: "Mexican Peso",
   },
   {
     code: "MYR",
@@ -355,7 +355,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "NIO",
-    description: "Nicaraguan Córdoba**",
+    description: "Nicaraguan Córdoba",
   },
   {
     code: "NOK",
@@ -371,11 +371,11 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "PAB",
-    description: "Panamanian Balboa**",
+    description: "Panamanian Balboa",
   },
   {
     code: "PEN",
-    description: "Peruvian Nuevo Sol**",
+    description: "Peruvian Nuevo Sol",
   },
   {
     code: "PGK",
@@ -395,7 +395,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "PYG",
-    description: "Paraguayan Guaraní**",
+    description: "Paraguayan Guaraní",
   },
   {
     code: "QAR",
@@ -439,7 +439,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "SHP",
-    description: "Saint Helenian Pound**",
+    description: "Saint Helenian Pound",
   },
   {
     code: "SLL",
@@ -451,7 +451,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "SRD",
-    description: "Surinamese Dollar**",
+    description: "Surinamese Dollar",
   },
   {
     code: "STD",
@@ -459,7 +459,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "SVC",
-    description: "Salvadoran Colón**",
+    description: "Salvadoran Colón",
   },
   {
     code: "SZL",
@@ -507,7 +507,7 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "UYU",
-    description: "Uruguayan Peso**",
+    description: "Uruguayan Peso",
   },
   {
     code: "UZS",
@@ -535,11 +535,11 @@ export const CURRENCY_LIST: Array<{ code: string; description: string }> = [
   },
   {
     code: "XOF",
-    description: "West African Cfa Franc**",
+    description: "West African Cfa Franc",
   },
   {
     code: "XPF",
-    description: "Cfp Franc**",
+    description: "Cfp Franc",
   },
   {
     code: "YER",

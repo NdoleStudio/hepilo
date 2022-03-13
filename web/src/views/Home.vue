@@ -27,6 +27,14 @@
             >
               Get Started
             </v-btn>
+            <v-btn
+              large
+              color="secondary"
+              class="mt-4 mb-4 ml-4"
+              :to="{ name: $constants.ROUTE_NAMES.SHOPPING_LIST_DEMO }"
+            >
+              Live Demo
+            </v-btn>
             <div class="mt-4">
               <v-icon color="lime darken-2">{{ tickIcon }}</v-icon>
               FREE to use

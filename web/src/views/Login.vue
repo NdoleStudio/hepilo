@@ -16,6 +16,9 @@
             ></v-progress-circular>
           </v-card-text>
         </v-card>
+        <div class="text-center mt-4">
+          <back-button></back-button>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -30,8 +33,10 @@ import firebase from "@/plugins/firebase";
 import { getAuth, ProviderId } from "firebase/auth";
 import { Action, Getter } from "vuex-class";
 import { AppData } from "@/store";
-
-@Component
+import BackButton from "@/components/BackButton.vue";
+@Component({
+  components: { BackButton },
+})
 export default class Login extends Vue {
   ui: firebaseui.auth.AuthUI | null = null;
   firebaseUIInitialized = false;
