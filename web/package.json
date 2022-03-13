@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "sitemap": "vue-cli-service sitemap"
   },
   "dependencies": {
     "@sentry/tracing": "^6.18.1",
@@ -52,6 +53,7 @@
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "typescript": "~4.1.5",
+    "vue-cli-plugin-sitemap": "~2.3.0",
     "vue-cli-plugin-vuetify": "~2.4.5",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"

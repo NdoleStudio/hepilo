@@ -10,8 +10,6 @@ import ManageLists from "@/views/ManageLists.vue";
 import ManageCategories from "@/views/ManageCategories.vue";
 import ManageItems from "@/views/ManageItems.vue";
 import SettingsIndex from "@/views/SettingsIndex.vue";
-import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
-import TermsAndConditions from "@/views/TermsAndConditions.vue";
 import ShoppingListDemo from "@/views/ShoppingListDemo.vue";
 
 Vue.use(VueRouter);
@@ -42,12 +40,12 @@ const routes: Array<RouteConfig> = [
   {
     path: "/privacy-policy",
     name: ROUTE_NAMES.PRIVACY_POLICY,
-    component: PrivacyPolicy,
+    component: () => import("@/views/PrivacyPolicy.vue"),
   },
   {
     path: "/terms-and-conditions",
     name: ROUTE_NAMES.TERMS_AND_CONDITIONS,
-    component: TermsAndConditions,
+    component: () => import("@/views/TermsAndConditions.vue"),
   },
   {
     path: "/lists/:listId",
@@ -110,6 +108,10 @@ const routes: Array<RouteConfig> = [
     path: "/login",
     name: ROUTE_NAMES.LOGIN,
     component: Login,
+  },
+  {
+    path: "*",
+    component: () => import("@/views/NotFound.vue"),
   },
 ];
 

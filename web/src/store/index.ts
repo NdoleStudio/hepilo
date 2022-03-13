@@ -522,8 +522,13 @@ export default new Vuex.Store({
       }
       commit("setUser", user);
     },
-    setTitle({ commit }, title: string) {
+    setTitle({ commit, getters }, title: string) {
       commit("setTitle", title);
+      let prefix = title.trim();
+      if (prefix === "") {
+        prefix = `Shopping List`;
+      }
+      document.title = `${prefix} - ${getters.appData.name}`;
     },
 
     async setNavDrawer({ commit, getters }, state: boolean) {
@@ -667,10 +672,10 @@ export default new Vuex.Store({
       commit("setSaving", false);
     },
 
-    setTitleByListId({ commit, getters }, listId: string) {
+    setTitleByListId({ getters, dispatch }, listId: string) {
       const list = getters.listById(listId);
       if (list) {
-        commit("setTitle", list.name);
+        dispatch("setTitle", list.name);
       }
     },
 

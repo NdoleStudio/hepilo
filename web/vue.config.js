@@ -5,7 +5,7 @@ module.exports = {
   transpileDependencies: ["vuetify"],
   chainWebpack: (config) => {
     config.plugin("html").tap((args) => {
-      args[0].title = "Hepilo";
+      args[0].title = "Hepilo - Shopping List";
       return args;
     });
     config.plugin("VuetifyLoaderPlugin").tap(() => [
@@ -20,6 +20,28 @@ module.exports = {
       );
       return args;
     });
+  },
+  pluginOptions: {
+    sitemap: {
+      baseURL: "https://hepilo.com",
+      routes: [
+        {
+          path: "/terms-and-conditions",
+        },
+        {
+          path: "/privacy-policy",
+        },
+        {
+          path: "/demo",
+        },
+        {
+          path: "/",
+        },
+        {
+          path: "/login",
+        },
+      ],
+    },
   },
   pwa: {
     appleMobileWebAppCapable: "yes",
