@@ -21,7 +21,7 @@ Shopping List App with Prices and Categories
 
 ## Marketing Plan
 
-- [ ] Add hepilo to made in cameroon list
+- [ ] Fix github readme
 - [ ] Create blog post with "WHY"
 - [ ] Post blog post on reddit groups
 - [ ] Post blog post on facebook groups
@@ -31,3 +31,4 @@ Shopping List App with Prices and Categories
 - [ ] Create alternative to "Out of Milk" blog post
 - [ ] Edit Readme on Github
 - [ ] Create "How to Install" blog post
+- [ ] Add hepilo to made in cameroon list
