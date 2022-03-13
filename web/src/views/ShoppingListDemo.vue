@@ -4,7 +4,7 @@
       class="mx-auto d-block my-16"
       :size="100"
       :width="5"
-      color="deep-purple accent-4"
+      color="lime"
       indeterminate
     ></v-progress-circular>
   </v-container>

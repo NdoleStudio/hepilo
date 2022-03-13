@@ -123,7 +123,7 @@
         :indeterminate="loading"
         absolute
         bottom
-        color="deep-purple accent-4"
+        color="lime"
       ></v-progress-linear>
     </v-app-bar>
 

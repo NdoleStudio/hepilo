@@ -142,10 +142,10 @@
               <v-btn
                 class="text-none"
                 color="primary"
-                href="https://twitter.com/intent/follow?screen_name=NdoleStudio"
+                href="https://twitter.com/intent/follow?screen_name=hepilohq"
               >
                 <v-icon>{{ twitterIcon }}</v-icon>
-                <span class="text--white">Follow @NdoleStudio</span>
+                <span class="text--white">Follow @hepilohq</span>
               </v-btn>
               <ul class="mt-6 mb-n6">
                 <li class="d-inline text-decoration-none">

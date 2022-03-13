@@ -35,7 +35,17 @@
         </div>
       </v-col>
     </v-row>
-    <v-row v-if="listItems.length === 0 && cartItems.length === 0">
+    <v-progress-circular
+      class="mx-auto d-block my-16"
+      :size="100"
+      :width="5"
+      v-if="!stateLoaded"
+      color="lime"
+      indeterminate
+    ></v-progress-circular>
+    <v-row
+      v-if="listItems.length === 0 && cartItems.length === 0 && stateLoaded"
+    >
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
         <div class="text-center">
           <v-img
@@ -61,7 +71,7 @@
                 :active="saving"
                 :indeterminate="saving"
                 v-if="saving"
-                color="deep-purple accent-4"
+                color="lime"
               ></v-progress-linear>
               <template v-for="(categoryItem, index) in listItems">
                 <div
@@ -419,6 +429,7 @@ export default class ShoppingList extends Vue {
   @Getter("saving") saving!: boolean;
   @Getter("currencySymbol") currencySymbol!: string;
   @Getter("loadingState") loadingState!: boolean;
+  @Getter("stateLoaded") stateLoaded!: boolean;
   @Getter("listExists") listExists!: (listId: string) => boolean;
   @Getter("itemUnitName") unitName!: (unit: string, quantity: number) => string;
   @Getter("formatCurrency") formatCurrency!: (value: number) => string;
