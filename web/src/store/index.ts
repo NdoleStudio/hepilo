@@ -28,6 +28,7 @@ interface State {
   saving: boolean;
   stateLoaded: boolean;
   title: string;
+  showIntro: boolean;
   user: User | null;
   categories: Array<Category>;
   selectedListId: string;
@@ -232,11 +233,15 @@ export default new Vuex.Store({
       type: "success",
       timeout: 3000,
     },
+    showIntro: true,
     navDrawerOpen: false,
   },
   mutations: {
     setLoading(state: State, loading: boolean) {
       state.loading = loading;
+    },
+    setShowIntro(state: State, show: boolean) {
+      state.showIntro = show;
     },
     setSelectedListId(state: State, listId: string) {
       state.selectedListId = listId;
@@ -443,6 +448,7 @@ export default new Vuex.Store({
         selectedListId: string;
         categories: Array<Category>;
         items: Array<Item>;
+        showIntro: boolean;
         stateLoaded: boolean;
         currency: string;
         navDrawerOpen: boolean;
@@ -453,6 +459,7 @@ export default new Vuex.Store({
       state.categories = payload.categories;
       state.items = payload.items;
       state.stateLoaded = payload.stateLoaded;
+      state.showIntro = payload.showIntro;
       state.currency = payload.currency;
       state.navDrawerOpen = payload.navDrawerOpen;
     },
@@ -460,6 +467,19 @@ export default new Vuex.Store({
   actions: {
     async setLoading({ commit }, loading: boolean) {
       await commit("setLoading", loading);
+    },
+
+    async setShowIntro({ commit, getters }, show: boolean) {
+      await commit("setShowIntro", show);
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            showIntro: getters.showIntro,
+          },
+          { merge: true }
+        );
+      }
     },
 
     async deleteAccount({ commit, dispatch }, userId: string) {
@@ -1023,6 +1043,7 @@ export default new Vuex.Store({
         selectedListId,
         categories: getters.categories,
         items: getters.items,
+        showIntro: getters.showIntro,
         currency: getters.currency,
         stateLoaded: true,
         navDrawerOpen: getters.navDrawerOpen,
@@ -1059,6 +1080,7 @@ export default new Vuex.Store({
         lists: stateSnapshot.data().lists ?? getters.lists,
         categories: stateSnapshot.data().categories ?? [defaultCategory],
         items: stateSnapshot.data().items ?? getters.items,
+        showIntro: stateSnapshot.data().showIntro ?? getters.showIntro,
         currency: stateSnapshot.data().currency ?? (await getDefaultCurrency()),
         selectedListId:
           stateSnapshot.data().selectedListId ?? getters.selectedListId,
@@ -1079,6 +1101,7 @@ export default new Vuex.Store({
         lists: [],
         categories: [defaultCategory],
         items: [],
+        showIntro: getters.showIntro,
         currency: getters.currency,
         stateLoaded: false,
         navDrawerOpen: false,
@@ -1160,6 +1183,10 @@ export default new Vuex.Store({
 
     isLoggedIn(state: State): boolean {
       return state.user !== null;
+    },
+
+    showIntro(state: State): boolean {
+      return state.showIntro;
     },
 
     title(state: State): string {

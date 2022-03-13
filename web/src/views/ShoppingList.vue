@@ -421,9 +421,11 @@ export default class ShoppingList extends Vue {
   @Getter("formatCurrency") formatCurrency!: (value: number) => string;
   @Getter("autocompleteItems") autocompleteItems!: Array<SelectItem>;
   @Getter("categorySelectItems") categorySelectItems!: Array<SelectItem>;
+  @Getter("showIntro") showIntro!: boolean;
 
   @Action("setTitle") setTitle!: (title: string) => void;
   @Action("addItem") addItem!: (name: string) => void;
+  @Action("setShowIntro") setShowIntro!: (show: boolean) => void;
   @Action("updateItem") updateItem!: (request: UpdateItemRequest) => void;
   @Action("deleteListItem") deleteListItem!: (itemId: string) => void;
   @Action("loadState") loadState!: () => Promise<void>;
@@ -485,11 +487,13 @@ export default class ShoppingList extends Vue {
           this.setTitleByListId(this.$route.params.listId);
         }
       }
-    });
 
-    setTimeout(() => {
-      this.loadIntroductions();
-    }, 2000);
+      if (this.showIntro) {
+        setTimeout(() => {
+          this.loadIntroductions();
+        }, 2000);
+      }
+    });
   }
 
   @Watch("$route.params.listId")
@@ -528,7 +532,7 @@ export default class ShoppingList extends Vue {
   loadIntroductions(): void {
     const driver = new Driver({
       onReset: () => {
-        console.log("resetting");
+        this.setShowIntro(false);
       },
     });
     // Define the steps for introduction

@@ -31,3 +31,20 @@ export const isDarkModeOn = (): boolean => {
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
 };
+
+export const getBooleanFromLocalStorage = (
+  key: string,
+  defaultValue = false
+): boolean => {
+  const valueString = localStorage.getItem(key);
+  if (valueString == null) {
+    return defaultValue;
+  }
+
+  const value = JSON.parse(valueString);
+  if (value === true || value === false) {
+    return value;
+  }
+
+  return defaultValue;
+};
