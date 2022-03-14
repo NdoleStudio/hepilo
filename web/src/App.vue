@@ -511,6 +511,10 @@ export default class App extends Vue {
       padding-right: 0;
     }
   }
+
+  .break-word {
+    word-break: break-word;
+  }
 }
 html {
   overflow-y: auto;

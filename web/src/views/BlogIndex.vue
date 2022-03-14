@@ -21,7 +21,9 @@
             :elevation="hover ? 4 : 1"
             :to="{ name: $constants.ROUTE_NAMES.HOME }"
           >
-            <v-card-title class="text-h4">{{ blogEntry.title }}</v-card-title>
+            <v-card-title class="text-h4 break-word">{{
+              blogEntry.title
+            }}</v-card-title>
             <v-card-subtitle class="text-uppercase caption">
               <span class="lime--text text--darken-2">{{
                 blogEntry.timestamp | date
