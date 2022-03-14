@@ -300,11 +300,11 @@ export default class App extends Vue {
   ) => void;
 
   get version(): string {
-    return process.env.VUE_APP_COMMIT_HASH.slice(0, 7);
+    return (process.env.VUE_APP_COMMIT_HASH as string).slice(0, 7);
   }
 
   get githubLInk(): string {
-    return process.env.VUE_APP_GITHUB_LINK;
+    return process.env.VUE_APP_GITHUB_LINK as string;
   }
 
   get navDrawerActive(): boolean {
@@ -499,6 +499,10 @@ export default class App extends Vue {
         padding-left: 30px;
       }
     }
+  }
+
+  .hover-opacity {
+    opacity: 0.7;
   }
 
   .v-expansion-panel-content.px-0 {

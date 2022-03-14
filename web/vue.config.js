@@ -38,6 +38,9 @@ module.exports = {
           path: "/",
         },
         {
+          path: "/blog",
+        },
+        {
           path: "/login",
         },
       ],

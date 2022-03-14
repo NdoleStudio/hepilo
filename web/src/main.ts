@@ -9,10 +9,13 @@ import "@/plugins/firebase";
 import "@/plugins/splitbee";
 import "@/plugins/sentry";
 import "driver.js/dist/driver.min.css";
+import { date } from "@/filters/date";
 
 Vue.config.productionTip = false;
 
 Vue.use(Constants);
+
+Vue.filter("date", date);
 
 new Vue({
   router,

@@ -17,6 +17,7 @@ import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from "@mdi/js";
 import { isMobile } from "@/plugins/utils";
 import defaultCategories from "@/assets/categories.json";
 import { captureSentryError } from "@/plugins/sentry";
+import { BlogEntry, getBlogEntries } from "@/plugins/notion";
 
 Vue.use(Vuex);
 
@@ -37,6 +38,8 @@ interface State {
   currency: string;
   notification: Notification;
   navDrawerOpen: boolean;
+  blogEntries: Array<BlogEntry>;
+  blogStateLoaded: boolean;
 }
 
 export const LIST_ICON_DEFAULT = "list";
@@ -226,6 +229,8 @@ export default new Vuex.Store({
     items: [],
     currency: DEFAULT_CURRENCY,
     lists: [],
+    blogEntries: [],
+    blogStateLoaded: false,
     selectedListId: "",
     notification: {
       active: false,
@@ -251,6 +256,9 @@ export default new Vuex.Store({
     },
     setTitle(state: State, title: string) {
       state.title = title;
+    },
+    setBlogEntries(state: State, entries: Array<BlogEntry>) {
+      state.blogEntries = entries;
     },
     upsertList(state: State, list: List) {
       const index = state.lists.findIndex(
@@ -1169,6 +1177,15 @@ export default new Vuex.Store({
       await commit("setLoadingState", false);
     },
 
+    async loadBlogState({ commit, getters }) {
+      if (getters.blogStateLoaded) {
+        return;
+      }
+      await commit("setLoading", true);
+      await commit("setBlogEntries", await getBlogEntries());
+      await commit("setLoading", false);
+    },
+
     async resetState({ commit, getters }) {
       await commit("setState", {
         lists: [],
@@ -1198,6 +1215,16 @@ export default new Vuex.Store({
 
     categories(state: State): Array<Category> {
       return state.categories;
+    },
+
+    blogStateLoaded(state: State): boolean {
+      return state.blogStateLoaded;
+    },
+
+    blogEntries(state: State): Array<BlogEntry> {
+      return state.blogEntries.sort((a: BlogEntry, b: BlogEntry) => {
+        return b.timestamp.getTime() - a.timestamp.getTime();
+      });
     },
 
     loadingState(state: State): boolean {
@@ -1630,7 +1657,7 @@ export default new Vuex.Store({
       }
       return {
         url: url,
-        name: process.env.VUE_APP_SITE_NAME,
+        name: process.env.VUE_APP_SITE_NAME as string,
       };
     },
     itemUnitName: () => (unit: string, quantity: number | string) => {

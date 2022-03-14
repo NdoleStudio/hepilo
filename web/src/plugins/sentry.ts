@@ -13,7 +13,10 @@ Sentry.init({
   integrations: [
     new BrowserTracing({
       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: [process.env.VUE_APP_SENTRY_TRACE_ORIGIN, /^\//],
+      tracingOrigins: [
+        process.env.VUE_APP_SENTRY_TRACE_ORIGIN as string,
+        /^\//,
+      ],
     }),
   ],
   Vue: Vue,

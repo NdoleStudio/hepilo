@@ -164,6 +164,14 @@
                     Terms And Conditions
                   </router-link>
                 </li>
+                <li class="d-inline ml-4">
+                  <router-link
+                    class="text-decoration-none text--secondary"
+                    :to="{ name: $constants.ROUTE_NAMES.BLOG_INDEX }"
+                  >
+                    Blog
+                  </router-link>
+                </li>
               </ul>
             </v-col>
           </v-row>
@@ -193,7 +201,7 @@ export default class Home extends Vue {
   tickIcon: string = mdiCheckCircle;
 
   get githubLInk(): string {
-    return process.env.VUE_APP_GITHUB_LINK;
+    return process.env.VUE_APP_GITHUB_LINK as string;
   }
 
   mounted(): void {

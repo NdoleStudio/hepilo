@@ -46,7 +46,9 @@ export const getCurrentUser = (): Promise<User | null> => {
 };
 
 initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider(process.env.VUE_APP_RECAPTCHA_SITE_KEY),
+  provider: new ReCaptchaV3Provider(
+    process.env.VUE_APP_RECAPTCHA_SITE_KEY as string
+  ),
 
   // Optional argument. If true, the SDK automatically refreshes App Check
   // tokens as needed.
