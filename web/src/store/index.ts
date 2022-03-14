@@ -530,8 +530,11 @@ export default new Vuex.Store({
       }
       commit("setUser", user);
     },
-    setTitle({ commit, getters }, title: string) {
+    setTitle({ commit, dispatch }, title: string) {
       commit("setTitle", title);
+      dispatch("setPageTitle", title);
+    },
+    setPageTitle({ getters }, title: string) {
       let prefix = title.trim();
       if (prefix === "") {
         prefix = `Shopping List`;

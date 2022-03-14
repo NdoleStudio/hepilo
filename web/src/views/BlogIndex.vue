@@ -48,17 +48,21 @@ import "firebaseui/dist/firebaseui.css";
 import { Action, Getter } from "vuex-class";
 import BackButton from "@/components/BackButton.vue";
 import { BlogEntry } from "@/plugins/notion";
+import { AppData } from "@/store";
 
 @Component({
   components: { BackButton },
 })
 export default class BlogIndex extends Vue {
   @Getter("loading") loading!: boolean;
+  @Getter("appData") appData!: AppData;
   @Getter("blogEntries") blogEntries!: Array<BlogEntry>;
   @Action("loadBlogState") loadBlogState!: () => Promise<void>;
+  @Action("setPageTitle") setPageTitle!: (title: string) => Promise<void>;
 
   mounted(): void {
     this.loadBlogState();
+    this.setPageTitle(`Blog`);
   }
 }
 </script>
