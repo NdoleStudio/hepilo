@@ -2,13 +2,13 @@ import { Client } from "@notionhq/client";
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
 
 export const Notion = new Client({
-  baseUrl: process.env.VUE_APP_NOTION_BASE_URL as string,
-  auth: process.env.VUE_APP_NOTION_TOKEN as string,
+  baseUrl: (process.env.VUE_APP_NOTION_BASE_URL as string).trim(),
+  auth: (process.env.VUE_APP_NOTION_TOKEN as string).trim(),
 });
 
 export const getDatabase = (): Promise<QueryDatabaseResponse> => {
   return Notion.databases.query({
-    database_id: process.env.VUE_APP_NOTION_DATABASE_ID as string,
+    database_id: (process.env.VUE_APP_NOTION_DATABASE_ID as string).trim(),
   });
 };
 
