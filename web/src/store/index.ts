@@ -1569,6 +1569,7 @@ export default new Vuex.Store({
       }
       return {
         url: url,
+        email: process.env.VUE_APP_SITE_EMAIL as string,
         name: process.env.VUE_APP_SITE_NAME as string,
       };
     },

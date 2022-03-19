@@ -188,7 +188,33 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <div class="d-flex justify-center mt-5">
+      <v-divider class="mt-4"></v-divider>
+      <v-list shaped>
+        <v-list-item-group color="primary">
+          <v-list-item link exact :href="'mailto:' + appData.email">
+            <v-list-item-icon>
+              <v-icon>{{ emailIcon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Send Feedback</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            link
+            exact
+            :to="{ name: $constants.ROUTE_NAMES.BLOG_INDEX }"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ blogIcon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Blog</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <v-divider></v-divider>
+      <div class="d-flex justify-center mt-8">
         <a :href="githubLInk">
           <img
             alt="GitHub Repo stars"
@@ -256,12 +282,14 @@ import {
   mdiAccountCog,
   mdiArchiveCogOutline,
   mdiCheck,
+  mdiEmail,
   mdiInformation,
   mdiLogin,
   mdiLogout,
   mdiPlaylistEdit,
   mdiRefresh,
   mdiShapeOutline,
+  mdiTagText,
 } from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
@@ -291,6 +319,8 @@ interface MenuItem {
 })
 export default class App extends Vue {
   logoutIcon: string = mdiLogout;
+  emailIcon: string = mdiEmail;
+  blogIcon: string = mdiTagText;
   tickIcon: string = mdiCheck;
   infoIcon: string = mdiInformation;
   refreshIcon: string = mdiRefresh;

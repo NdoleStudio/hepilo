@@ -106,6 +106,7 @@ export interface UpsertItemRequest {
 export type AppData = {
   url: string;
   name: string;
+  email: string;
 };
 
 export interface UpdateItemRequest {
