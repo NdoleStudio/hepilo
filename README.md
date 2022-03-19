@@ -1,21 +1,35 @@
-<a align="center" href="http://hepilo.com/">
-    <h2>Hepilo</h2>
-</a>
 <p align="center">
-  **[Hepilo](https://hepilo.com/)** is a modern platform for managing your shopping lists. You can create multiple shopping lists, categorize items, and budget your shopping list items **for free**.
+  <img align="center" src="https://user-images.githubusercontent.com/4196457/159117809-9362dbe7-4eac-4a92-a13b-f61e16a0d885.png"></img>
+</p>
+<h3 align="center">
+    <a href="https://hepilo.com">Hepilo</a> is a modern platform for managing your shopping lists.
+</h3>
+<p align="center">
+    <a href="https://github.com/NdoleStudio/hepilo/actions/workflows/firebase-hosting-merge.yml">
+        <img src="https://github.com/NdoleStudio/hepilo/actions/workflows/firebase-hosting-merge.yml/badge.svg" alt="Build Status"></img>
+    </a>
+    <a href="https://github.com/NdoleStudio/hepilo/graphs/contributors">
+        <img src="https://img.shields.io/github/contributors/NdoleStudio/hepilo" alt="GitHub contributors"></img>
+    </a>
+    <a href="https://sonarcloud.io/dashboard?id=NdoleStudio_hepilo">
+        <img src="https://sonarcloud.io/api/project_badges/measure?project=NdoleStudio_hepilo&metric=alert_status" alt="Quality Gate Status"></img>
+    </a>
+    <a href="https://github.com/NdoleStudio/hepilo/blob/master/LICENSE">
+        <img src="https://img.shields.io/github/license/NdoleStudio/hepilo?color=brightgreen" alt="GitHub license"></img>
+    </a>
 </p>
 
-<p align="center">
-    [![Build](https://github.com/NdoleStudio/hepilo/actions/workflows/main.yml/badge.svg)](https://github.com/NdoleStudio/hepilo/actions/workflows/main.yml)
-    [![GitHub contributors](https://img.shields.io/github/contributors/NdoleStudio/hepilo)](https://github.com/NdoleStudio/hepilo/graphs/contributors)
-    [![codecov](https://codecov.io/gh/NdoleStudio/hepilo/branch/main/graph/badge.svg?token=JjzbuSYCDv)](https://codecov.io/gh/NdoleStudio/hepilo)
-    [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AchoArnold_key-value-store&metric=alert_status)](https://sonarcloud.io/dashboard?id=AchoArnold_key-value-store)
-    [![GitHub license](https://img.shields.io/github/license/NdoleStudio/hepilo?color=brightgreen)](https://github.com/NdoleStudio/hepilo/blob/master/LICENSE)
-</p>
+![home-intro-dark](https://user-images.githubusercontent.com/4196457/159118149-67fe83dd-08fc-42c0-b9a4-53bc8e811f63.png)
+
+## Introduction
+
+I struggled with finding the right tool to create my weekly grocery shopping list with prices so I don’t go above my weekly budget. I tried other alternatives but I got frustrated with the intrusive ads so I decided to build an alternative.
+[Read Blog post](https://hepilo.com/blog/meet-hepilo-the-ultimate-shopping-list-app)
+
 
 ## Setup
 
-Se the [ReadMe][../web/README.md] of the web project
+See the [ReadMe](../web/README.md) of the web project
 
 ## License
 

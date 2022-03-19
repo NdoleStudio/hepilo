@@ -56,8 +56,8 @@
             </p>
           </template>
         </div>
-        <v-divider class="lime mt-8"></v-divider>
-        <div class="text-center mt-4">
+        <v-divider class="lime mt-8" v-if="!loadingBlog"></v-divider>
+        <div class="text-center mt-4" v-if="!loadingBlog">
           <back-button></back-button>
         </div>
       </v-col>
