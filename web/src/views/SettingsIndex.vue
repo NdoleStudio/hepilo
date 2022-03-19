@@ -139,8 +139,8 @@ export default class SettingsIndex extends Vue {
     await this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
   }
 
-  async onSave(): Promise<void> {
-    await this.setCurrency(this.formCurrency);
+  onSave(): void {
+    this.setCurrency(this.formCurrency);
     this.clearForm();
   }
 }
