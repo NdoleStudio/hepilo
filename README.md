@@ -1,35 +1,22 @@
-# Hepilo
+<a align="center" href="http://hepilo.com/">
+    <h2>Hepilo</h2>
+</a>
+<p align="center">
+  **[Hepilo](https://hepilo.com/)** is a modern platform for managing your shopping lists. You can create multiple shopping lists, categorize items, and budget your shopping list items **for free**.
+</p>
 
-Shopping List App with Prices and Categories
+<p align="center">
+    [![Build](https://github.com/NdoleStudio/hepilo/actions/workflows/main.yml/badge.svg)](https://github.com/NdoleStudio/hepilo/actions/workflows/main.yml)
+    [![GitHub contributors](https://img.shields.io/github/contributors/NdoleStudio/hepilo)](https://github.com/NdoleStudio/hepilo/graphs/contributors)
+    [![codecov](https://codecov.io/gh/NdoleStudio/hepilo/branch/main/graph/badge.svg?token=JjzbuSYCDv)](https://codecov.io/gh/NdoleStudio/hepilo)
+    [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AchoArnold_key-value-store&metric=alert_status)](https://sonarcloud.io/dashboard?id=AchoArnold_key-value-store)
+    [![GitHub license](https://img.shields.io/github/license/NdoleStudio/hepilo?color=brightgreen)](https://github.com/NdoleStudio/hepilo/blob/master/LICENSE)
+</p>
 
-## TO DO
+## Setup
 
-- [x] Refresh PWA button
-- [x] Multiple Lists Support
-- [x] Items/Categories/Lists list management
-- [x] Settings Page
-- [x] Database Rules
-- [x] Autofill items/Categories
-- [x] Fix terms and conditions
-- [x] Add Sentry
-- [x] Landing Page
-- [x] Fix light mode
-- [x] Add explainer how to use the app
-- [x] Add No Login Demo Page
-- [x] Add Meta tags
-- [ ] Create blog with notion
-- [ ] Multiple Language Support
+Se the [ReadMe][../web/README.md] of the web project
 
-## Marketing Plan
+## License
 
-- [ ] Fix github readme
-- [ ] Create blog post with "WHY"
-- [ ] Post blog post on reddit groups
-- [ ] Post blog post on facebook groups
-- [ ] Post blog post on hacker rank
-- [ ] Post app on product hunt
-- [ ] Cold contact bloggers about app (email, twitter)
-- [ ] Create alternative to "Out of Milk" blog post
-- [ ] Edit Readme on Github
-- [ ] Create "How to Install" blog post
-- [ ] Add hepilo to made in cameroon list
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

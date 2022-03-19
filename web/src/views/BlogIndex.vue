@@ -11,6 +11,7 @@
           indeterminate
         ></v-progress-circular>
         <v-hover
+          v-else
           v-slot:default="{ hover }"
           :key="blogEntry.id"
           v-for="blogEntry in blogEntries"

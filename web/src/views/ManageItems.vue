@@ -204,6 +204,7 @@ import {
 } from "@mdi/js";
 import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
 import { Item, List, UpsertItemRequest } from "@/types/state";
+
 @Component({
   components: { ShoppingListDemoBanner },
 })
@@ -279,15 +280,12 @@ export default class ManageItems extends Vue {
       return this.items;
     }
 
-    const items = this.items.filter((item) => {
+    return this.items.filter((item) => {
       return (
         item.name.toLowerCase().indexOf(query) !== -1 ||
         this.categoryNameByItemId(item.id).toLowerCase().indexOf(query) !== -1
       );
     });
-
-    console.log("temp", items.length);
-    return items;
   }
 
   get formTitle(): string {

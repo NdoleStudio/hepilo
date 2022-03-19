@@ -505,7 +505,7 @@ export default class ShoppingList extends Vue {
       if (this.showIntro) {
         setTimeout(() => {
           this.loadIntroductions();
-        }, 2000);
+        }, 5000);
       }
     });
   }

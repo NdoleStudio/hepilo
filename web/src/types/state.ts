@@ -7,6 +7,21 @@ export type BlogEntry = {
   readMinutes: number;
 };
 
+export type Block = {
+  type: "image" | "paragraph" | "quote" | "heading_2" | "heading_3";
+  contents?: Array<BlockContent>;
+  id: string;
+  image?: string;
+};
+
+export type BlockContent = {
+  color: string;
+  href?: string;
+  bold: boolean;
+  id: string;
+  text: string;
+};
+
 export type List = {
   name: string;
   icon: string;

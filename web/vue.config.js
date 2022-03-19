@@ -43,6 +43,9 @@ module.exports = {
         {
           path: "/login",
         },
+        {
+          path: "/blog/meet-hepilo-the-ultimate-shopping-list-app",
+        },
       ],
     },
   },

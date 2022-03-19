@@ -1129,6 +1129,18 @@ export default new Vuex.Store({
       });
     },
 
+    blogEntryFromSlug:
+      (state: State) =>
+      (slug: string): BlogEntry | null => {
+        const entry = state.blogEntries.find((entry: BlogEntry) => {
+          return entry.slug === slug;
+        });
+        if (entry) {
+          return entry;
+        }
+        return null;
+      },
+
     loadingState(state: State): boolean {
       return state.loadingState;
     },

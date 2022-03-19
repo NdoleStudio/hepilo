@@ -26,7 +26,11 @@
               >Save</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="error" text @click="onDeleteAccount"
+            <v-btn
+              color="error"
+              text
+              @click="onDeleteAccount"
+              :disabled="!isLoggedIn"
               >Delete Account</v-btn
             >
           </v-card-actions>
@@ -73,6 +77,7 @@ export default class SettingsIndex extends Vue {
   formValid = false;
   formCurrency = DEFAULT_CURRENCY;
 
+  @Getter("isLoggedIn") isLoggedIn!: boolean;
   @Getter("currency") currency!: string;
   @Getter("saving") saving!: boolean;
   @Getter("currencySelectItems") currencies!: Array<SelectItem>;
