@@ -236,7 +236,6 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import {
-  mdiAccount,
   mdiAccountCog,
   mdiArchiveCogOutline,
   mdiCheck,
@@ -250,15 +249,15 @@ import {
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
-import {
-  User,
-  Notification,
-  NotificationRequest,
-  List,
-  AppData,
-} from "@/store";
 import { getPlatformName } from "@/plugins/utils";
 import AddListButton from "@/components/AddListButton.vue";
+import {
+  AppData,
+  List,
+  NotificationRequest,
+  User,
+  Notification,
+} from "@/types/state";
 
 interface MenuItem {
   name: string;
@@ -275,7 +274,6 @@ interface MenuItem {
 })
 export default class App extends Vue {
   logoutIcon: string = mdiLogout;
-  accountIcon: string = mdiAccount;
   tickIcon: string = mdiCheck;
   infoIcon: string = mdiInformation;
   refreshIcon: string = mdiRefresh;

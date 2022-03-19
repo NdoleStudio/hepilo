@@ -19,10 +19,7 @@
             :class="{ 'hover-opacity': hover }"
             class="mb-4"
             :elevation="hover ? 4 : 1"
-            :to="{
-              name: $constants.ROUTE_NAMES.BLOG_SHOW,
-              params: { slug: blogEntry.slug },
-            }"
+            :to="{ name: $constants.ROUTE_NAMES.HOME }"
           >
             <v-card-title class="text-h4 break-word">{{
               blogEntry.title
@@ -57,7 +54,7 @@ import { BlogEntry, AppData } from "@/types/state";
 @Component({
   components: { BackButton },
 })
-export default class BlogIndex extends Vue {
+export default class BlogShow extends Vue {
   @Getter("loading") loading!: boolean;
   @Getter("appData") appData!: AppData;
   @Getter("blogEntries") blogEntries!: Array<BlogEntry>;

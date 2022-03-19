@@ -151,16 +151,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import {
-  List,
-  LIST_ICON_DEFAULT,
-  SelectItem,
-  UpsertListRequest,
-} from "@/store";
+import { LIST_ICON_DEFAULT } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import shortUUID from "short-uuid";
 import { mdiClose, mdiPlus, mdiSquareEditOutline, mdiTrashCan } from "@mdi/js";
 import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
+import { List, SelectItem, UpsertListRequest } from "@/types/state";
 @Component({
   components: { ShoppingListDemoBanner },
 })

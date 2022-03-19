@@ -1,5 +1,6 @@
 import { Client } from "@notionhq/client";
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
+import { BlogEntry } from "@/types/state";
 
 export const Notion = new Client({
   baseUrl: (process.env.VUE_APP_NOTION_BASE_URL as string).trim(),
@@ -10,15 +11,6 @@ export const getDatabase = (): Promise<QueryDatabaseResponse> => {
   return Notion.databases.query({
     database_id: (process.env.VUE_APP_NOTION_DATABASE_ID as string).trim(),
   });
-};
-
-export type BlogEntry = {
-  title: string;
-  timestamp: Date;
-  intro: string;
-  id: string;
-  slug: string;
-  readMinutes: number;
 };
 
 export const getBlogEntries = async (): Promise<Array<BlogEntry>> => {

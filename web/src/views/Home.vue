@@ -148,7 +148,15 @@
                 <span class="text--white">Follow @hepilohq</span>
               </v-btn>
               <ul class="mt-6 mb-n6">
-                <li class="d-inline text-decoration-none">
+                <li class="d-inline">
+                  <router-link
+                    class="text-decoration-none text--secondary"
+                    :to="{ name: $constants.ROUTE_NAMES.BLOG_INDEX }"
+                  >
+                    Blog
+                  </router-link>
+                </li>
+                <li class="d-inline text-decoration-none ml-4">
                   <router-link
                     class="text-decoration-none text--secondary"
                     :to="{ name: $constants.ROUTE_NAMES.PRIVACY_POLICY }"
@@ -162,14 +170,6 @@
                     :to="{ name: $constants.ROUTE_NAMES.TERMS_AND_CONDITIONS }"
                   >
                     Terms And Conditions
-                  </router-link>
-                </li>
-                <li class="d-inline ml-4">
-                  <router-link
-                    class="text-decoration-none text--secondary"
-                    :to="{ name: $constants.ROUTE_NAMES.BLOG_INDEX }"
-                  >
-                    Blog
                   </router-link>
                 </li>
               </ul>

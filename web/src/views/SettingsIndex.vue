@@ -60,10 +60,10 @@ import { dialogWidth } from "@/plugins/vuetify";
 import { mdiClose } from "@mdi/js";
 import { DEFAULT_CURRENCY } from "@/plugins/intl";
 import { Action, Getter } from "vuex-class";
-import { NotificationRequest, SelectItem } from "@/store";
 import { getFirebaseAuth } from "@/plugins/firebase";
 import splitbee from "@/plugins/splitbee";
 import BackButton from "@/components/BackButton.vue";
+import { NotificationRequest, SelectItem } from "@/types/state";
 @Component({
   components: { BackButton },
 })

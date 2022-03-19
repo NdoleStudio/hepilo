@@ -174,14 +174,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import {
-  Category,
-  CATEGORY_COLOR_TEAL,
-  Item,
-  List,
-  SelectItem,
-  UpsertCategoryRequest,
-} from "@/store";
+import { CATEGORY_COLOR_TEAL } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import {
   mdiClose,
@@ -191,6 +184,14 @@ import {
   mdiTrashCan,
 } from "@mdi/js";
 import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
+import {
+  Category,
+  Item,
+  List,
+  SelectItem,
+  UpsertCategoryRequest,
+} from "@/types/state";
+
 @Component({
   components: { ShoppingListDemoBanner },
 })

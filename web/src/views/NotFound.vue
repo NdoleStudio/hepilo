@@ -38,7 +38,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { captureSentryError } from "@/plugins/sentry";
 import { Action } from "vuex-class";
-import { NotificationRequest } from "@/store";
+import { NotificationRequest } from "@/types/state";
 @Component
 export default class NotFound extends Vue {
   @Action("addNotification") addNotification!: (

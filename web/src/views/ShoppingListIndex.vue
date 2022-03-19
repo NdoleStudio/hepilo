@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { List } from "@/store";
+import { List } from "@/types/state";
 
 @Component
 export default class ShoppingListIndex extends Vue {

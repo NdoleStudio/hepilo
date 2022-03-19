@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, User, Auth } from "firebase/auth";
-import { User as StateUser } from "@/store/index";
+import { User as StateUser } from "@/types/state";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import splitbee from "@/plugins/splitbee";
 import store from "@/store";

@@ -32,8 +32,9 @@ import "firebaseui/dist/firebaseui.css";
 import firebase from "@/plugins/firebase";
 import { getAuth, ProviderId } from "firebase/auth";
 import { Action, Getter } from "vuex-class";
-import { AppData } from "@/store";
 import BackButton from "@/components/BackButton.vue";
+import { AppData } from "@/types/state";
+
 @Component({
   components: { BackButton },
 })

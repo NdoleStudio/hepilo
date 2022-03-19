@@ -339,8 +339,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Getter } from "vuex-class";
-import { AppData } from "@/store";
 import BackButton from "@/components/BackButton.vue";
+import { AppData } from "@/types/state";
 @Component({
   components: { BackButton },
 })

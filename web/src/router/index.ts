@@ -27,6 +27,7 @@ export const ROUTE_NAMES = {
   SHOPPING_LIST_DEMO: "DemoShoppingList",
   HOME: "Home",
   BLOG_INDEX: "BlogIndex",
+  BLOG_SHOW: "BlogShow",
 };
 
 const routes: Array<RouteConfig> = [
@@ -109,6 +110,11 @@ const routes: Array<RouteConfig> = [
     path: "/blog",
     name: ROUTE_NAMES.BLOG_INDEX,
     component: () => import("@/views/BlogIndex.vue"),
+  },
+  {
+    path: "/blog/:slug",
+    name: ROUTE_NAMES.BLOG_SHOW,
+    component: () => import("@/views/BlogShow.vue"),
   },
   {
     path: "/login",

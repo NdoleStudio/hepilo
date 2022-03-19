@@ -358,19 +358,19 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
+import { CATEGORY_ID_UNCATEGORIZED } from "@/store";
+import { dialogWidth } from "@/plugins/vuetify";
+import Driver from "driver.js";
+import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
 import {
   Category,
-  CATEGORY_ID_UNCATEGORIZED,
-  Item,
   List,
+  Item,
   MaterializedList,
   MaterializedListItem,
   SelectItem,
   UpdateItemRequest,
-} from "@/store";
-import { dialogWidth } from "@/plugins/vuetify";
-import Driver from "driver.js";
-import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
+} from "@/types/state";
 @Component({
   components: { ShoppingListDemoBanner },
 })

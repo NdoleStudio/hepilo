@@ -192,12 +192,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import {
-  CATEGORY_ID_UNCATEGORIZED,
-  Item,
-  List,
-  UpsertItemRequest,
-} from "@/store";
+import { CATEGORY_ID_UNCATEGORIZED } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import {
   mdiClose,
@@ -208,6 +203,7 @@ import {
   mdiTrashCan,
 } from "@mdi/js";
 import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
+import { Item, List, UpsertItemRequest } from "@/types/state";
 @Component({
   components: { ShoppingListDemoBanner },
 })
