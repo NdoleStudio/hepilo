@@ -17,7 +17,7 @@ export const getDatabase = (): Promise<QueryDatabaseResponse> => {
 };
 
 export const getPage = async (pageId: string): Promise<GetPageResponse> => {
-  return await notion.pages.retrieve({ page_id: pageId });
+  return notion.pages.retrieve({ page_id: pageId });
 };
 
 export const getBlocks = async (blockId: string): Promise<Array<Block>> => {

@@ -23,7 +23,7 @@
                 <a
                   :href="content.href"
                   v-if="content.href"
-                  class="lime--text"
+                  :class="{ 'lime--text': $vuetify.theme.dark }"
                   :key="content.id"
                   >{{ content.text }}</a
                 >

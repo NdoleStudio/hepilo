@@ -512,7 +512,7 @@ export default new Vuex.Store({
       if (getters.selectedListId == listId) {
         await commit(
           "setSelectedListId",
-          getters.lists.find((list: List) => list.id !== listId).id
+          getters.lists.find((findList: List) => findList.id !== listId).id
         );
       }
 
@@ -1132,8 +1132,8 @@ export default new Vuex.Store({
     blogEntryFromSlug:
       (state: State) =>
       (slug: string): BlogEntry | null => {
-        const entry = state.blogEntries.find((entry: BlogEntry) => {
-          return entry.slug === slug;
+        const entry = state.blogEntries.find((blogEntry: BlogEntry) => {
+          return blogEntry.slug === slug;
         });
         if (entry) {
           return entry;
@@ -1421,17 +1421,7 @@ export default new Vuex.Store({
     },
 
     listTotal(state: State, getters): number {
-      return getters.listMaterializedItems.reduce(
-        (sum: number, item: MaterializedListElement) => {
-          return (
-            sum +
-            item.items.reduce((value: number, item: MaterializedListItem) => {
-              return value + item.item.pricePerUnit * item.listItem.quantity;
-            }, 0)
-          );
-        },
-        0
-      );
+      return getters.calculateTotal(getters.listMaterializedItems);
     },
 
     listById:
@@ -1479,18 +1469,24 @@ export default new Vuex.Store({
       },
 
     cartTotal(state: State, getters): number {
-      return getters.cartMaterializedItems.reduce(
-        (sum: number, item: MaterializedListElement) => {
+      return getters.calculateTotal(getters.cartMaterializedItems);
+    },
+
+    calculateTotal:
+      () =>
+      (list: MaterializedList): number => {
+        return list.reduce((sum: number, element: MaterializedListElement) => {
           return (
             sum +
-            item.items.reduce((value: number, item: MaterializedListItem) => {
-              return value + item.item.pricePerUnit * item.listItem.quantity;
-            }, 0)
+            element.items.reduce(
+              (value: number, item: MaterializedListItem) => {
+                return value + item.item.pricePerUnit * item.listItem.quantity;
+              },
+              0
+            )
           );
-        },
-        0
-      );
-    },
+        }, 0);
+      },
 
     categorySelectItems(state: State): Array<SelectItem> {
       return state.categories.map((category: Category) => {
@@ -1513,19 +1509,21 @@ export default new Vuex.Store({
     },
 
     currencySelectItems(): Array<SelectItem> {
-      return CURRENCY_LIST.sort(
-        (
-          a: { code: string; description: string },
-          b: { code: string; description: string }
-        ): number => {
-          return a.description.localeCompare(b.description);
-        }
-      ).map((currency: { code: string; description: string }) => {
-        return {
-          text: currency.description,
-          value: currency.code,
-        };
-      });
+      return Array.from(CURRENCY_LIST)
+        .sort(
+          (
+            a: { code: string; description: string },
+            b: { code: string; description: string }
+          ): number => {
+            return a.description.localeCompare(b.description);
+          }
+        )
+        .map((currency: { code: string; description: string }) => {
+          return {
+            text: currency.description,
+            value: currency.code,
+          };
+        });
     },
 
     categoryColorSelectItems(): Array<SelectItem> {
@@ -1567,7 +1565,7 @@ export default new Vuex.Store({
     appData(): AppData {
       let url = process.env.VUE_APP_SITE_URL as string;
       if (url.length > 0 && url[url.length - 1] === "/") {
-        url = url.substr(0, url.length - 1);
+        url = url.substring(0, url.length - 1);
       }
       return {
         url: url,

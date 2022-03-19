@@ -128,5 +128,3 @@ export default class AddListButton extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

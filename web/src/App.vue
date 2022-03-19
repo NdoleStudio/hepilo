@@ -52,7 +52,24 @@
         </v-row>
       </v-container>
       <v-btn
+        text
+        class="mr-4 text-none"
+        :color="$vuetify.theme.dark ? 'lime' : 'secondary'"
+        exact
+        v-if="
+          $vuetify.breakpoint.lgAndUp &&
+          !isLoggedIn &&
+          $constants.ROUTE_NAMES.BLOG_INDEX !== $route.name &&
+          !loading &&
+          !$route.meta.showNav
+        "
+        :to="{ name: $constants.ROUTE_NAMES.BLOG_INDEX }"
+      >
+        Blog
+      </v-btn>
+      <v-btn
         color="primary"
+        class="text-none"
         v-if="
           !isLoggedIn &&
           $constants.ROUTE_NAMES.LOGIN !== $route.name &&
@@ -390,8 +407,8 @@ export default class App extends Vue {
           this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
           this.setThemeColor();
         });
-      } catch (error) {
-        console.error(error);
+      } catch (innerError) {
+        console.error(innerError);
       }
     }
   }
