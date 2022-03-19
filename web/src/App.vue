@@ -190,11 +190,16 @@
       <v-divider class="mt-4"></v-divider>
       <v-list shaped>
         <v-list-item-group color="primary">
-          <v-list-item link exact :href="'mailto:' + appData.email">
-            <v-list-item-icon>
+          <v-list-item
+            v-slot="{ toggle }"
+            link
+            exact
+            :href="'mailto:' + appData.email"
+          >
+            <v-list-item-icon @click="toggle">
               <v-icon>{{ emailIcon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
+            <v-list-item-content @click="toggle">
               <v-list-item-title>Send Feedback</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
