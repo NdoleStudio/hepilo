@@ -18,7 +18,7 @@
       <div
         class="d-flex align-center cursor-pointer"
         @click="goHome"
-        v-if="!isLoggedIn && !loading && !$route.meta.showNav"
+        v-if="!loading && !$route.meta.showNav"
       >
         <v-img max-height="55" max-width="55" src="@/assets/logo.png"></v-img>
         <h4
@@ -71,12 +71,11 @@
         color="primary"
         class="text-none"
         v-if="
-          !isLoggedIn &&
           $constants.ROUTE_NAMES.LOGIN !== $route.name &&
           !loading &&
           !$route.meta.showNav
         "
-        :to="{ name: $constants.ROUTE_NAMES.LOGIN }"
+        :to="{ name: $constants.ROUTE_NAMES.SHOPPING_LIST_INDEX }"
       >
         Get Started
       </v-btn>

@@ -90,11 +90,13 @@ export default class BlogShow extends Vue {
 
   @Action("loadBlogState") loadBlogState!: () => Promise<void>;
   @Action("setPageTitle") setPageTitle!: (title: string) => Promise<void>;
+  @Action("setTitle") setTitle!: (title: string) => void;
   @Action("addNotification") addNotification!: (
     request: NotificationRequest
   ) => void;
 
   mounted(): void {
+    this.setTitle("");
     this.loadBlogState().then(async () => {
       this.blogEntry = this.blogEntryFromSlug(this.$route.params.slug);
       if (!this.blogEntry) {

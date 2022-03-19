@@ -64,9 +64,11 @@ export default class BlogIndex extends Vue {
   @Getter("blogEntries") blogEntries!: Array<BlogEntry>;
   @Action("loadBlogState") loadBlogState!: () => Promise<void>;
   @Action("setPageTitle") setPageTitle!: (title: string) => Promise<void>;
+  @Action("setTitle") setTitle!: (title: string) => void;
 
   mounted(): void {
     this.loadBlogState();
+    this.setTitle("");
     this.setPageTitle(`Blog`);
   }
 }
