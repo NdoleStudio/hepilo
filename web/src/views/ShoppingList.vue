@@ -400,8 +400,8 @@ export default class ShoppingList extends Vue {
     (value: number | null): boolean | string =>
       !!value || "Quantity is required",
     (value: number | null): boolean | string =>
-      (value && value > 0 && value <= 100) ||
-      "Quantity must be between 1 and 100",
+      (value && value > 0 && value <= 999) ||
+      "Quantity must be between 1 and 999",
   ];
   formPricePerUnit = 0.0;
   formPricePerUnitRules = [
