@@ -1,6 +1,13 @@
-[{
-        "relation": ["delegate_permission/common.handle_all_urls"],
-        "target" : { "namespace": "android_app", "package_name": "com.hepilo.twa",
-                     "sha256_cert_fingerprints": ["4F:82:F3:36:0F:EE:FD:DC:E7:F2:EF:4E:EE:69:33:79:C2:34:6C:19:11:8B:03:A9:06:57:67:BF:C4:72:08:C0"] }
-      }
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hepilo.twa",
+      "sha256_cert_fingerprints": [
+        "4F:82:F3:36:0F:EE:FD:DC:E7:F2:EF:4E:EE:69:33:79:C2:34:6C:19:11:8B:03:A9:06:57:67:BF:C4:72:08:C0",
+        "DC:26:42:D6:B0:79:C1:13:DF:D7:D3:1B:74:27:4D:B3:1A:F9:F6:47:B5:1D:54:6F:5A:AE:6D:C3:C2:C9:A7:8F"
+      ]
+    }
+  }
 ]
