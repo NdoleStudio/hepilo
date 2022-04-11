@@ -35,6 +35,17 @@
             >
               Live Demo
             </v-btn>
+            <a
+              class="ml-n4"
+              :href="
+                this.appData.androidAppUrl +
+                '&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'
+              "
+              ><img
+                height="100"
+                alt="Get it on Google Play"
+                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+            /></a>
             <div class="mt-4">
               <v-icon color="lime darken-2">{{ tickIcon }}</v-icon>
               FREE to use
