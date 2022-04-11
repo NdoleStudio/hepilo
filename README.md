@@ -1,3 +1,4 @@
+
 <p align="center">
   <img align="center" src="https://user-images.githubusercontent.com/4196457/159117809-9362dbe7-4eac-4a92-a13b-f61e16a0d885.png"></img>
 </p>
@@ -25,6 +26,10 @@
 
 I struggled with finding the right tool to create my weekly grocery shopping list with prices so I don’t go above my weekly budget. I tried other alternatives but I got frustrated with the intrusive ads so I decided to build an alternative.
 [Read Blog post](https://hepilo.com/blog/meet-hepilo-the-ultimate-shopping-list-app)
+
+## Android App
+
+<a href='https://play.google.com/store/apps/details?id=com.hepilo.twa&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
 
 ## Setup

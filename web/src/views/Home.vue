@@ -178,6 +178,26 @@
         </v-container>
       </v-responsive>
     </v-sheet>
+    <snack-alert :href="appData.androidAppUrl" v-if="canDownloadApp">
+      <div class="d-flex">
+        <a :href="appData.androidAppUrl">
+          <v-img
+            contain
+            class="rounded-2"
+            max-height="50"
+            max-width="50"
+            :src="
+              appData.url + '/img/icons/android-chrome-maskable-192x192.png'
+            "
+            :alt="appData.name + ' app icon'"
+          ></v-img>
+        </a>
+        <div class="pl-2">
+          <h6 class="text-h6 mt-0 mb-0">{{ appData.name }}</h6>
+          <p class="mb-0 mt-n1 text--secondary">Get the official App</p>
+        </div>
+      </div>
+    </snack-alert>
   </div>
 </template>
 
@@ -186,22 +206,31 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import "firebaseui/dist/firebaseui.css";
 import { mdiCheckCircle, mdiGithub, mdiLogin, mdiTwitter } from "@mdi/js";
-import { Action } from "vuex-class";
+import { Action, Getter } from "vuex-class";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Typewriter from "typewriter-effect/dist/core";
-
-@Component
+import SnackAlert from "@/components/SnackAlert.vue";
+import { AppData } from "@/types/state";
+import { isAndroid, isInStandaloneMode } from "@/plugins/utils";
+@Component({
+  components: { SnackAlert },
+})
 export default class Home extends Vue {
   loginIcon: string = mdiLogin;
   githubIcon: string = mdiGithub;
   twitterIcon: string = mdiTwitter;
-  @Action("setTitle") setTitle!: (title: string) => void;
-
   tickIcon: string = mdiCheckCircle;
+
+  @Getter("appData") appData!: AppData;
+  @Action("setTitle") setTitle!: (title: string) => void;
 
   get githubLInk(): string {
     return process.env.VUE_APP_GITHUB_LINK as string;
+  }
+
+  get canDownloadApp(): boolean {
+    return isAndroid() && !isInStandaloneMode();
   }
 
   mounted(): void {

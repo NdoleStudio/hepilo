@@ -8,7 +8,7 @@ const isChromeStandaloneMode = (): boolean => {
   return window.matchMedia("(display-mode: standalone)").matches;
 };
 
-const isInStandaloneMode = (): boolean => {
+export const isInStandaloneMode = (): boolean => {
   return isIosStandaloneMode() || isChromeStandaloneMode();
 };
 
@@ -17,6 +17,10 @@ export const getPlatformName = (): string => {
     return "app";
   }
   return "website";
+};
+
+export const isAndroid = (): boolean => {
+  return /android/i.test(navigator.userAgent);
 };
 
 export const isMobile = (): boolean => {

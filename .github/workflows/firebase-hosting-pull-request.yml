@@ -29,6 +29,7 @@ jobs:
           VUE_APP_NOTION_DATABASE_ID: '${{ secrets.NOTION_DATABASE_ID }}'
           VUE_APP_NOTION_TOKEN: '${{ secrets.NOTION_TOKEN }}'
           VUE_APP_SITE_EMAIL: arnold@hepilo.com
+          VUE_APP_SITE_ANDROID_APP_URL: https://play.google.com/store/apps/details?id=com.hepilo.twa
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

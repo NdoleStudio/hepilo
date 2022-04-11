@@ -107,6 +107,7 @@ export type AppData = {
   url: string;
   name: string;
   email: string;
+  androidAppUrl: string;
 };
 
 export interface UpdateItemRequest {

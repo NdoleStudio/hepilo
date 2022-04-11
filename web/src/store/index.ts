@@ -1569,6 +1569,7 @@ export default new Vuex.Store({
       }
       return {
         url: url,
+        androidAppUrl: process.env.VUE_APP_SITE_ANDROID_APP_URL as string,
         email: process.env.VUE_APP_SITE_EMAIL as string,
         name: process.env.VUE_APP_SITE_NAME as string,
       };

@@ -564,6 +564,14 @@ export default class App extends Vue {
   .break-word {
     word-break: break-word;
   }
+
+  .snack-alert {
+    &__close-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
 }
 html {
   overflow-y: auto;
