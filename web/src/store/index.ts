@@ -3,7 +3,10 @@ import Vuex from "vuex";
 import shortUUID from "short-uuid";
 import {
   getFirestore,
+  Unsubscribe,
+  DocumentData,
   doc,
+  onSnapshot,
   getDoc,
   setDoc,
   deleteDoc,
@@ -38,6 +41,7 @@ import {
   UpsertListRequest,
   User,
 } from "@/types/state";
+import { addAnalyticsEvent } from "@/plugins/splitbee";
 
 Vue.use(Vuex);
 
@@ -115,6 +119,8 @@ const defaultCategory: Category = {
   name: "Uncategorized",
   color: "teal",
 };
+
+let unsubscribe: Unsubscribe | null = null;
 
 export default new Vuex.Store({
   state: {
@@ -1045,6 +1051,31 @@ export default new Vuex.Store({
         return;
       }
 
+      unsubscribe = onSnapshot(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+        async (snapshot) => {
+          if (!snapshot) {
+            addAnalyticsEvent("snapshot_undefined", { snapshot });
+            return;
+          }
+          addAnalyticsEvent("real_time_update");
+          await commit("setSaving", true);
+          await commit("setState", {
+            lists: snapshot.data()?.lists ?? getters.lists,
+            categories: snapshot.data()?.categories ?? [defaultCategory],
+            items: snapshot.data()?.items ?? getters.items,
+            showIntro: snapshot.data()?.showIntro ?? getters.showIntro,
+            currency: snapshot.data()?.currency ?? getters.currency,
+            selectedListId:
+              snapshot.data()?.selectedListId ?? getters.selectedListId,
+            stateLoaded: getters.stateLoaded,
+            navDrawerOpen: getters.navDrawerOpen,
+            cartPanelOpen: getters.cartPanelOpen,
+          });
+          await commit("setSaving", false);
+        }
+      );
+
       await commit("setLoadingState", true);
 
       const stateSnapshot = await getDoc(
@@ -1059,24 +1090,25 @@ export default new Vuex.Store({
         return;
       }
 
+      await dispatch("setStateFromSnapshot", stateSnapshot.data());
+      await dispatch("sanitizeState");
+      console.log(new Date().getTime(), "setting state");
+      await commit("setLoadingState", false);
+    },
+
+    async setStateFromSnapshot({ commit, getters }, snapshot: DocumentData) {
       await commit("setState", {
-        lists: stateSnapshot.data().lists ?? getters.lists,
-        categories: stateSnapshot.data().categories ?? [defaultCategory],
-        items: stateSnapshot.data().items ?? getters.items,
-        showIntro: stateSnapshot.data().showIntro ?? getters.showIntro,
-        currency: stateSnapshot.data().currency ?? (await getDefaultCurrency()),
-        selectedListId:
-          stateSnapshot.data().selectedListId ?? getters.selectedListId,
+        lists: snapshot.lists ?? getters.lists,
+        categories: snapshot.categories ?? [defaultCategory],
+        items: snapshot.items ?? getters.items,
+        showIntro: snapshot.showIntro ?? getters.showIntro,
+        currency: snapshot.currency ?? (await getDefaultCurrency()),
+        selectedListId: snapshot.selectedListId ?? getters.selectedListId,
         stateLoaded: false,
         navDrawerOpen:
-          (stateSnapshot.data().navDrawerOpen ?? getters.navDrawerOpen) &&
-          !isMobile(),
-        cartPanelOpen:
-          stateSnapshot.data().cartPanelOpen ?? getters.cartPanelOpen,
+          (snapshot.navDrawerOpen ?? getters.navDrawerOpen) && !isMobile(),
+        cartPanelOpen: snapshot.cartPanelOpen ?? getters.cartPanelOpen,
       });
-
-      await dispatch("sanitizeState");
-      await commit("setLoadingState", false);
     },
 
     async loadBlogState({ commit, getters }) {
@@ -1089,6 +1121,9 @@ export default new Vuex.Store({
     },
 
     async resetState({ commit, getters }) {
+      if (unsubscribe !== null) {
+        unsubscribe();
+      }
       await commit("setState", {
         lists: [],
         categories: [defaultCategory],
@@ -1165,9 +1200,11 @@ export default new Vuex.Store({
     },
 
     selectedList(state: State, getters): List {
-      const selectedList = state.lists.find(
-        (list) => list.id === state.selectedListId
-      );
+      const selectedList = state.lists.find((list) => {
+        console.log(list.id, state.selectedListId);
+        console.log(list.id === state.selectedListId);
+        return list.id === state.selectedListId;
+      });
       if (
         selectedList == undefined &&
         (!state.stateLoaded || !getters.isLoggedIn)
@@ -1176,6 +1213,7 @@ export default new Vuex.Store({
       }
 
       if (selectedList == undefined) {
+        console.error("select list", state);
         captureSentryError(
           new Error(
             `[userID:${getters.user?.id}]cannot fetch selected list with id: ${state.selectedListId}`

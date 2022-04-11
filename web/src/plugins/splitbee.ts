@@ -13,7 +13,7 @@ export const addAnalyticsEvent = (
   params?: Record<string, string | number | undefined>
 ) => {
   params = {
-    ...params,
+    ...(params ?? {}),
     version: process.env.VUE_APP_COMMIT_HASH,
     userId: getFirebaseAuth().currentUser?.uid,
   };
