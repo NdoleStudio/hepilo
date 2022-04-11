@@ -664,8 +664,10 @@ export default class ShoppingList extends Vue {
         );
       }
     }
+
     this.$nextTick(() => {
       this.itemName = old;
+      document.getElementById("page-title")?.click();
     });
   }
 }

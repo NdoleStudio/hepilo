@@ -43,6 +43,7 @@
             >
               <div
                 class="page-title"
+                id="page-title"
                 :style="{ 'margin-left': titleLeftPadding + 'px' }"
               >
                 {{ title }}
