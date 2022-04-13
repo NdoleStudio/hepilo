@@ -4,7 +4,6 @@ import ShoppingList from "@/views/ShoppingList.vue";
 import Login from "@/views/Login.vue";
 import { getCurrentUser } from "@/plugins/firebase";
 import store from "@/store";
-import Home from "@/views/Home.vue";
 import ShoppingListIndex from "@/views/ShoppingListIndex.vue";
 import ManageLists from "@/views/ManageLists.vue";
 import ManageCategories from "@/views/ManageCategories.vue";
