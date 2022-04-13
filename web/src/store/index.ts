@@ -932,7 +932,7 @@ export default new Vuex.Store({
         items: items,
         showIntro: getters.showIntro,
         currency: getters.currency,
-        stateLoaded: true,
+        stateLoaded: false,
         navDrawerOpen: getters.navDrawerOpen,
         cartPanelOpen: getters.cartPanelOpen,
       });
@@ -1054,8 +1054,8 @@ export default new Vuex.Store({
       unsubscribe = onSnapshot(
         doc(getFirestore(), COLLECTION_STATE, getters.user.id),
         async (snapshot) => {
-          if (!snapshot) {
-            addAnalyticsEvent("snapshot_undefined", { snapshot });
+          if (!snapshot.data()) {
+            addAnalyticsEvent("snapshot_undefined", { id: snapshot.id });
             return;
           }
           addAnalyticsEvent("real_time_update");
@@ -1077,7 +1077,6 @@ export default new Vuex.Store({
       );
 
       await commit("setLoadingState", true);
-
       const stateSnapshot = await getDoc(
         doc(getFirestore(), COLLECTION_STATE, getters.user.id)
       );
@@ -1092,7 +1091,6 @@ export default new Vuex.Store({
 
       await dispatch("setStateFromSnapshot", stateSnapshot.data());
       await dispatch("sanitizeState");
-      console.log(new Date().getTime(), "setting state");
       await commit("setLoadingState", false);
     },
 
@@ -1201,8 +1199,6 @@ export default new Vuex.Store({
 
     selectedList(state: State, getters): List {
       const selectedList = state.lists.find((list) => {
-        console.log(list.id, state.selectedListId);
-        console.log(list.id === state.selectedListId);
         return list.id === state.selectedListId;
       });
       if (
@@ -1213,7 +1209,6 @@ export default new Vuex.Store({
       }
 
       if (selectedList == undefined) {
-        console.error("select list", state);
         captureSentryError(
           new Error(
             `[userID:${getters.user?.id}]cannot fetch selected list with id: ${state.selectedListId}`
