@@ -462,9 +462,16 @@ export default class App extends Vue {
   }
 
   goHome(): void {
-    this.$router.push({
-      name: this.$constants.ROUTE_NAMES.HOME,
-    });
+    this.$router
+      .push({
+        name: this.$constants.ROUTE_NAMES.HOME,
+      })
+      .catch((e: Error) => {
+        if (e.message.includes("Redirected")) {
+          return;
+        }
+        Promise.reject(e.message);
+      });
   }
 
   refreshApp(): void {
