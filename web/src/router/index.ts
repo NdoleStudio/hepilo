@@ -34,7 +34,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: ROUTE_NAMES.HOME,
-    component: Home,
+    component: () => import("@/views/Home.vue"),
     meta: {
       guest: true,
     },
