@@ -61,7 +61,6 @@
 import { Component } from "vue-property-decorator";
 import Vue from "vue";
 import { dialogWidth } from "@/plugins/vuetify";
-import { mdiClose } from "@mdi/js";
 import { DEFAULT_CURRENCY } from "@/plugins/intl";
 import { Action, Getter } from "vuex-class";
 import { getFirebaseAuth } from "@/plugins/firebase";
@@ -72,7 +71,6 @@ import { NotificationRequest, SelectItem } from "@/types/state";
   components: { BackButton },
 })
 export default class SettingsIndex extends Vue {
-  closeIcon: string = mdiClose;
   dialogDelete = false;
   formValid = false;
   formCurrency = DEFAULT_CURRENCY;
