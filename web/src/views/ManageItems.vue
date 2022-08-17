@@ -18,7 +18,11 @@
             v-model="formQuery"
             class="mb-n2 mr-5"
           ></v-text-field>
-          <v-spacer v-if="items.length"></v-spacer>
+          <v-btn @click="onSync" :disabled="synchronizing">
+            <v-icon v-if="$vuetify.breakpoint.lgAndUp">{{ syncIcon }}</v-icon>
+            Synchronize
+          </v-btn>
+          <v-spacer></v-spacer>
           <v-dialog v-model="dialog" :max-width="dialogWidth">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" v-bind="attrs" v-on="on" class="mb-4">
@@ -198,8 +202,8 @@ import {
   mdiClose,
   mdiMagnify,
   mdiPlus,
-  mdiSquare,
   mdiSquareEditOutline,
+  mdiSync,
   mdiTrashCan,
 } from "@mdi/js";
 import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
@@ -223,17 +227,18 @@ export default class ManageItems extends Vue {
       (!Number.isNaN(value) && value != null && value != "" && value >= 0) ||
       "Price per unit must be at least " + this.currencyFormat(0),
   ];
-  squareIcon: string = mdiSquare;
   formValid = false;
   formQuery = "";
   itemSize = 20;
   addIcon: string = mdiPlus;
+  syncIcon: string = mdiSync;
   searchIcon: string = mdiMagnify;
   editIcon: string = mdiSquareEditOutline;
   deleteIcon: string = mdiTrashCan;
   closeIcon: string = mdiClose;
   dialog = false;
   dialogDelete = false;
+  synchronizing = false;
   editedItem: UpsertItemRequest = {
     name: "",
     unit: "",
@@ -265,6 +270,7 @@ export default class ManageItems extends Vue {
   @Action("deleteItem") deleteItem!: (itemId: string) => Promise<void>;
   @Action("setTitle") setTitle!: (title: string) => void;
   @Action("loadState") loadState!: () => Promise<void>;
+  @Action("syncItems") syncItems!: () => Promise<void>;
 
   get dialogWidth(): string {
     return dialogWidth(this.$vuetify.breakpoint.name);
@@ -334,6 +340,12 @@ export default class ManageItems extends Vue {
   onEditItem(item: Item): void {
     this.editedItem = { ...item, itemId: item.id };
     this.dialog = true;
+  }
+
+  async onSync(): Promise<void> {
+    this.synchronizing = true;
+    await this.syncItems();
+    this.synchronizing = false;
   }
 
   clearForm(): void {

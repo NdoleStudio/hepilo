@@ -152,12 +152,15 @@ export default new Vuex.Store({
     },
     setShowIntro(state: State, show: boolean) {
       state.showIntro = show;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setSelectedListId(state: State, listId: string) {
       state.selectedListId = listId;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setLoadingState(state: State, loading: boolean) {
       state.loadingState = loading;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setTitle(state: State, title: string) {
       state.title = title;
@@ -175,6 +178,7 @@ export default new Vuex.Store({
       }
       state.lists[index] = list;
       state.lists = [...state.lists];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setSaving(state: State, saving: boolean) {
       state.saving = saving;
@@ -186,6 +190,7 @@ export default new Vuex.Store({
       state.lists[listIndex].cartPanelOpen =
         !state.lists[listIndex].cartPanelOpen;
       state.lists = [...state.lists];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setNavDrawer(state: State, isOpen: boolean) {
       state.navDrawerOpen = isOpen;
@@ -212,6 +217,7 @@ export default new Vuex.Store({
       }
       state.categories[index] = category;
       state.categories = [...state.categories];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     upsertItem(state: State, item: Item) {
       const index = state.items.findIndex(
@@ -223,6 +229,7 @@ export default new Vuex.Store({
       }
       state.items[index] = item;
       state.items = [...state.items];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     upsertListItem(state: State, item: ListItem) {
@@ -240,6 +247,7 @@ export default new Vuex.Store({
       }
       state.lists[listIndex].items[index] = item;
       state.lists = [...state.lists];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     updateItemId(
@@ -266,6 +274,7 @@ export default new Vuex.Store({
         }
         return item;
       });
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     updateCategoryId(
@@ -285,6 +294,7 @@ export default new Vuex.Store({
         }
         return item;
       });
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     setAddedToCart(
@@ -303,6 +313,9 @@ export default new Vuex.Store({
         }
       );
       state.lists = [...state.lists];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
+      console.log("state in cart", state);
+      console.log(JSON.parse(localStorage.getItem(COLLECTION_STATE) ?? ""));
     },
 
     deleteCategory(state: State, categoryId: string) {
@@ -316,6 +329,17 @@ export default new Vuex.Store({
         }
         return item;
       });
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
+    },
+
+    setCategories(state: State, categories: Array<Category>) {
+      state.categories = categories;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
+    },
+
+    setItems(state: State, items: Array<Item>) {
+      state.items = items;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     deleteItem(state: State, itemId: string) {
@@ -329,12 +353,14 @@ export default new Vuex.Store({
         });
         return list;
       });
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     deleteList(state: State, listId: string) {
       state.lists = state.lists.filter((list: List) => {
         return list.id !== listId;
       });
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
 
     deleteListItem(state: State, itemId: string) {
@@ -347,12 +373,14 @@ export default new Vuex.Store({
         }
       );
       state.lists = [...state.lists];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setUser(state: State, user: User | null) {
       state.user = user;
     },
     setCurrency(state: State, currency: string) {
       state.currency = currency;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
     setState(
       state: State,
@@ -375,6 +403,7 @@ export default new Vuex.Store({
       state.showIntro = payload.showIntro;
       state.currency = payload.currency;
       state.navDrawerOpen = payload.navDrawerOpen;
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
   },
   actions: {
@@ -389,6 +418,81 @@ export default new Vuex.Store({
           doc(getFirestore(), COLLECTION_STATE, getters.user.id),
           {
             showIntro: getters.showIntro,
+          },
+          { merge: true }
+        );
+      }
+    },
+
+    async syncCategories({ commit, getters }) {
+      const categories = getters.categories;
+      const colors = Array.from(CATEGORY_COLORS);
+      Object.entries(defaultCategories).forEach(([key], index) => {
+        if (!getters.findCategoryById(getters.nameToId(key))) {
+          categories.push({
+            color: colors[index],
+            id: getters.nameToId(key),
+            name: key,
+          });
+        }
+      });
+
+      await commit("setCategories", categories);
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            categories: categories,
+          },
+          { merge: true }
+        );
+      }
+    },
+
+    async syncItems({ commit, getters }) {
+      let items = [...getters.items];
+      Object.entries(defaultCategories).forEach(([key, value]) => {
+        value.forEach((item: string) => {
+          const category = getters.findCategoryById(getters.nameToId(key));
+          if (!getters.findItemById(getters.nameToId(item))) {
+            items.push({
+              unit: null,
+              categoryId: category ? category.id : CATEGORY_ID_UNCATEGORIZED,
+              id: getters.nameToId(item),
+              name: getters.toTitleCase(item),
+              pricePerUnit: 0,
+            });
+          } else {
+            items = items.map((arrayItem: Item) => {
+              if (
+                getters.nameToId(item) == arrayItem.id &&
+                arrayItem.categoryId == CATEGORY_ID_UNCATEGORIZED &&
+                category
+              ) {
+                arrayItem.categoryId = category.id;
+              }
+              return arrayItem;
+            });
+          }
+        });
+      });
+
+      // deduplicate
+      const keys = new Set<string>();
+      items = items.filter((item: Item) => {
+        if (keys.has(item.id)) {
+          return false;
+        }
+        keys.add(item.id);
+        return true;
+      });
+
+      await commit("setItems", items);
+      if (getters.isLoggedIn) {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+          {
+            items: items,
           },
           { merge: true }
         );
@@ -1039,10 +1143,40 @@ export default new Vuex.Store({
       });
     },
 
+    async loadStateFromStore({ commit, getters, dispatch }) {
+      const state: State = JSON.parse(
+        localStorage.getItem(COLLECTION_STATE) ?? ""
+      );
+      await commit("setState", {
+        lists: state?.lists ?? getters.lists,
+        categories: state?.categories ?? [defaultCategory],
+        items: state?.items ?? getters.items,
+        showIntro: state?.showIntro ?? getters.showIntro,
+        currency: state?.currency ?? getters.currency,
+        selectedListId: state?.selectedListId ?? getters.selectedListId,
+        stateLoaded: getters.stateLoaded,
+        navDrawerOpen: getters.navDrawerOpen,
+        cartPanelOpen: getters.cartPanelOpen,
+      });
+      await dispatch("sanitizeState");
+    },
+
     async loadState({ commit, getters, dispatch }) {
       if (getters.stateLoaded) {
         return;
       }
+
+      if (
+        (!getters.isLoggedIn || !window.navigator.onLine) &&
+        localStorage.getItem(COLLECTION_STATE) != null &&
+        JSON.parse(localStorage.getItem(COLLECTION_STATE) ?? "").items.length >
+          0
+      ) {
+        addAnalyticsEvent("loading_state_from_storage");
+        await dispatch("loadStateFromStore");
+        return;
+      }
+
       if (!getters.isLoggedIn) {
         await commit("setCurrency", await getDefaultCurrency());
         await dispatch("setDefaultItems");
@@ -1124,13 +1258,14 @@ export default new Vuex.Store({
       }
       await commit("setState", {
         lists: [],
-        categories: [defaultCategory],
+        categories: [defaultCategory, defaultCategory],
         items: [],
         showIntro: getters.showIntro,
         currency: getters.currency,
         stateLoaded: false,
         navDrawerOpen: false,
       });
+      localStorage.removeItem(COLLECTION_STATE);
     },
   },
   getters: {

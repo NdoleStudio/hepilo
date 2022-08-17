@@ -10,11 +10,17 @@
               categories.length === 0 && $vuetify.breakpoint.mdAndDown,
           }"
         >
-          <v-spacer v-if="categories.length"></v-spacer>
+          <v-btn @click="onSync" :disabled="synchronizing">
+            <v-icon v-if="$vuetify.breakpoint.lgAndUp">{{ syncIcon }}</v-icon>
+            Synchronize
+          </v-btn>
+          <v-spacer></v-spacer>
           <v-dialog v-model="dialog" :max-width="dialogWidth">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" v-bind="attrs" v-on="on" class="mb-4">
-                <v-icon>{{ addIcon }}</v-icon>
+                <v-icon v-if="$vuetify.breakpoint.lgAndUp">{{
+                  addIcon
+                }}</v-icon>
                 Add Category
               </v-btn>
             </template>
@@ -181,6 +187,7 @@ import {
   mdiPlus,
   mdiSquare,
   mdiSquareEditOutline,
+  mdiSync,
   mdiTrashCan,
 } from "@mdi/js";
 import ShoppingListDemoBanner from "@/components/ShoppingListDemoBanner.vue";
@@ -206,11 +213,13 @@ export default class ManageCategories extends Vue {
   squareIcon: string = mdiSquare;
   formValid = false;
   addIcon: string = mdiPlus;
+  syncIcon: string = mdiSync;
   editIcon: string = mdiSquareEditOutline;
   deleteIcon: string = mdiTrashCan;
   closeIcon: string = mdiClose;
   dialog = false;
   dialogDelete = false;
+  synchronizing = false;
   editedCategory: UpsertCategoryRequest = {
     name: "",
     id: "",
@@ -238,6 +247,8 @@ export default class ManageCategories extends Vue {
   @Action("deleteCategory") deleteCategory!: (
     categoryId: string
   ) => Promise<void>;
+  @Action("syncCategories") syncCategories!: () => Promise<void>;
+
   @Action("setTitle") setTitle!: (title: string) => void;
   @Action("loadState") loadState!: () => Promise<void>;
 
@@ -291,6 +302,12 @@ export default class ManageCategories extends Vue {
   onEditCategory(category: Category): void {
     this.editedCategory = { ...category };
     this.dialog = true;
+  }
+
+  async onSync(): Promise<void> {
+    this.synchronizing = true;
+    await this.syncCategories();
+    this.synchronizing = false;
   }
 
   clearForm(): void {
