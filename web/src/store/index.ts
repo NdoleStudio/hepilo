@@ -314,8 +314,6 @@ export default new Vuex.Store({
       );
       state.lists = [...state.lists];
       localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
-      console.log("state in cart", state);
-      console.log(JSON.parse(localStorage.getItem(COLLECTION_STATE) ?? ""));
     },
 
     deleteCategory(state: State, categoryId: string) {
