@@ -797,10 +797,10 @@ export default new Vuex.Store({
     async addItem({ commit, getters }, name: string) {
       commit("setSaving", true);
 
-      if (name.trim().length > 15) {
+      if (name.trim().length > 50) {
         commit("setNotification", {
           type: "error",
-          message: `You name must be maximum 15 characters`,
+          message: `You name must be maximum 50 characters`,
         });
         commit("setSaving", false);
         return;
