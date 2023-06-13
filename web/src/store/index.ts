@@ -1551,7 +1551,7 @@ export default new Vuex.Store({
         })
           .format(value)
           .replace("US$", "$")
-          .replace("CA$", "$");
+          .replace("CA$", "CAD");
       },
 
     notification(state: State): Notification {
@@ -1574,7 +1574,7 @@ export default new Vuex.Store({
     },
 
     currencySymbol(state: State): string {
-      return (
+      const symbol =
         new Intl.NumberFormat(undefined, {
           style: "currency",
           currency: state.currency,
@@ -1582,8 +1582,8 @@ export default new Vuex.Store({
           .formatToParts(0.0)
           .find((part) => {
             return part.type == "currency";
-          })?.value || "$"
-      );
+          })?.value || "$";
+      return symbol.replace("US$", "$").replace("CA$", "CAD");
     },
 
     listTotal(state: State, getters): number {

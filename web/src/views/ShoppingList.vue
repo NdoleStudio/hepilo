@@ -328,7 +328,7 @@
             <v-textarea
               class="mt-2"
               :disabled="saving"
-              counter="300"
+              counter="1000"
               v-model="formNotes"
               :rules="formNotesRules"
               label="Notes"
@@ -407,15 +407,21 @@ export default class ShoppingList extends Vue {
   ];
   formPricePerUnit = 0.0;
   formPricePerUnitRules = [
-    (value: number | null | string): boolean | string =>
-      (!Number.isNaN(value) && value != null && value != "" && value >= 0) ||
-      "Price per unit must be at least " + this.currencyFormat(0),
+    (value: number | null | string): boolean | string => {
+      console.log(value);
+      return (
+        value === null ||
+        value === "" ||
+        value >= 0 ||
+        "Price per unit must be more than " + this.currencyFormat(0)
+      );
+    },
   ];
   formNotes = "";
   formNotesRules = [
     (value: string | null): boolean | string =>
       !value ||
-      (value && value.length <= 300) ||
+      (value && value.length <= 1000) ||
       "Notes must be less than 300 characters",
   ];
   addFormQuantity = 0;
