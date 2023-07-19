@@ -262,20 +262,32 @@
     >
       <v-card>
         <v-card-title>
+          <v-btn
+            text
+            color="success"
+            :disabled="!formValid || saving"
+            @click="onSave"
+            >Save</v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn color="info" icon @click="closePopup">
             <v-icon>{{ closeIcon }}</v-icon>
           </v-btn>
         </v-card-title>
         <v-card-text>
-          <v-form v-model="formValid" lazy-validation ref="updateItemForm">
+          <v-form
+            class="mt-2"
+            v-model="formValid"
+            lazy-validation
+            ref="updateItemForm"
+          >
             <v-text-field
               aria-required="true"
               :disabled="saving"
               v-model="formName"
               :rules="formNameRules"
               label="Name"
-              counter="15"
+              counter="50"
               persistent-placeholder
               placeholder="e.g Bread"
               outlined
@@ -393,7 +405,7 @@ export default class ShoppingList extends Vue {
     (value: string | null): boolean | string =>
       (!!value && value.trim() != "") || "Name is required",
     (value: string | null): boolean | string =>
-      (value && value.length <= 15) || "Name must be less than 15 characters",
+      (value && value.length <= 50) || "Name must be less than 50 characters",
   ];
   formQuantity = 1;
   formQuantityRules = [
