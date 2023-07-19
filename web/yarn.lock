@@ -1543,10 +1543,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mdi/js@^6.5.95":
-  version "6.6.96"
-  resolved "https://registry.yarnpkg.com/@mdi/js/-/js-6.6.96.tgz#119f79fa9327359421167a7d4b8bde26e84702ce"
-  integrity sha512-ke9PN5DjPCOlMfhioxeZYADz8Yiz6v47W0IYRza01SSJD7y1EwESVpwFnnFUso+eCoWtE1CO9cTIvQF6sEreuA==
+"@mdi/js@^7.2.96":
+  version "7.2.96"
+  resolved "https://registry.yarnpkg.com/@mdi/js/-/js-7.2.96.tgz#a2a20be740a75e65c8b8b9e12a2b699c06a9208f"
+  integrity sha512-paR9M9ZT7rKbh2boksNUynuSZMHhqRYnEZOm/KrZTjQ4/FzyhjLHuvw/8XYzP+E7fS4+/Ms/82EN1pl/OFsiIA==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
