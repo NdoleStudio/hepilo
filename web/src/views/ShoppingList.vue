@@ -120,6 +120,11 @@
                               : "")
                           }})
                         </span>
+                        <span v-if="item.listItem.notes.trim()">
+                          <v-icon small class="mt-n1" color="#afb42b">{{
+                            notesIcon
+                          }}</v-icon>
+                        </span>
                       </v-list-item-title>
                       <v-list-item-subtitle class="caption">{{
                         formatCurrency(
@@ -350,7 +355,7 @@
             ></v-textarea>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="mt-n4">
           <v-btn
             text
             color="success"
@@ -369,7 +374,13 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { mdiCart, mdiClose, mdiDelete, mdiPlus } from "@mdi/js";
+import {
+  mdiCart,
+  mdiClose,
+  mdiDelete,
+  mdiPlus,
+  mdiNoteTextOutline,
+} from "@mdi/js";
 import { CATEGORY_ID_UNCATEGORIZED } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
 import Driver from "driver.js";
@@ -396,6 +407,7 @@ export default class ShoppingList extends Vue {
   cartIcon: string = mdiCart;
   addIcon: string = mdiPlus;
   closeIcon: string = mdiClose;
+  notesIcon: string = mdiNoteTextOutline;
   formItemId = "";
   formName = "";
   formAddedToCart = false;
