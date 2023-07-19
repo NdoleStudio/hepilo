@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth, User, Auth } from "firebase/auth";
 import { User as StateUser } from "@/types/state";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
-import splitbee from "@/plugins/splitbee";
 import store from "@/store";
 
 // Your web app's Firebase configuration
@@ -24,12 +23,6 @@ export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
     const unsubscribe = getFirebaseAuth().onAuthStateChanged((user) => {
       unsubscribe();
-      if (user) {
-        splitbee.user.set({
-          email: user?.uid,
-        });
-      }
-
       let stateUser: StateUser | null = null;
       if (user) {
         stateUser = {

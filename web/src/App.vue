@@ -298,7 +298,6 @@ import {
 } from "@mdi/js";
 import { Location } from "vue-router";
 import { getFirebaseAuth } from "@/plugins/firebase";
-import splitbee from "@/plugins/splitbee";
 import { getPlatformName } from "@/plugins/utils";
 import AddListButton from "@/components/AddListButton.vue";
 import {
@@ -507,7 +506,6 @@ export default class App extends Vue {
       .signOut()
       .then(() => {
         this.resetState();
-        splitbee.reset();
         this.addNotification({
           type: "info",
           message: "You have successfully logged out",

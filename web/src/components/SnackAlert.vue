@@ -14,38 +14,23 @@
     </div>
     <slot></slot>
     <template v-slot:action="{ attrs }">
-      <v-btn
-        @click="onActionClick"
-        color="primary"
-        small
-        v-bind="attrs"
-        :href="href"
-      >
-        Get
-      </v-btn>
+      <v-btn color="primary" small v-bind="attrs" :href="href">Get</v-btn>
     </template>
   </v-snackbar>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { mdiAlertCircle, mdiClose } from "@mdi/js";
-import { addAnalyticsEvent } from "@/plugins/splitbee";
+import { mdiClose } from "@mdi/js";
 
 @Component
 export default class SnackAlert extends Vue {
   @Prop({ required: true, type: String }) href!: string;
-  warningIcon: string = mdiAlertCircle;
   snackbarShow = true;
   closeIcon: string = mdiClose;
 
   onClose(): void {
-    addAnalyticsEvent("snack_alert_closed");
     this.snackbarShow = false;
-  }
-
-  onActionClick(): void {
-    addAnalyticsEvent("snack_alert_action_clicked");
   }
 }
 </script>

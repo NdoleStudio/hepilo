@@ -166,6 +166,17 @@
               <div>
                 Cart
                 <v-icon small>{{ cartIcon }}</v-icon>
+                <v-btn
+                  v-if="cartItems.length"
+                  @click.stop.prevent
+                  class="ml-4"
+                  color="success"
+                  text
+                  small
+                  @click="onClearCart"
+                >
+                  <v-icon left>{{ clearCartIcon }}</v-icon> Clear Cart
+                </v-btn>
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content class="px-0">
@@ -380,6 +391,7 @@ import {
   mdiDelete,
   mdiPlus,
   mdiNoteTextOutline,
+  mdiNotificationClearAll,
 } from "@mdi/js";
 import { CATEGORY_ID_UNCATEGORIZED } from "@/store";
 import { dialogWidth } from "@/plugins/vuetify";
@@ -408,6 +420,7 @@ export default class ShoppingList extends Vue {
   addIcon: string = mdiPlus;
   closeIcon: string = mdiClose;
   notesIcon: string = mdiNoteTextOutline;
+  clearCartIcon: string = mdiNotificationClearAll;
   formItemId = "";
   formName = "";
   formAddedToCart = false;
@@ -480,6 +493,7 @@ export default class ShoppingList extends Vue {
   @Action("removeFromCart") removeFromCart!: (itemId: string) => void;
   @Action("setSelectedListId") setSelectedListId!: (listId: string) => void;
   @Action("setTitleByListId") setTitleByListId!: (listId: string) => void;
+  @Action("emptyCartItems") emptyCartItems!: (listId: string) => void;
 
   get dialogWidth(): string {
     return dialogWidth(this.$vuetify.breakpoint.name);
@@ -556,10 +570,6 @@ export default class ShoppingList extends Vue {
     return {
       [`${category.color || "teal"}--text`]: true,
     };
-  }
-
-  itemSelected(event: Event): void {
-    event.stopPropagation();
   }
 
   currencyFormat(value: number): string {
@@ -639,6 +649,10 @@ export default class ShoppingList extends Vue {
     ]);
     // Start the introduction
     driver.start();
+  }
+
+  onClearCart(): void {
+    this.emptyCartItems(this.list.id);
   }
 
   onSave(): void {

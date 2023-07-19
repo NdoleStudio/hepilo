@@ -6,7 +6,6 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { Constants } from "@/plugins/constants";
 import "@/plugins/firebase";
-import "@/plugins/splitbee";
 import "@/plugins/sentry";
 import "driver.js/dist/driver.min.css";
 import { date } from "@/filters/date";

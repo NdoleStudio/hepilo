@@ -41,7 +41,6 @@ import {
   UpsertListRequest,
   User,
 } from "@/types/state";
-import { addAnalyticsEvent } from "@/plugins/splitbee";
 
 Vue.use(Vuex);
 
@@ -373,13 +372,27 @@ export default new Vuex.Store({
       state.lists = [...state.lists];
       localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
+
+    emptyCartItems(state: State, listId: string) {
+      const listIndex = state.lists.findIndex((list) => list.id === listId);
+      state.lists[listIndex].items = state.lists[listIndex].items.filter(
+        (item: ListItem) => {
+          return !item.addedToCart;
+        }
+      );
+      state.lists = [...state.lists];
+      localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
+    },
+
     setUser(state: State, user: User | null) {
       state.user = user;
     },
+
     setCurrency(state: State, currency: string) {
       state.currency = currency;
       localStorage.setItem(COLLECTION_STATE, JSON.stringify(state));
     },
+
     setState(
       state: State,
       payload: {
@@ -577,6 +590,29 @@ export default new Vuex.Store({
         },
         { merge: true }
       );
+    },
+
+    async emptyCartItems({ commit, getters }, listId: string) {
+      await commit("emptyCartItems", listId);
+      if (!getters.isLoggedIn) {
+        return;
+      }
+
+      await commit("setSaving", true);
+      await setDoc(
+        doc(getFirestore(), COLLECTION_STATE, getters.user.id),
+        {
+          lists: getters.lists,
+        },
+        { merge: true }
+      );
+
+      commit("setNotification", {
+        type: "info",
+        message: `Your cart has been emptied successfully`,
+      });
+
+      commit("setSaving", false);
     },
 
     async deleteListItem({ commit, getters }, itemId: string) {
@@ -1170,7 +1206,6 @@ export default new Vuex.Store({
         JSON.parse(localStorage.getItem(COLLECTION_STATE) ?? "").items.length >
           0
       ) {
-        addAnalyticsEvent("loading_state_from_storage");
         await dispatch("loadStateFromStore");
         return;
       }
@@ -1187,10 +1222,9 @@ export default new Vuex.Store({
         doc(getFirestore(), COLLECTION_STATE, getters.user.id),
         async (snapshot) => {
           if (!snapshot.data()) {
-            addAnalyticsEvent("snapshot_undefined", { id: snapshot.id });
+            console.error(`cannot find snapshot with id [${snapshot.id}]`);
             return;
           }
-          addAnalyticsEvent("real_time_update");
           await commit("setSaving", true);
           await commit("setState", {
             lists: snapshot.data()?.lists ?? getters.lists,

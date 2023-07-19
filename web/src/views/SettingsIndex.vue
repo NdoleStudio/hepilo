@@ -64,7 +64,6 @@ import { dialogWidth } from "@/plugins/vuetify";
 import { DEFAULT_CURRENCY } from "@/plugins/intl";
 import { Action, Getter } from "vuex-class";
 import { getFirebaseAuth } from "@/plugins/firebase";
-import splitbee from "@/plugins/splitbee";
 import BackButton from "@/components/BackButton.vue";
 import { NotificationRequest, SelectItem } from "@/types/state";
 @Component({
@@ -132,7 +131,6 @@ export default class SettingsIndex extends Vue {
         });
       return;
     }
-    splitbee.reset();
     this.closeDeleteDialog();
     await this.$router.push({ name: this.$constants.ROUTE_NAMES.HOME });
   }
