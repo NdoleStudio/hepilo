@@ -2270,15 +2270,15 @@
   optionalDependencies:
     fork-ts-checker-webpack-plugin-v5 "npm:fork-ts-checker-webpack-plugin@^5.0.11"
 
-"@vue/cli-plugin-unit-jest@~4.5.0":
-  version "4.5.17"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-jest/-/cli-plugin-unit-jest-4.5.17.tgz#82aa81590411f2c751299dcbfb9754e18892c7db"
-  integrity sha512-Ta8hx68Y252umik1yD50dyyrwhzj4KzTEpngY9YKB6bY6pga9GK2olqyrb3+2X8o6tnSQkTFz+UcobfRQJDs5A==
+"@vue/cli-plugin-unit-jest@~4.5.19":
+  version "4.5.19"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-jest/-/cli-plugin-unit-jest-4.5.19.tgz#3371f01bdf60ebd287c4cec0c3801f92c30ed6fe"
+  integrity sha512-yX61mpeU7DnjOv+Lxtjmr3pzESqBLIXeTK4MJpa/UdzrhnylHP4r6mCYETNLEYtxp8WZUXPjZFIzrKn5poZPJg==
   dependencies:
     "@babel/core" "^7.11.0"
     "@babel/plugin-transform-modules-commonjs" "^7.9.6"
     "@types/jest" "^24.0.19"
-    "@vue/cli-shared-utils" "^4.5.17"
+    "@vue/cli-shared-utils" "^4.5.19"
     babel-core "^7.0.0-bridge.0"
     babel-jest "^24.9.0"
     babel-plugin-transform-es2015-modules-commonjs "^6.26.2"
@@ -2359,10 +2359,10 @@
   optionalDependencies:
     vue-loader-v16 "npm:vue-loader@^16.1.0"
 
-"@vue/cli-shared-utils@^4.5.17":
-  version "4.5.17"
-  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.5.17.tgz#bb4aac8b816036cf5c0adf3af3cc1cb9c425501e"
-  integrity sha512-VoFNdxvTW4vZu3ne+j1Mf7mU99J2SAoRVn9XPrsouTUUJablglM8DASk7Ixhsh6ymyL/W9EADQFR6Pgj8Ujjuw==
+"@vue/cli-shared-utils@^4.5.17", "@vue/cli-shared-utils@^4.5.19":
+  version "4.5.19"
+  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.5.19.tgz#cc389b1de1b05073804c0fe9b4b083b928ef6130"
+  integrity sha512-JYpdsrC/d9elerKxbEUtmSSU6QRM60rirVubOewECHkBHj+tLNznWq/EhCjswywtePyLaMUK25eTqnTSZlEE+g==
   dependencies:
     "@achrinza/node-ipc" "9.2.2"
     "@hapi/joi" "^15.0.1"
