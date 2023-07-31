@@ -16,7 +16,7 @@
     "@sentry/vue": "^7.60.1",
     "core-js": "^3.31.1",
     "driver.js": "^0.9.8",
-    "firebase": "^9.6.4",
+    "firebase": "^9.23.0",
     "firebaseui": "^6.0.2",
     "git-revision-webpack-plugin": "^5.0.0",
     "register-service-worker": "^1.7.1",
