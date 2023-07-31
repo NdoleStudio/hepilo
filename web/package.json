@@ -14,7 +14,7 @@
     "@sentry/tracing": "^6.18.1",
     "@sentry/types": "^6.18.1",
     "@sentry/vue": "^7.60.1",
-    "core-js": "^3.31.1",
+    "core-js": "^3.32.0",
     "driver.js": "^0.9.8",
     "firebase": "^9.23.0",
     "firebaseui": "^6.0.2",
