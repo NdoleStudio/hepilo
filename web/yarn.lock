@@ -5503,10 +5503,10 @@ dotenv@^8.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.6.0.tgz#061af664d19f7f4d8fc6e4ff9b584ce237adcb8b"
   integrity sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==
 
-driver.js@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/driver.js/-/driver.js-1.1.0.tgz#8cd0fb574ac98f228b37c47b0cfd260c3a27c712"
-  integrity sha512-jvor5wrzu0JmHwPAuCb7j8YzHcgitq5ibgCsgBO85fv0Zst/UPdO60/hKooCKMdQMYRPKABmSDhVSftS6NaJqA==
+driver.js@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/driver.js/-/driver.js-1.2.1.tgz#63d0c43062b34f42a4572d95d50f91667b0d44a1"
+  integrity sha512-6nDbVnZdjRgTsJOOmGRmMf/t6cHnMyyZK/wLSbdLZp33I7odPglw1cVlX3TMaPnMDYIJUq7h8a0buejOLqM7XQ==
 
 duplexer@^0.1.1:
   version "0.1.2"
