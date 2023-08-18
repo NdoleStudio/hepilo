@@ -13,7 +13,7 @@
     "@notionhq/client": "^2.2.10",
     "@sentry/tracing": "^6.18.1",
     "@sentry/types": "^6.18.1",
-    "@sentry/vue": "^7.60.1",
+    "@sentry/vue": "^7.64.0",
     "core-js": "^3.32.0",
     "driver.js": "^1.1.0",
     "firebase": "^9.23.0",
