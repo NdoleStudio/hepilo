@@ -10,7 +10,7 @@
     "sitemap": "vue-cli-service sitemap"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.10",
+    "@notionhq/client": "^2.2.12",
     "@sentry/tracing": "^6.18.1",
     "@sentry/types": "^6.18.1",
     "@sentry/vue": "^7.60.1",
