@@ -12,7 +12,7 @@
   "dependencies": {
     "@notionhq/client": "^1.0.3",
     "@sentry/tracing": "^6.18.1",
-    "@sentry/types": "^6.18.1",
+    "@sentry/types": "^7.70.0",
     "@sentry/vue": "^6.18.1",
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
