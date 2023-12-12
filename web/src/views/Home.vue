@@ -242,7 +242,7 @@ export default class Home extends Vue {
   }
 
   get isInStandaloneMode(): boolean {
-    return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://');
+    return (window.matchMedia('(display-mode: standalone)').matches) || ((window.navigator as any).standalone) || document.referrer.includes('android-app://');
   }
 
   get canDownloadApp(): boolean {
