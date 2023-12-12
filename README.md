@@ -34,7 +34,7 @@ I struggled with finding the right tool to create my weekly grocery shopping lis
 
 ## Setup
 
-See the [ReadMe](../../web/README.md) of the web project
+See the [ReadMe](./web/README.md) of the web project
 
 ## License
 
