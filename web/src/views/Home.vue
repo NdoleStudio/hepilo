@@ -36,6 +36,7 @@
               Live Demo
             </v-btn>
             <a
+                v-if="!isInStandaloneMode"
               class="ml-n4"
               :href="
                 this.appData.androidAppUrl +
@@ -238,6 +239,10 @@ export default class Home extends Vue {
 
   get githubLInk(): string {
     return process.env.VUE_APP_GITHUB_LINK as string;
+  }
+
+  get isInStandaloneMode(): boolean {
+    return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://');
   }
 
   get canDownloadApp(): boolean {
