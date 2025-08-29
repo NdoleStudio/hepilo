@@ -57,6 +57,9 @@ module.exports = {
       ["theme_color"]: "#C6FF00",
       ["background_color"]: "#C6FF00",
       ["short_name"]: "Hepilo",
+      ["id"]: "com.hepilo.twa",
+      ["orientation"]: "portrait",
+      ["description"]: "Hepilo is a modern platform for managing your shopping lists. You can create multiple shopping lists, categorize items, and budget your shopping list items for free.",
     },
   },
 };
