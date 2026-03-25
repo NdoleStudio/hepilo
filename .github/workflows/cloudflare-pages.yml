@@ -1,0 +1,52 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: ./web
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate static site
+        run: pnpm run generate
+        env:
+          NUXT_PUBLIC_APP_NAME: Hepilo
+          NUXT_PUBLIC_SITE_URL: https://hepilo.com
+          NUXT_PUBLIC_SITE_EMAIL: arnold@hepilo.com
+          NUXT_PUBLIC_SITE_ANDROID_APP_URL: https://play.google.com/store/apps/details?id=com.hepilo.twa
+          NUXT_PUBLIC_GITHUB_LINK: https://github.com/NdoleStudio/hepilo
+          NUXT_PUBLIC_RECAPTCHA_SITE_KEY: 6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA
+          SENTRY_DSN: https://1e5300c5ad8449968a2edbd2fb25e255@o291224.ingest.sentry.io/6244114
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .output/public --project-name=hepilo
+          workingDirectory: web

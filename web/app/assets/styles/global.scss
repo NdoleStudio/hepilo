@@ -1,0 +1,23 @@
+body, .v-application {
+  font-family: 'Inter', sans-serif;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.page-title {
+  transition: margin 100ms ease-out;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover-opacity {
+  opacity: 0.7;
+}
+
+.break-word {
+  word-break: break-word;
+}
