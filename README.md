@@ -6,8 +6,8 @@
     <a href="https://hepilo.com">Hepilo</a> is a modern platform for managing your shopping lists.
 </h3>
 <p align="center">
-    <a href="https://github.com/NdoleStudio/hepilo/actions/workflows/firebase-hosting-merge.yml">
-        <img src="https://github.com/NdoleStudio/hepilo/actions/workflows/firebase-hosting-merge.yml/badge.svg" alt="Build Status"></img>
+    <a href="https://github.com/NdoleStudio/hepilo/actions/workflows/ci.yml">
+        <img src="https://github.com/NdoleStudio/hepilo/actions/workflows/ci.yml/badge.svg" alt="Build Status"></img>
     </a>
     <a href="https://github.com/NdoleStudio/hepilo/graphs/contributors">
         <img src="https://img.shields.io/github/contributors/NdoleStudio/hepilo" alt="GitHub contributors"></img>

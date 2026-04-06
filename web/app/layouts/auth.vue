@@ -48,9 +48,8 @@
       />
     </v-app-bar>
 
-    <v-main>
+    <v-main class="pb-16">
       <slot />
-
       <v-snackbar
         v-model="uiStore.isNotificationActive"
         :color="uiStore.notification.type"
@@ -82,29 +81,29 @@
       </v-snackbar>
     </v-main>
 
-    <v-footer class="d-flex flex-column align-center ga-2 py-6 text-medium-emphasis">
+    <v-footer class="d-flex flex-column align-center ga-2 py-6 text-medium-emphasis" :color="theme.current.value.dark ? undefined : '#eeeeee'">
       <div class="d-flex ga-1">
         <v-btn
           v-for="social in socialLinks"
           :key="social.name"
           :href="social.url"
           target="_blank"
-          rel="noopener noreferrer"
           icon
           variant="text"
-          size="small"
+          size="large"
           :aria-label="social.name"
-          :class="social.hoverClass"
+          :color="social.hoverColor"
         >
-          <v-icon :icon="social.icon" size="20" />
+          <v-icon :icon="social.icon" size="large" />
         </v-btn>
       </div>
 
-      <span class="text-body-small text-medium-emphasis">
+      <v-divider/>
+      <p class="text-medium-emphasis mb-0 text-label-large">
         {{ t('home.footerMitLicense') }}
-      </span>
+      </p>
 
-      <span class="text-body-small text-medium-emphasis">
+      <p class="text-medium-emphasis mt-0 text-label-large">
         {{ t('home.footerCopyright') }}
         <a
           href="https://ndole.studio"
@@ -114,9 +113,9 @@
         >
           Ndole Studio LLC
         </a>
-      </span>
+      </p>
 
-      <div class="d-flex ga-4">
+      <div class="d-flex ga-4 mt-6">
         <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/blog')">
           {{ t('home.footerBlog') }}
         </NuxtLink>
@@ -147,26 +146,28 @@ const { mdAndUp, lgAndUp } = useDisplay()
 const isDark = computed(() => theme.global.current.value.dark)
 const isLoginRoute = computed(() => String(route.name).includes('login'))
 
-const socialLinks = [
-  {
-    name: 'GitHub',
-    icon: siGithub.path,
-    url: 'https://github.com/NdoleStudio/hepilo',
-    hoverClass: 'social-github',
-  },
-  {
-    name: 'X',
-    icon: siX.path,
-    url: 'https://x.com/intent/follow?screen_name=hepilohq',
-    hoverClass: 'social-x',
-  },
-  {
-    name: 'Bluesky',
-    icon: siBluesky.path,
-    url: 'https://bsky.app/profile/arnold.cm',
-    hoverClass: 'social-bluesky',
-  },
-]
+const socialLinks = computed(() => {
+  return [
+    {
+      name: 'GitHub',
+      icon: siGithub.path,
+      url: 'https://github.com/NdoleStudio/hepilo',
+      hoverColor: theme.current.value.dark ? '#FFFFFF' : '#000000',
+    },
+    {
+      name: 'X',
+      icon: siX.path,
+      url: 'https://x.com/intent/follow?screen_name=hepilohq',
+      hoverColor: '#000000',
+    },
+    {
+      name: 'Bluesky',
+      icon: siBluesky.path,
+      url: 'https://bsky.app/profile/arnold.cm',
+      hoverColor: '#1185fe',
+    },
+  ]
+})
 
 function toggleTheme() {
   theme.global.name.value = isDark.value ? 'light' : 'dark'
@@ -188,17 +189,5 @@ onMounted(() => {
 <style lang="scss" scoped>
 a.hover\:text-decoration-underline:hover {
   text-decoration: underline;
-}
-
-.social-github:hover {
-  color: v-bind("isDark ? '#ffffff' : '#181717'") !important;
-}
-
-.social-x:hover {
-  color: v-bind("isDark ? '#ffffff' : '#000000'") !important;
-}
-
-.social-bluesky:hover {
-  color: #1185fe !important;
 }
 </style>

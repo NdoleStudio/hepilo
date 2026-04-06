@@ -194,56 +194,6 @@ onMounted(() => {
       </v-container>
     </v-responsive>
 
-    <!-- Social Section -->
-    <v-sheet class="mt-10">
-      <v-responsive max-width="1264" class="mx-auto">
-        <v-container>
-          <v-row align="center" class="mt-5 mb-5">
-            <v-col class="text-center">
-              <h1 class="text-headline-large mb-4">{{ t('home.socialTitle') }}</h1>
-              <h2 class="text-medium-emphasis text-title-large mt-2 mb-4">
-                {{ t('home.socialSubtitle') }}
-              </h2>
-              <v-btn
-                class="text-none"
-                color="primary"
-                href="https://twitter.com/intent/follow?screen_name=hepilohq"
-              >
-                <v-icon :icon="mdiTwitter" />
-                <span>{{ t('home.followOnTwitter') }}</span>
-              </v-btn>
-              <ul class="mt-6 mb-n6">
-                <li class="d-inline">
-                  <NuxtLink
-                    class="text-decoration-none text-medium-emphasis"
-                    :to="localePath('/blog')"
-                  >
-                    {{ t('home.footerBlog') }}
-                  </NuxtLink>
-                </li>
-                <li class="d-inline text-decoration-none ml-4">
-                  <NuxtLink
-                    class="text-decoration-none text-medium-emphasis"
-                    :to="localePath('/privacy-policy')"
-                  >
-                    {{ t('home.footerPrivacyPolicy') }}
-                  </NuxtLink>
-                </li>
-                <li class="d-inline ml-4">
-                  <NuxtLink
-                    class="text-decoration-none text-medium-emphasis"
-                    :to="localePath('/terms-and-conditions')"
-                  >
-                    {{ t('home.footerTermsAndConditions') }}
-                  </NuxtLink>
-                </li>
-              </ul>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-responsive>
-    </v-sheet>
-
     <!-- Android App Download Banner -->
     <SnackAlert v-if="canDownloadApp" :href="androidAppUrl">
       <div class="d-flex">
