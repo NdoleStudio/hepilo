@@ -39,6 +39,8 @@
     "footerBlog": "Blog",
     "footerPrivacyPolicy": "Politique de confidentialité",
     "footerTermsAndConditions": "Conditions générales",
+    "footerMitLicense": "Publié sous la licence MIT",
+    "footerCopyright": "Copyright © 2023-2026",
     "typewriterStrings": ["Courses", "Hebdomadaire", "Noël", "Ultime"]
   },
   "auth": {

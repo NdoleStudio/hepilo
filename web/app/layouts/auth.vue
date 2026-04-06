@@ -82,22 +82,58 @@
       </v-snackbar>
     </v-main>
 
-    <v-footer class="d-flex justify-center align-center ga-4 text-medium-emphasis">
-      <NuxtLink class="text-medium-emphasis" :to="localePath('/blog')">
-        {{ t('home.footerBlog') }}
-      </NuxtLink>
-      <NuxtLink class="text-medium-emphasis" :to="localePath('/privacy-policy')">
-        {{ t('home.footerPrivacyPolicy') }}
-      </NuxtLink>
-      <NuxtLink class="text-medium-emphasis" :to="localePath('/terms-and-conditions')">
-        {{ t('home.footerTermsAndConditions') }}
-      </NuxtLink>
+    <v-footer class="d-flex flex-column align-center ga-2 py-6 text-medium-emphasis">
+      <div class="d-flex ga-1">
+        <v-btn
+          v-for="social in socialLinks"
+          :key="social.name"
+          :href="social.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          icon
+          variant="text"
+          size="small"
+          :aria-label="social.name"
+          :class="social.hoverClass"
+        >
+          <v-icon :icon="social.icon" size="20" />
+        </v-btn>
+      </div>
+
+      <span class="text-body-small text-medium-emphasis">
+        {{ t('home.footerMitLicense') }}
+      </span>
+
+      <span class="text-body-small text-medium-emphasis">
+        {{ t('home.footerCopyright') }}
+        <a
+          href="https://ndole.studio"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-medium-emphasis"
+        >
+          Ndole Studio LLC
+        </a>
+      </span>
+
+      <div class="d-flex ga-4">
+        <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/blog')">
+          {{ t('home.footerBlog') }}
+        </NuxtLink>
+        <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/privacy-policy')">
+          {{ t('home.footerPrivacyPolicy') }}
+        </NuxtLink>
+        <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/terms-and-conditions')">
+          {{ t('home.footerTermsAndConditions') }}
+        </NuxtLink>
+      </div>
     </v-footer>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { mdiCheck, mdiInformation, mdiWeatherSunny, mdiWeatherNight } from '@mdi/js'
+import { siGithub, siX, siBluesky } from 'simple-icons'
 import logo from '~/assets/images/logo.png'
 
 const { t } = useI18n()
@@ -110,6 +146,27 @@ const { mdAndUp, lgAndUp } = useDisplay()
 
 const isDark = computed(() => theme.global.current.value.dark)
 const isLoginRoute = computed(() => String(route.name).includes('login'))
+
+const socialLinks = [
+  {
+    name: 'GitHub',
+    icon: siGithub.path,
+    url: 'https://github.com/NdoleStudio/hepilo',
+    hoverClass: 'social-github',
+  },
+  {
+    name: 'X',
+    icon: siX.path,
+    url: 'https://x.com/intent/follow?screen_name=hepilohq',
+    hoverClass: 'social-x',
+  },
+  {
+    name: 'Bluesky',
+    icon: siBluesky.path,
+    url: 'https://bsky.app/profile/arnold.cm',
+    hoverClass: 'social-bluesky',
+  },
+]
 
 function toggleTheme() {
   theme.global.name.value = isDark.value ? 'light' : 'dark'
@@ -127,3 +184,21 @@ onMounted(() => {
   }
 })
 </script>
+
+<style lang="scss" scoped>
+a.hover\:text-decoration-underline:hover {
+  text-decoration: underline;
+}
+
+.social-github:hover {
+  color: v-bind("isDark ? '#ffffff' : '#181717'") !important;
+}
+
+.social-x:hover {
+  color: v-bind("isDark ? '#ffffff' : '#000000'") !important;
+}
+
+.social-bluesky:hover {
+  color: #1185fe !important;
+}
+</style>

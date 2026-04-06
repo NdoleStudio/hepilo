@@ -39,6 +39,8 @@
     "footerBlog": "Blog",
     "footerPrivacyPolicy": "Privacy Policy",
     "footerTermsAndConditions": "Terms And Conditions",
+    "footerMitLicense": "Released under the MIT License",
+    "footerCopyright": "Copyright © 2023-2026",
     "typewriterStrings": ["Grocery", "Weekly", "Christmas", "Ultimate"]
   },
   "auth": {
