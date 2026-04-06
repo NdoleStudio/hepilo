@@ -174,8 +174,9 @@ onMounted(() => {
               class="d-flex align-center"
               :class="{ 'justify-center': mdAndDown }"
             >
-              <a :href="githubLink" class="ml-3 mt-2">
+              <a :href="githubLink" class="mt-2">
                 <img
+                    width="150px"
                   alt="GitHub Repo stars"
                   src="https://img.shields.io/github/stars/NdoleStudio/hepilo?style=social"
                 >
