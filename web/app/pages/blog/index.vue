@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSeoDefaults } from '~/composables/useSeoDefaults'
 
-definePageMeta({ layout: 'default' })
+definePageMeta({ layout: 'auth' })
 
 const { t } = useI18n()
 const localePath = useLocalePath()

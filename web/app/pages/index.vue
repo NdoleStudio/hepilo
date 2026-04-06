@@ -174,10 +174,6 @@ onMounted(() => {
               class="d-flex align-center"
               :class="{ 'justify-center': mdAndDown }"
             >
-              <v-btn class="mt-4 mb-4" :href="githubLink">
-                <v-icon :icon="mdiGithub" />
-                {{ t('home.github') }}
-              </v-btn>
               <a :href="githubLink" class="ml-3 mt-2">
                 <img
                   alt="GitHub Repo stars"

@@ -6,7 +6,7 @@ const localePath = useLocalePath()
 const appName = config.public.appName as string
 const appUrl = config.public.siteUrl as string
 
-definePageMeta({ layout: 'default' })
+definePageMeta({ layout: 'auth' })
 
 useSeoDefaults({
   title: t('legal.termsTitle'),

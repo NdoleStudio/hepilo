@@ -4,8 +4,8 @@
       <div class="d-flex align-center cursor-pointer ml-4" @click="navigateTo(localePath('/'))">
         <v-img
           max-height="55"
-          max-width="55"
-          src="~/assets/images/logo.png"
+          width="55"
+          :src="logo"
         />
         <h4
           class="ml-2"
@@ -16,7 +16,10 @@
       </div>
 
       <v-spacer />
-
+      <LanguageSwitcher />
+      <v-btn icon @click="toggleTheme">
+        <v-icon :icon="isDark ? mdiWeatherSunny : mdiWeatherNight" />
+      </v-btn>
       <v-btn
         v-if="lgAndUp && route.name !== 'blog'"
         variant="text"
@@ -26,16 +29,10 @@
       >
         {{ t('nav.blog') }}
       </v-btn>
-
-      <LanguageSwitcher />
-
-      <v-btn icon @click="toggleTheme">
-        <v-icon :icon="isDark ? mdiWeatherSunny : mdiWeatherNight" />
-      </v-btn>
-
       <v-btn
         v-if="!isLoginRoute"
         color="primary"
+        variant="flat"
         class="text-none mr-2"
         :to="localePath('/login')"
       >
@@ -84,11 +81,24 @@
         </template>
       </v-snackbar>
     </v-main>
+
+    <v-footer class="d-flex justify-center align-center ga-4 text-medium-emphasis">
+      <NuxtLink class="text-medium-emphasis" :to="localePath('/blog')">
+        {{ t('home.footerBlog') }}
+      </NuxtLink>
+      <NuxtLink class="text-medium-emphasis" :to="localePath('/privacy-policy')">
+        {{ t('home.footerPrivacyPolicy') }}
+      </NuxtLink>
+      <NuxtLink class="text-medium-emphasis" :to="localePath('/terms-and-conditions')">
+        {{ t('home.footerTermsAndConditions') }}
+      </NuxtLink>
+    </v-footer>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { mdiCheck, mdiInformation, mdiWeatherSunny, mdiWeatherNight } from '@mdi/js'
+import logo from '~/assets/images/logo.png'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
