@@ -6,6 +6,10 @@ export default defineNuxtConfig({
 
   ssr: true,
 
+  features: {
+    inlineStyles: false,
+  },
+
   runtimeConfig: {
     public: {
       appName: process.env.NUXT_PUBLIC_APP_NAME || 'Hepilo',
@@ -26,14 +30,17 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
     '@sentry/nuxt',
-    '@nuxtjs/google-fonts',
+    '@nuxt/fonts',
   ],
 
-  googleFonts: {
-    families: {
-      Inter: [300, 400, 500, 600, 700],
-    },
-    display: 'swap',
+  fonts: {
+    families: [
+      {
+        name: 'Manrope',
+        provider: 'google',
+        weights: [300, 400, 500, 600, 700],
+      },
+    ],
   },
 
   app: {
@@ -48,6 +55,9 @@ export default defineNuxtConfig({
       ssrClientHints: {
         reloadOnFirstRequest: false,
         viewportSize: true,
+      },
+      styles: {
+        configFile: 'assets/styles/vuetify-settings.scss',
       },
     },
     vuetifyOptions: {
@@ -72,7 +82,7 @@ export default defineNuxtConfig({
       defaults: {
         global: {
           font: {
-            family: 'Inter',
+            family: 'Manrope',
           },
         },
       },
