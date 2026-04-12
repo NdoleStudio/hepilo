@@ -111,9 +111,7 @@ function clearForm() {
               <v-card-title>
                 {{ formTitle }}
                 <v-spacer />
-                <v-btn color="info" icon @click="closePopup">
-                  <v-icon :icon="mdiClose" />
-                </v-btn>
+                <v-btn :icon="mdiClose" color="info" variant="text" @click="closePopup" />
               </v-card-title>
               <v-card-text>
                 <v-form v-model="formValid" lazy-validation>
@@ -191,28 +189,26 @@ function clearForm() {
                       <v-tooltip location="bottom">
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
+                            :icon="mdiSquareEditOutline"
                             @click="onEditCategory(category)"
                             color="info"
                             class="mr-2"
                             v-bind="tooltipProps"
-                            icon
-                          >
-                            <v-icon :icon="mdiSquareEditOutline" />
-                          </v-btn>
+                            variant="text"
+                          />
                         </template>
                         <span>{{ $t('common.edit', { name: category.name }) }}</span>
                       </v-tooltip>
                       <v-tooltip location="bottom">
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
+                            :icon="mdiTrashCan"
                             @click.stop="onDeleteCategory(category)"
                             color="error"
-                            icon
+                            variant="text"
                             v-bind="tooltipProps"
                             class="ml-2"
-                          >
-                            <v-icon :icon="mdiTrashCan" />
-                          </v-btn>
+                          />
                         </template>
                         <span>{{ $t('common.deleteItem', { name: category.name }) }}</span>
                       </v-tooltip>

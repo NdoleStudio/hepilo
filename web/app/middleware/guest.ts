@@ -1,10 +1,9 @@
-import { getAuth } from 'firebase/auth'
-
-export default defineNuxtRouteMiddleware((_to, _from) => {
+export default defineNuxtRouteMiddleware(async (_to, _from) => {
   if (!import.meta.client) return
 
-  const auth = getAuth()
-  if (auth.currentUser) {
+  const { getCurrentUser } = useFirebase()
+  const user = await getCurrentUser()
+  if (user) {
     return navigateTo('/lists')
   }
 })

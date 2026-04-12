@@ -1,5 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import type { User } from '~/types/state'
 
 export default defineNuxtPlugin(() => {
   const firebaseConfig = {
@@ -24,4 +26,21 @@ export default defineNuxtPlugin(() => {
       })
     }
   }
+
+  // Keep auth store in sync with Firebase auth state (persists across reloads)
+  const authStore = useAuthStore()
+  const auth = getAuth()
+  onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      const stateUser: User = {
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL,
+      }
+      authStore.setUser(stateUser)
+    }
+    else {
+      authStore.setUser(null)
+    }
+  })
 })

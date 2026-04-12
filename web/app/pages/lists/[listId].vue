@@ -30,6 +30,7 @@ const uiStore = useUIStore()
 definePageMeta({
   layout: 'default',
   middleware: 'auth',
+  key: route => String(route.params.listId),
 })
 
 // Combobox / add item
@@ -246,35 +247,32 @@ function loadIntroductions() {
   d.drive()
 }
 
-// Watch route param for list switching
-watch(
-  () => route.params.listId as string,
-  (newListId) => {
-    if (newListId) {
-      listStore.setSelectedListId(newListId)
-      listStore.setTitleByListId(newListId)
-    }
-  },
-)
+let introTimeout: ReturnType<typeof setTimeout> | null = null
 
 onMounted(async () => {
   await listStore.loadState()
   const listId = route.params.listId as string
-  uiStore.setTitle(listStore.selectedList.name)
 
   if (listStore.selectedList.id !== listId) {
     if (!listStore.listExists(listId)) {
       navigateTo(localePath(`/lists/${listStore.selectedList.id}`))
-    } else {
-      listStore.setSelectedListId(listId)
-      listStore.setTitleByListId(listId)
+      return
     }
+    await listStore.setSelectedListId(listId)
   }
 
+  listStore.setTitleByListId(listId)
+
   if (settingsStore.showIntro) {
-    setTimeout(() => {
+    introTimeout = setTimeout(() => {
       loadIntroductions()
     }, 5000)
+  }
+})
+
+onUnmounted(() => {
+  if (introTimeout) {
+    clearTimeout(introTimeout)
   }
 })
 </script>
@@ -342,9 +340,9 @@ onMounted(async () => {
     <!-- Shopping list items -->
     <v-row v-if="listStore.listMaterializedItems.length > 0">
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <v-card flat>
+        <v-card flat tile>
           <v-card-text class="px-0 py-0">
-            <v-list class="pb-0">
+            <v-list class="pb-0" lines="two">
               <v-progress-linear
                 :active="uiStore.saving"
                 :indeterminate="uiStore.saving"
@@ -392,11 +390,11 @@ onMounted(async () => {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             v-bind="tooltipProps"
-                            icon
+                            :icon="mdiDelete"
+                            variant="text"
+                            color="error"
                             @click.stop="listStore.deleteListItem(item.listItem.itemId)"
-                          >
-                            <v-icon color="error" :icon="mdiDelete" />
-                          </v-btn>
+                          />
                         </template>
                         <span>{{ $t('common.delete') }}</span>
                       </v-tooltip>
@@ -426,14 +424,15 @@ onMounted(async () => {
                   color="success"
                   variant="text"
                   size="small"
+                  :prepend-icon="mdiNotificationClearAll"
                   @click="onClearCart"
                 >
-                  <v-icon start :icon="mdiNotificationClearAll" /> {{ $t('list.clearCart') }}
+                  {{ $t('list.clearCart') }}
                 </v-btn>
               </div>
             </v-expansion-panel-title>
-            <v-expansion-panel-text class="px-0">
-              <v-list class="mb-n4 pb-0">
+            <v-expansion-panel-text>
+              <v-list class="mb-n4 pb-0 mx-n4" lines="two">
                 <template v-for="categoryItem in listStore.cartMaterializedItems" :key="'cart-' + categoryItem.category.id">
                   <v-list-item
                     v-for="item in categoryItem.items"
@@ -458,9 +457,7 @@ onMounted(async () => {
                       {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
                     </v-list-item-subtitle>
                     <template #append>
-                      <v-btn icon @click.stop="listStore.deleteListItem(item.listItem.itemId)">
-                        <v-icon color="error" :icon="mdiDelete" />
-                      </v-btn>
+                      <v-btn :icon="mdiDelete" variant="text" color="error" @click.stop="listStore.deleteListItem(item.listItem.itemId)" />
                     </template>
                   </v-list-item>
                 </template>
@@ -504,9 +501,7 @@ onMounted(async () => {
             {{ $t('common.save') }}
           </v-btn>
           <v-spacer />
-          <v-btn color="info" icon @click="closePopup">
-            <v-icon :icon="mdiClose" />
-          </v-btn>
+          <v-btn :icon="mdiClose" variant="text" color="info" @click="closePopup" />
         </v-card-title>
         <v-card-text>
           <v-form class="mt-2" v-model="formValid" lazy-validation>

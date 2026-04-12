@@ -10,7 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   )
 
   function setUser(newUser: User | null) {
-    if (user.value === newUser) return
+    if (newUser === null && user.value === null) return
+    if (newUser !== null && user.value !== null && newUser.id === user.value.id) return
     user.value = newUser
   }
 
