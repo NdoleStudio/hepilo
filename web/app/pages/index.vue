@@ -17,7 +17,7 @@ const { mdAndDown } = useDisplay()
 
 useSeoDefaults({
   title: t('home.heroTitle'),
-  description: t('home.heroSubtitle'),
+  description: t('home.heroSeoDescription'),
   path: '/',
 })
 

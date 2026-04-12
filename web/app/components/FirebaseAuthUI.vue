@@ -18,6 +18,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 const email = ref('')
 const password = ref('')
@@ -68,24 +69,25 @@ async function handleEmailAuth() {
       <v-btn
         block
         size="large"
-        color="white"
-        variant="outlined"
-        :prepend-icon="mdiGoogle"
+        color="#f5f5f5"
+        variant="flat"
         :loading="loading"
-        class="mb-4"
+        class="mb-4 text-none"
         @click="signInWithGoogle"
       >
+        <template #prepend>
+          <v-icon :icon="mdiGoogle" color="#b65b46" />
+        </template>
         {{ t('auth.continueWithGoogle') }}
       </v-btn>
-
-      <v-divider class="my-4" />
-
       <div v-if="!showEmailForm">
         <v-btn
           block
           size="large"
-          variant="outlined"
+          color="#c0513f"
+          variant="flat"
           :prepend-icon="mdiEmail"
+          class="text-none text-white"
           @click="showEmailForm = true"
         >
           {{ t('auth.continueWithEmail') }}
@@ -113,6 +115,7 @@ async function handleEmailAuth() {
           color="primary"
           type="submit"
           :loading="loading"
+          class="text-none"
         >
           {{ isSignUp ? t('auth.signUp') : t('auth.signIn') }}
         </v-btn>
@@ -126,6 +129,15 @@ async function handleEmailAuth() {
           {{ isSignUp ? t('auth.haveAccount') : t('auth.noAccount') }}
         </v-btn>
       </v-form>
+
+      <i18n-t keypath="auth.byContinuing" tag="p" class="text-body-small text-medium-emphasis text-center mt-4">
+        <template #termsOfService>
+          <NuxtLinkLocale class="text-primary text-decoration-none hover:text-decoration-underline" to="/terms-and-conditions">{{ t('auth.termsOfService') }}</NuxtLinkLocale>
+        </template>
+        <template #privacyPolicy>
+          <NuxtLinkLocale class="text-primary text-decoration-none hover:text-decoration-underline" to="/privacy-policy">{{ t('auth.privacyPolicy') }}</NuxtLinkLocale>
+        </template>
+      </i18n-t>
 
       <v-alert
         v-if="errorMessage"

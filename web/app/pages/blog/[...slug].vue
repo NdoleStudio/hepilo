@@ -16,8 +16,9 @@ const slug = computed(() => {
 })
 
 const { data: post } = await useAsyncData(`blog-${slug.value}`, () =>
-  queryContent('/blog', slug.value)
-    .findOne(),
+  queryCollection('blog')
+    .path(`/blog/${slug.value}`)
+    .first(),
 )
 
 if (!post.value) {
@@ -39,10 +40,12 @@ useSeoDefaults({
     <v-row>
       <v-col
         cols="12"
-        xl="6"
         md="8"
         offset-md="2"
-        offset-xl="3"
+        xl="8"
+        offset-xl="2"
+        xxl="6"
+        offset-xxl="3"
       >
         <template v-if="post">
           <h1 class="text-display-small mb-4 mt-8">
@@ -55,11 +58,13 @@ useSeoDefaults({
             {{ post.description }}
           </p>
 
-          <ContentRenderer :value="post" />
-
-          <v-divider class="mt-8" color="primary" />
+          <div class="blog-content">
+            <ContentRenderer :value="post" />
+          </div>
         </template>
-
+        <div class="px-16">
+          <v-divider class="mt-8" color="primary" />
+        </div>
         <div class="text-center mt-4">
           <BackButton :route="localePath('/blog')" />
         </div>
@@ -67,3 +72,18 @@ useSeoDefaults({
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+.blog-content :deep(a) {
+  text-decoration: none;
+}
+
+.blog-content :deep(a:hover) {
+  text-decoration: underline;
+}
+
+.blog-content :deep(img) {
+  display: block;
+  margin-inline: auto;
+}
+</style>

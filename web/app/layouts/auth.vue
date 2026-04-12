@@ -48,7 +48,7 @@
       />
     </v-app-bar>
 
-    <v-main class="pb-16">
+    <v-main>
       <slot />
       <v-snackbar
         v-model="uiStore.isNotificationActive"
@@ -94,7 +94,9 @@
           :aria-label="social.name"
           :color="social.hoverColor"
         >
-          <v-icon :icon="social.icon" size="large" />
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path :d="social.icon" fill="currentColor" />
+          </svg>
         </v-btn>
       </div>
 
@@ -115,7 +117,7 @@
         </a>
       </p>
 
-      <div class="d-flex ga-4 mt-6">
+      <div class="d-flex ga-4 mt-2">
         <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/blog')">
           {{ t('home.footerBlog') }}
         </NuxtLink>
@@ -158,7 +160,7 @@ const socialLinks = computed(() => {
       name: 'X',
       icon: siX.path,
       url: 'https://x.com/intent/follow?screen_name=hepilohq',
-      hoverColor: '#000000',
+      hoverColor: theme.current.value.dark ? '#FFFFFF' : '#000000',
     },
     {
       name: 'Bluesky',

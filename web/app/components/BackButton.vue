@@ -26,7 +26,7 @@ function goBack() {
 
 <template>
   <v-btn
-    color="secondary"
+    variant="flat"
     :block="block"
     :class="{ 'w-full': block }"
     @click="goBack"

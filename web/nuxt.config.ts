@@ -33,6 +33,18 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
   ],
 
+  content: {
+    renderer: {
+      anchorLinks: false,
+    },
+  },
+
+  mdc: {
+    components: {
+      prose: true,
+    },
+  },
+
   fonts: {
     families: [
       {
@@ -47,6 +59,7 @@ export default defineNuxtConfig({
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
+      titleTemplate: '%s - Hepilo',
     },
   },
 

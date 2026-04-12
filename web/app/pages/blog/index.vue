@@ -7,14 +7,14 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 const { data: posts } = await useAsyncData('blog-posts', () =>
-  queryContent('/blog')
-    .sort({ date: -1 })
-    .find(),
+  queryCollection('blog')
+    .order('date', 'DESC')
+    .all(),
 )
 
 useSeoDefaults({
-  title: t('blog.title'),
-  description: t('home.heroSubtitle'),
+  title: t('blog.seoTitle'),
+  description: t('blog.seoDescription'),
   path: '/blog',
 })
 
@@ -32,10 +32,12 @@ function formatDate(date: string) {
     <v-row>
       <v-col
         cols="12"
-        xl="6"
         md="8"
         offset-md="2"
-        offset-xl="3"
+        xl="8"
+        offset-xl="2"
+        xxl="6"
+        offset-xxl="3"
       >
         <h1 class="text-display-small mb-6">
           {{ t('blog.title') }}
@@ -43,9 +45,9 @@ function formatDate(date: string) {
 
         <v-card
           v-for="post in posts"
-          :key="post._path"
+          :key="post.path"
           class="mb-4 hover-opacity cursor-pointer"
-          :to="localePath(post._path!)"
+          :to="localePath(post.path)"
           hover
         >
           <v-card-title class="text-headline-large break-word">

@@ -19,8 +19,9 @@
     "version": "version"
   },
   "home": {
-    "heroTitle": "Liste de courses",
+    "heroTitle": "Votre liste de courses intelligente",
     "heroSubtitle": "Créez et organisez facilement plusieurs listes de courses au même endroit.",
+    "heroSeoDescription": "Hepilo est une application gratuite de listes de courses qui vous aide à organiser vos achats, synchroniser vos listes sur tous vos appareils et collaborer en famille.",
     "getStarted": "Commencer",
     "liveDemo": "Démo en direct",
     "getItOnGooglePlay": "Disponible sur Google Play",
@@ -45,6 +46,9 @@
   },
   "auth": {
     "loginTitle": "Connexion",
+    "loginSubtitle": "Connectez-vous pour synchroniser vos listes de courses sur tous vos appareils et ne jamais perdre vos données.",
+    "loginSeoTitle": "Connectez-vous à votre compte",
+    "loginSeoDescription": "Connectez-vous à Hepilo pour synchroniser vos listes de courses sur tous vos appareils, collaborer en famille et ne jamais perdre vos données.",
     "loginSuccess": "Connexion réussie !",
     "continueWith": "Continuer avec",
     "continueWithGoogle": "Continuer avec Google",
@@ -57,7 +61,10 @@
     "haveAccount": "Vous avez déjà un compte ? Connectez-vous",
     "noAccount": "Pas de compte ? Inscrivez-vous",
     "logoutSuccess": "Vous vous êtes déconnecté avec succès",
-    "reLoginToDelete": "Veuillez vous reconnecter pour supprimer votre compte."
+    "reLoginToDelete": "Veuillez vous reconnecter pour supprimer votre compte.",
+    "byContinuing": "En continuant, vous acceptez nos {termsOfService} et notre {privacyPolicy}.",
+    "termsOfService": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité"
   },
   "list": {
     "addItem": "Ajouter un article",
@@ -150,10 +157,13 @@
   },
   "blog": {
     "title": "Blog",
+    "seoTitle": "Blog — Astuces, mises à jour et conseils courses",
+    "seoDescription": "Lisez les derniers articles Hepilo sur les courses intelligentes, les mises à jour de l'application, les conseils de planification de repas et les astuces pour gagner du temps.",
     "postNotFound": "L'article de blog n'existe pas"
   },
   "legal": {
     "termsTitle": "Conditions générales",
+    "termsSeoDescription": "Consultez les conditions générales d'utilisation de Hepilo, notre application gratuite de listes de courses. Découvrez vos droits, vos responsabilités et nos politiques de service.",
     "termsIntro": "Ces conditions générales décrivent les règles et réglementations relatives à l'utilisation du site Web {appName}, situé à",
     "termsAcceptance": "En accédant à ce site Web, nous supposons que vous acceptez ces conditions générales. Ne continuez pas à utiliser {appName} si vous n'acceptez pas toutes les conditions générales énoncées sur cette page.",
     "termsTerminology": "La terminologie suivante s'applique aux présentes Conditions Générales, à la Déclaration de Confidentialité et à l'Avis de Non-Responsabilité ainsi qu'à tous les Accords : « Client », « Vous » et « Votre » désignent vous, la personne connectée à ce site Web et conforme aux conditions générales de la Société. « La Société », « Nous-mêmes », « Nous », « Notre » et « Nos », désignent notre Société. « Partie », « Parties », ou « Nous », désignent à la fois le Client et nous-mêmes. Tous les termes se réfèrent à l'offre, l'acceptation et la contrepartie du paiement nécessaire pour entreprendre le processus de notre assistance au Client de la manière la plus appropriée dans le but exprès de répondre aux besoins du Client en ce qui concerne la fourniture des services déclarés de la Société, conformément et sous réserve du droit en vigueur aux Pays-Bas. Toute utilisation de la terminologie ci-dessus ou d'autres mots au singulier, au pluriel, en majuscules et/ou il/elle ou ils, sont considérés comme interchangeables et donc comme se référant au même.",
@@ -221,6 +231,7 @@
     "disclaimerText2": "Les limitations et interdictions de responsabilité énoncées dans cette section et ailleurs dans cet avis de non-responsabilité : (a) sont soumises au paragraphe précédent ; et (b) régissent toutes les responsabilités découlant de l'avis de non-responsabilité, y compris les responsabilités contractuelles, délictuelles et pour violation d'une obligation légale.",
     "disclaimerText3": "Tant que le site Web et les informations et services sur le site Web sont fournis gratuitement, nous ne serons pas responsables de toute perte ou dommage de quelque nature que ce soit.",
     "privacyTitle": "Politique de confidentialité",
+    "privacySeoDescription": "Découvrez comment Hepilo collecte, utilise et protège vos données personnelles. Nous respectons votre vie privée et gardons vos listes de courses en sécurité.",
     "privacyIntro": "Chez {appName}, accessible depuis",
     "privacyIntroSuffix": ", l'une de nos principales priorités est la confidentialité de nos visiteurs. Ce document de Politique de Confidentialité contient les types d'informations collectées et enregistrées par {appName} et comment nous les utilisons.",
     "privacyContact": "Si vous avez des questions supplémentaires ou avez besoin de plus d'informations sur notre Politique de Confidentialité, n'hésitez pas à nous contacter.",

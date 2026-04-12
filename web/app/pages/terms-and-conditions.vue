@@ -10,7 +10,7 @@ definePageMeta({ layout: 'auth' })
 
 useSeoDefaults({
   title: t('legal.termsTitle'),
-  description: t('legal.termsTitle'),
+  description: t('legal.termsSeoDescription'),
   path: '/terms-and-conditions',
 })
 </script>
@@ -18,10 +18,15 @@ useSeoDefaults({
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>{{ $t('legal.termsTitle') }}</v-card-title>
-          <v-card-text class="break-word">
+      <v-col
+        cols="12"
+        md="8"
+        offset-md="2"
+        xxl="6"
+        offset-xxl="3"
+      >
+        <h1 class="text-display-large mb-6">{{ $t('legal.termsTitle') }}</h1>
+        <div class="break-word">
             <p>
               {{ $t('legal.termsIntro', { appName }) }}
               <a :href="appUrl">{{ appUrl }}</a>.
@@ -29,14 +34,14 @@ useSeoDefaults({
             <p>{{ $t('legal.termsAcceptance', { appName }) }}</p>
             <p>{{ $t('legal.termsTerminology') }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.cookiesTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.cookiesTitle') }}</h2>
             <p>
               {{ $t('legal.cookiesText1', { appName }) }}
               <a href="https://firebase.google.com/support/privacy" target="_blank">{{ $t('legal.cookiesFirebaseLink') }}</a>.
             </p>
             <p>{{ $t('legal.cookiesText2') }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.licenseTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.licenseTitle') }}</h2>
             <p>{{ $t('legal.licenseText1', { appName }) }}</p>
             <p>{{ $t('legal.licenseRestrictions') }}</p>
             <ul class="ml-4 mb-4">
@@ -56,7 +61,7 @@ useSeoDefaults({
             </ul>
             <p>{{ $t('legal.licenseGrant', { appName }) }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.hyperlinkingTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.hyperlinkingTitle') }}</h2>
             <p>{{ $t('legal.hyperlinkingText1') }}</p>
             <ul class="ml-4 mb-4">
               <li>{{ $t('legal.hyperlinkingOrg1') }}</li>
@@ -87,26 +92,26 @@ useSeoDefaults({
             </ul>
             <p>{{ $t('legal.hyperlinkingNoLogo', { appName }) }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.iframesTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.iframesTitle') }}</h2>
             <p>{{ $t('legal.iframesText') }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.contentLiabilityTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.contentLiabilityTitle') }}</h2>
             <p>{{ $t('legal.contentLiabilityText') }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.yourPrivacyTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.yourPrivacyTitle') }}</h2>
             <p>
               {{ $t('legal.yourPrivacyText') }}
               <NuxtLink :to="localePath('/privacy-policy')">{{ $t('legal.yourPrivacyLink') }}</NuxtLink>.
             </p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.reservationTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.reservationTitle') }}</h2>
             <p>{{ $t('legal.reservationText') }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.removalTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.removalTitle') }}</h2>
             <p>{{ $t('legal.removalText1') }}</p>
             <p>{{ $t('legal.removalText2') }}</p>
 
-            <h2 class="text-headline-small mb-2">{{ $t('legal.disclaimerTitle') }}</h2>
+            <h2 class="text-headline-medium mt-6 mb-2">{{ $t('legal.disclaimerTitle') }}</h2>
             <p>{{ $t('legal.disclaimerText1') }}</p>
             <ul class="ml-4 mb-4">
               <li>{{ $t('legal.disclaimerItem1') }}</li>
@@ -116,8 +121,10 @@ useSeoDefaults({
             </ul>
             <p>{{ $t('legal.disclaimerText2') }}</p>
             <p>{{ $t('legal.disclaimerText3') }}</p>
-          </v-card-text>
-        </v-card>
+          </div>
+        <div class="px-16">
+          <v-divider class="mt-8" color="primary" />
+        </div>
         <div class="text-center mt-4">
           <BackButton />
         </div>

@@ -19,8 +19,9 @@
     "version": "version"
   },
   "home": {
-    "heroTitle": "Shopping List",
+    "heroTitle": "Your Smart Shopping List",
     "heroSubtitle": "Easily create and organize multiple shopping lists all in one place.",
+    "heroSeoDescription": "Hepilo is a free shopping list app that helps you organize groceries, sync lists across devices, and collaborate with family — all in one place.",
     "getStarted": "Get Started",
     "liveDemo": "Live Demo",
     "getItOnGooglePlay": "Get it on Google Play",
@@ -45,6 +46,9 @@
   },
   "auth": {
     "loginTitle": "Login",
+    "loginSubtitle": "Sign in to sync your shopping lists across devices and never lose your data.",
+    "loginSeoTitle": "Log In to Your Account",
+    "loginSeoDescription": "Sign in to Hepilo to sync your shopping lists across all your devices, collaborate with family, and never lose your grocery data.",
     "loginSuccess": "Login successfull!",
     "continueWith": "Continue with",
     "continueWithGoogle": "Continue with Google",
@@ -57,7 +61,10 @@
     "haveAccount": "Already have an account? Sign in",
     "noAccount": "Don't have an account? Sign up",
     "logoutSuccess": "You have successfully logged out",
-    "reLoginToDelete": "Please sign in again to delete your account."
+    "reLoginToDelete": "Please sign in again to delete your account.",
+    "byContinuing": "By continuing, you are indicating that you accept our {termsOfService} and {privacyPolicy}.",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy"
   },
   "list": {
     "addItem": "Add Item",
@@ -150,10 +157,13 @@
   },
   "blog": {
     "title": "Blog",
+    "seoTitle": "Blog — Tips, Updates & Grocery Hacks",
+    "seoDescription": "Read the latest Hepilo articles on smarter grocery shopping, app updates, meal-planning tips, and ways to save time and money at the store.",
     "postNotFound": "The blog post does not exist"
   },
   "legal": {
     "termsTitle": "Terms and Conditions",
+    "termsSeoDescription": "Review the terms and conditions for using Hepilo, our free shopping list app. Learn about your rights, responsibilities, and our service policies.",
     "termsIntro": "These terms and conditions outline the rules and regulations for the use of the {appName} Website, located at",
     "termsAcceptance": "By accessing this website we assume you accept these terms and conditions. Do not continue to use {appName} if you do not agree to take all of the terms and conditions stated on this page.",
     "termsTerminology": "The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements: \"Client\", \"You\" and \"Your\" refers to you, the person log on this website and compliant to the Company's terms and conditions. \"The Company\", \"Ourselves\", \"We\", \"Our\" and \"Us\", refers to our Company. \"Party\", \"Parties\", or \"Us\", refers to both the Client and ourselves. All terms refer to the offer, acceptance and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client's needs in respect of provision of the Company's stated services, in accordance with and subject to, prevailing law of Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization and/or he/she or they, are taken as interchangeable and therefore as referring to same.",
@@ -221,6 +231,7 @@
     "disclaimerText2": "The limitations and prohibitions of liability set in this Section and elsewhere in this disclaimer: (a) are subject to the preceding paragraph; and (b) govern all liabilities arising under the disclaimer, including liabilities arising in contract, in tort and for breach of statutory duty.",
     "disclaimerText3": "As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.",
     "privacyTitle": "Privacy Policy",
+    "privacySeoDescription": "Learn how Hepilo collects, uses, and protects your personal data. We respect your privacy and keep your shopping lists secure.",
     "privacyIntro": "At {appName}, accessible from",
     "privacyIntroSuffix": ",one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by {appName} and how we use it.",
     "privacyContact": "If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.",
