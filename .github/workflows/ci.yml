@@ -28,6 +28,17 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: web/pnpm-lock.yaml
 
+      - name: Debug pnpm config
+        run: |
+          echo "=== pnpm version ==="
+          pnpm --version
+          echo "=== pnpm-workspace.yaml ==="
+          cat pnpm-workspace.yaml
+          echo "=== pnpm config list ==="
+          pnpm config list
+          echo "=== pwd ==="
+          pwd
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
