@@ -58,7 +58,7 @@ export const useListStore = defineStore('list', () => {
 
   const selectedList = computed((): List => {
     const authStore = useAuthStore()
-    const found = lists.value.find(list => list.id === selectedListId.value)
+    const found = lists.value.find((list: List) => list.id === selectedListId.value)
 
     if (found === undefined && (!stateLoaded.value || !authStore.isLoggedIn)) {
       return LIST_DEFAULT
@@ -75,7 +75,7 @@ export const useListStore = defineStore('list', () => {
   })
 
   const selectedListIsValid = computed((): boolean => {
-    return lists.value.find(list => list.id === selectedListId.value) !== undefined
+    return lists.value.find((list:List) => list.id === selectedListId.value) !== undefined
   })
 
   function listExists(listId: string): boolean {
@@ -83,7 +83,7 @@ export const useListStore = defineStore('list', () => {
   }
 
   function listById(listId: string): List | undefined {
-    return lists.value.find(list => list.id === listId)
+    return lists.value.find((list:List) => list.id === listId)
   }
 
   function listIcon(name: string): string {
@@ -526,7 +526,7 @@ export const useListStore = defineStore('list', () => {
     }
 
     let quantity = 1
-    const nameQuantity = parseFloat(name.split(' ')[0])
+    const nameQuantity = parseFloat(name.split(' ')[0]!)
     if (!isNaN(nameQuantity) && nameQuantity > 0) {
       quantity = nameQuantity
       name = name.split(' ').slice(1).join(' ')
@@ -561,7 +561,7 @@ export const useListStore = defineStore('list', () => {
       }
       const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
       if (listIndex !== -1) {
-        lists.value[listIndex].items.push(listItem)
+        lists.value[listIndex]!.items.push(listItem)
         lists.value = [...lists.value]
       }
     }
@@ -666,7 +666,7 @@ export const useListStore = defineStore('list', () => {
 
     const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
     if (listIndex !== -1) {
-      lists.value[listIndex].items = lists.value[listIndex].items.filter(
+      lists.value[listIndex]!.items = lists.value[listIndex]!.items.filter(
         (li: ListItem) => li.itemId !== itemId,
       )
       lists.value = [...lists.value]
@@ -752,7 +752,7 @@ export const useListStore = defineStore('list', () => {
 
     const listIndex = lists.value.findIndex(l => l.id === listId)
     if (listIndex !== -1) {
-      lists.value[listIndex].items = lists.value[listIndex].items.filter(
+      lists.value[listIndex]!.items = lists.value[listIndex]!.items.filter(
         (li: ListItem) => !li.addedToCart,
       )
       lists.value = [...lists.value]
@@ -780,7 +780,7 @@ export const useListStore = defineStore('list', () => {
     const authStore = useAuthStore()
     const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
     if (listIndex !== -1) {
-      lists.value[listIndex].cartPanelOpen = !lists.value[listIndex].cartPanelOpen
+      lists.value[listIndex]!.cartPanelOpen = !lists.value[listIndex]!.cartPanelOpen
       lists.value = [...lists.value]
     }
 
@@ -865,7 +865,7 @@ export const useListStore = defineStore('list', () => {
     // Create default list if selected list is invalid
     if (!selectedListIsValid.value) {
       if (lists.value.length > 0) {
-        selectedListId.value = lists.value[0].id
+        selectedListId.value = lists.value[0]!.id
       }
       else {
         lists.value.push({ ...LIST_DEFAULT })
@@ -911,7 +911,7 @@ export const useListStore = defineStore('list', () => {
   function _setAddedToCart(itemId: string, addedToCart: boolean) {
     const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
     if (listIndex === -1) return
-    lists.value[listIndex].items = lists.value[listIndex].items.map(
+    lists.value[listIndex]!.items = lists.value[listIndex]!.items.map(
       (li: ListItem) => {
         if (li.itemId === itemId) li.addedToCart = addedToCart
         return li
@@ -923,14 +923,14 @@ export const useListStore = defineStore('list', () => {
   function _upsertListItem(listItem: ListItem) {
     const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
     if (listIndex === -1) return
-    const index = lists.value[listIndex].items.findIndex(
+    const index = lists.value[listIndex]!.items.findIndex(
       (li: ListItem) => li.itemId === listItem.itemId,
     )
     if (index === -1) {
-      lists.value[listIndex].items.push(listItem)
+      lists.value[listIndex]!.items.push(listItem)
     }
     else {
-      lists.value[listIndex].items[index] = listItem
+      lists.value[listIndex]!.items[index] = listItem
     }
     lists.value = [...lists.value]
   }
