@@ -26,7 +26,7 @@
     "short-uuid": "^6.0.3",
     "simple-icons": "^16.15.0",
     "typewriter-effect": "^2.22.0",
-    "vue": "^3.5.30",
+    "vue": "^3.5.32",
     "vue-router": "^5.0.4",
     "vuetify": "^4.0.5",
     "vuetify-nuxt-module": "^0.19.5"
