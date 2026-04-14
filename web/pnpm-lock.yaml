@@ -45,8 +45,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       simple-icons:
-        specifier: ^16.15.0
-        version: 16.15.0
+        specifier: ^16.16.0
+        version: 16.16.0
       typewriter-effect:
         specifier: ^2.22.0
         version: 2.22.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -6179,8 +6179,8 @@ packages:
   simple-git@3.33.0:
     resolution: {integrity: sha512-D4V/tGC2sjsoNhoMybKyGoE+v8A60hRawKQ1iFRA1zwuDgGZCBJ4ByOzZ5J8joBbi4Oam0qiPH+GhzmSBwbJng==}
 
-  simple-icons@16.15.0:
-    resolution: {integrity: sha512-hOyY4Cdvh1D/FJa1Qx4nTvypCT2BoI3jpc4xjxVgwVh1Hmd9mnqBqBTziDytCj2f5UOAXCfdnwODiNv710aqkQ==}
+  simple-icons@16.16.0:
+    resolution: {integrity: sha512-H+Z29a0TrCw6mrG42V2aqHQaKdJCT87x5aojLlPiIXOf1lpMqnKFAR/jP5xkI5hLrVTCBWs33e9sOtyNWqCx1A==}
     engines: {node: '>=0.12.18'}
 
   sirv@3.0.2:
@@ -14613,7 +14613,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  simple-icons@16.15.0: {}
+  simple-icons@16.16.0: {}
 
   sirv@3.0.2:
     dependencies:
