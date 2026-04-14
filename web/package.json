@@ -37,5 +37,15 @@
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "^20.8.9",
     "vitest": "^4.1.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@parcel/watcher",
+      "@sentry/cli",
+      "better-sqlite3",
+      "esbuild",
+      "protobufjs"
+    ]
   }
 }
