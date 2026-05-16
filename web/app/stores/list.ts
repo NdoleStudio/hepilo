@@ -516,6 +516,11 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.setSaving(true)
 
+    if (!name.trim()) {
+      uiStore.setSaving(false)
+      return
+    }
+
     if (name.trim().length > 50) {
       uiStore.addNotification({
         type: 'error',

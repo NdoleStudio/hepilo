@@ -36,8 +36,10 @@ definePageMeta({
 // Combobox / add item
 const itemName = ref('')
 const isBlur = ref(false)
+const isEnterPressed = ref(false)
 const addFormQuantity = ref(0)
 const selectedItem = ref<null | number>(-1)
+let lastCommittedItem = ''
 
 // Edit dialog
 const dialog = ref(false)
@@ -127,15 +129,22 @@ function onBlur() {
   isBlur.value = true
 }
 
+function onComboboxKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && !e.isComposing) {
+    isEnterPressed.value = true
+    setTimeout(() => { isEnterPressed.value = false }, 0)
+  }
+}
+
 function hasQuantity(value: string): boolean {
-  const nameQuantity = parseFloat(value.split(' ')[0])
+  const nameQuantity = parseFloat(value.split(' ')[0]!)
   return !isNaN(nameQuantity) && nameQuantity > 0
 }
 
 function itemFilter(item: any, queryText: string, _itemText: string): boolean {
   const text = typeof item === 'string' ? item : (item?.text ?? item?.title ?? '')
   if (hasQuantity(queryText)) {
-    addFormQuantity.value = parseFloat(queryText.split(' ')[0])
+    addFormQuantity.value = parseFloat(queryText.split(' ')[0]!)
     queryText = queryText.split(' ').slice(1).join(' ')
   } else {
     addFormQuantity.value = 0
@@ -143,23 +152,38 @@ function itemFilter(item: any, queryText: string, _itemText: string): boolean {
   return text.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
 }
 
-function onChange(chosenItem: string | SelectItem) {
-  let old = ''
-  if (!isBlur.value) {
-    if (typeof chosenItem === 'string') {
-      if (chosenItem.trim().length > 15) {
-        old = chosenItem.trim()
-      }
-      listStore.addItem(chosenItem)
-    } else {
-      listStore.addItem(
-        (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + chosenItem.text,
-      )
+function onChange(chosenItem: string | SelectItem | null) {
+  if (!chosenItem) return
+
+  let itemToAdd = ''
+  let valueAfterAdd = ''
+
+  if (typeof chosenItem === 'object' && 'text' in chosenItem) {
+    // Object = dropdown selection or auto-select-first → always add
+    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + chosenItem.text
+  } else if (typeof chosenItem === 'string' && isEnterPressed.value && !isBlur.value) {
+    // String + Enter pressed = user committed typed text → add
+    const trimmed = chosenItem.trim()
+    if (!trimmed) return
+    if (trimmed.length > 15) {
+      valueAfterAdd = trimmed
     }
+    itemToAdd = chosenItem
+  } else {
+    // String without Enter = just typing (keystroke) → ignore
+    return
   }
 
+  // Prevent double-fire (auto-select-first emits object then string for same Enter)
+  const normalized = itemToAdd.trim().toLowerCase()
+  if (lastCommittedItem === normalized) return
+  lastCommittedItem = normalized
+  setTimeout(() => { lastCommittedItem = '' }, 0)
+
+  listStore.addItem(itemToAdd)
+
   nextTick(() => {
-    itemName.value = old
+    itemName.value = valueAfterAdd
     nextTick(() => {
       document.getElementById('page-title')?.click()
     })
@@ -286,6 +310,7 @@ onUnmounted(() => {
           <v-combobox
             :custom-filter="itemFilter"
             @update:model-value="onChange"
+            @keydown.enter.capture="onComboboxKeydown"
             @blur="onBlur"
             @focus="onFocus"
             :items="itemStore.autocompleteItems"
