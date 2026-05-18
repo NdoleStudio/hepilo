@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { mdiPlus, mdiClose, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
-import shortUUID from 'short-uuid'
+import { generate as generateShortUUID } from 'short-uuid'
 import { LIST_ICON_DEFAULT, useListStore } from '~/stores/list'
 import type { List, UpsertListRequest } from '~/types/state'
 
@@ -40,6 +40,8 @@ const prependIcon = computed(() => listStore.listIcon(editedList.value.icon))
 onMounted(() => {
   listStore.loadState()
   uiStore.setTitle(t('nav.manageLists'))
+  console.log("hello")
+  console.log(generateShortUUID())
 })
 
 function closePopup() {
@@ -56,7 +58,7 @@ async function onSave() {
   await listStore.upsertList({
     name: editedList.value.name,
     icon: editedList.value.icon,
-    id: editedList.value.id || shortUUID.generate(),
+    id: editedList.value.id || generateShortUUID(),
   })
   dialog.value = false
   clearForm()

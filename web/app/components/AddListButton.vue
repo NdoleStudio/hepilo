@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { mdiPlus, mdiClose } from '@mdi/js'
-import shortUUID from 'short-uuid'
+import { generate as generateShortUUID } from 'short-uuid'
 import { LIST_ICON_DEFAULT, useListStore } from '~/stores/list'
 
 const { t } = useI18n()
@@ -36,7 +36,7 @@ async function onSave() {
   await listStore.upsertList({
     name: formName.value,
     icon: formIcon.value,
-    id: shortUUID.generate(),
+    id: generateShortUUID(),
   })
   dialog.value = false
   clearForm()
