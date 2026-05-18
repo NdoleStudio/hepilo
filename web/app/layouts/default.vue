@@ -65,9 +65,8 @@
             :key="list.id"
             :to="localePath(`/lists/${list.id}`)"
             lines="two"
-            active-color="primary"
+            color="primary"
             link
-            rounded="lg"
           >
             <template #prepend>
               <v-icon size="x-large">{{ iconMap(list.icon) }}</v-icon>
@@ -95,15 +94,15 @@
         <v-divider />
 
         <!-- Manage navigation items -->
-        <v-list nav rounded active-color="primary">
-          <v-list-item :to="localePath('/manage/lists')" link rounded="lg">
+        <v-list nav rounded color="primary">
+          <v-list-item :to="localePath('/manage/lists')" link>
             <template #prepend>
               <v-icon :icon="mdiPlaylistEdit" />
             </template>
             <v-list-item-title class="text-body-large">{{ t('nav.manageLists') }}</v-list-item-title>
           </v-list-item>
 
-          <v-list-item :to="localePath('/manage/categories')" link rounded="lg">
+          <v-list-item :to="localePath('/manage/categories')" link>
             <template #prepend>
               <v-icon :icon="mdiShapeOutline" />
             </template>
@@ -112,7 +111,7 @@
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :to="localePath('/manage/items')" link rounded="lg">
+          <v-list-item :to="localePath('/manage/items')" link>
             <template #prepend>
               <v-icon :icon="mdiArchiveCogOutline" />
             </template>
@@ -123,15 +122,15 @@
         <v-divider />
 
         <!-- Blog & Feedback -->
-        <v-list nav rounded active-color="primary">
-          <v-list-item :href="`mailto:${config.public.siteEmail}`" link rounded="lg">
+        <v-list nav rounded color="primary">
+          <v-list-item :href="`mailto:${config.public.siteEmail}`" link>
             <template #prepend>
               <v-icon :icon="mdiEmail" />
             </template>
             <v-list-item-title class="text-body-large">{{ t('nav.sendFeedback') }}</v-list-item-title>
           </v-list-item>
 
-          <v-list-item :to="localePath('/blog')" link rounded="lg">
+          <v-list-item :to="localePath('/blog')" link>
             <template #prepend>
               <v-icon :icon="mdiTagText" />
             </template>

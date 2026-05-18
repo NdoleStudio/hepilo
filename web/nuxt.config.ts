@@ -147,6 +147,18 @@ export default defineNuxtConfig({
     project: 'hepilo',
   },
 
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@mdi/js',
+        'firebase/app',
+        'firebase/app-check',
+        'firebase/auth',
+        'firebase/firestore',
+      ],
+    },
+  },
+
   sourcemap: {
     client: 'hidden',
   },
