@@ -216,9 +216,10 @@ const theme = useTheme()
 const isDark = computed(() => theme.global.current.value.dark)
 
 function toggleTheme() {
-  theme.global.name.value = isDark.value ? 'light' : 'dark'
+  const newTheme = isDark.value ? 'light' : 'dark'
+  theme.change(newTheme)
   if (import.meta.client) {
-    localStorage.setItem('hepilo-theme', theme.global.name.value)
+    localStorage.setItem('hepilo-theme', newTheme)
   }
 }
 
@@ -255,7 +256,7 @@ onMounted(async () => {
   // Restore saved theme
   const savedTheme = localStorage.getItem('hepilo-theme')
   if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-    theme.global.name.value = savedTheme
+    theme.change(savedTheme)
   }
 
   const auth = getFirebaseAuth()

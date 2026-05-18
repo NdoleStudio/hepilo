@@ -172,9 +172,10 @@ const socialLinks = computed(() => {
 })
 
 function toggleTheme() {
-  theme.global.name.value = isDark.value ? 'light' : 'dark'
+  const newTheme = isDark.value ? 'light' : 'dark'
+  theme.change(newTheme)
   if (import.meta.client) {
-    localStorage.setItem('hepilo-theme', theme.global.name.value)
+    localStorage.setItem('hepilo-theme', newTheme)
   }
 }
 
@@ -182,7 +183,7 @@ onMounted(() => {
   if (import.meta.client) {
     const saved = localStorage.getItem('hepilo-theme')
     if (saved === 'light' || saved === 'dark') {
-      theme.global.name.value = saved
+      theme.change(saved)
     }
   }
 })

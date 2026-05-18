@@ -115,7 +115,6 @@ export default defineNuxtConfig({
       redirectOn: 'root',
     },
     baseUrl: 'https://hepilo.com',
-    lazy: true,
     compilation: {
       strictMessage: false,
     },
@@ -131,11 +130,7 @@ export default defineNuxtConfig({
       orientation: 'portrait',
     },
   },
-
-  sentry: {
-    dsn: process.env.SENTRY_DSN,
-  },
-
+  
   routeRules: {
     '/': { prerender: true },
     '/blog/**': { prerender: true },
