@@ -1,9 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-
   devtools: { enabled: true },
-
   ssr: true,
 
   features: {
@@ -31,6 +29,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     '@sentry/nuxt',
     '@nuxt/fonts',
+    '@sentry/nuxt/module',
   ],
 
   content: {
@@ -130,7 +129,7 @@ export default defineNuxtConfig({
       orientation: 'portrait',
     },
   },
-  
+
   routeRules: {
     '/': { prerender: true },
     '/blog/**': { prerender: true },
@@ -141,5 +140,14 @@ export default defineNuxtConfig({
     '/lists/**': { ssr: false },
     '/manage/**': { ssr: false },
     '/settings': { ssr: false },
+  },
+
+  sentry: {
+    org: 'ndolestudio',
+    project: 'hepilo',
+  },
+
+  sourcemap: {
+    client: 'hidden',
   },
 })
