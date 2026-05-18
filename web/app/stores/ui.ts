@@ -57,7 +57,7 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   function toggleNavDrawer() {
-    navDrawerOpen.value = !navDrawerOpen.value
+    setNavDrawer(!navDrawerOpen.value)
   }
 
   async function setNavDrawer(isOpen: boolean) {
@@ -65,6 +65,8 @@ export const useUIStore = defineStore('ui', () => {
 
     const authStore = useAuthStore()
     const listStore = useListStore()
+    listStore.persistToLocalStorage()
+
     if (!authStore.isLoggedIn || !listStore.stateLoaded) return
 
     await setDoc(

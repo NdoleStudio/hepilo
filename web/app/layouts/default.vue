@@ -231,7 +231,9 @@ const lists = computed(() => listStore.lists)
 
 const navDrawerOpen = computed({
   get: () => uiStore.navDrawerOpen,
-  set: (value: boolean) => uiStore.setNavDrawer(value),
+  set: (value: boolean) => {
+    uiStore.setNavDrawer(value)
+  },
 })
 
 const iconMap = (iconName: string): string => listStore.listIcon(iconName)
