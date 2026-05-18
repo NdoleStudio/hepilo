@@ -40,8 +40,6 @@ const prependIcon = computed(() => listStore.listIcon(editedList.value.icon))
 onMounted(() => {
   listStore.loadState()
   uiStore.setTitle(t('nav.manageLists'))
-  console.log("hello")
-  console.log(generateShortUUID())
 })
 
 function closePopup() {
