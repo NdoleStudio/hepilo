@@ -86,9 +86,7 @@
 
         <!-- Add List button -->
         <div class="w-100 text-center my-4">
-          <v-btn color="primary" variant="tonal" prepend-icon="$plus">
-            {{ t('list.addList') }}
-          </v-btn>
+          <AddListButton />
         </div>
 
         <v-divider />
