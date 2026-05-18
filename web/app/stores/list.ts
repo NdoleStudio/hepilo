@@ -349,6 +349,7 @@ export const useListStore = defineStore('list', () => {
       const itemStore = useItemStore()
       const categoryStore = useCategoryStore()
       const settingsStore = useSettingsStore()
+      const uiStore = useUIStore()
 
       lists.value = state?.lists ?? lists.value
       categoryStore.categories = state?.categories ?? [{ ...DEFAULT_CATEGORY }]
@@ -356,6 +357,7 @@ export const useListStore = defineStore('list', () => {
       settingsStore.showIntro = state?.showIntro ?? settingsStore.showIntro
       settingsStore.currency = state?.currency ?? settingsStore.currency
       selectedListId.value = state?.selectedListId ?? selectedListId.value
+      uiStore.navDrawerOpen = (state?.navDrawerOpen ?? uiStore.navDrawerOpen) && !isMobile()
 
       sanitizeState()
     }
