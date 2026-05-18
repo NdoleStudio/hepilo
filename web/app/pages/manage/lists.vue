@@ -115,6 +115,7 @@ function clearForm() {
                     :rules="formNameRules"
                     :label="$t('common.name')"
                     counter="15"
+                    color="primary"
                     persistent-placeholder
                     :placeholder="$t('common.placeholderListName')"
                     variant="outlined"
@@ -127,6 +128,7 @@ function clearForm() {
                     item-value="value"
                     v-model="editedList.icon"
                     :append-inner-icon="prependIcon"
+                    color="primary"
                     variant="outlined"
                     :label="$t('common.icon')"
                   />

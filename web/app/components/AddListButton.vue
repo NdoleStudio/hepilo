@@ -43,7 +43,7 @@ async function onSave() {
 
   const lists = listStore.lists
   if (lists.length > 0) {
-    navigateTo(localePath(`/lists/${lists[lists.length - 1].id}`))
+    navigateTo(localePath(`/lists/${lists[lists.length - 1]!.id}`))
   }
 }
 </script>
@@ -57,10 +57,10 @@ async function onSave() {
       </v-btn>
     </template>
     <v-card>
-      <v-card-title>
+      <v-card-title class="d-flex">
         {{ $t('list.createNewList') }}
         <v-spacer />
-        <v-btn color="info" icon @click="closePopup">
+        <v-btn density="compact" color="info" icon  variant="text" @click="closePopup">
           <v-icon :icon="mdiClose" />
         </v-btn>
       </v-card-title>
@@ -68,6 +68,7 @@ async function onSave() {
         <v-form v-model="formValid" lazy-validation>
           <v-text-field
             class="mt-2"
+            color="primary"
             aria-required="true"
             :disabled="uiStore.saving"
             v-model="formName"
@@ -79,6 +80,7 @@ async function onSave() {
             variant="outlined"
           />
           <v-select
+            color="primary"
             class="mt-2"
             :disabled="uiStore.saving"
             :items="listStore.listIconSelectItems"
@@ -93,15 +95,15 @@ async function onSave() {
       </v-card-text>
       <v-card-actions class="mt-n8">
         <v-btn
-          variant="text"
-          color="success"
+          variant="flat"
+          color="primary"
           :disabled="!formValid || uiStore.saving"
           @click="onSave"
         >
           {{ $t('common.save') }}
         </v-btn>
         <v-spacer />
-        <v-btn color="info" variant="text" @click="closePopup">
+        <v-btn color="error" variant="text" @click="closePopup">
           {{ $t('common.cancel') }}
         </v-btn>
       </v-card-actions>

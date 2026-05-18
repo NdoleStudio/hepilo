@@ -123,6 +123,7 @@ function clearForm() {
                     :rules="formNameRules"
                     :label="$t('common.name')"
                     counter="15"
+                    color="primary"
                     persistent-placeholder
                     :placeholder="$t('common.placeholderCategoryName')"
                     variant="outlined"
@@ -134,6 +135,7 @@ function clearForm() {
                     item-title="text"
                     item-value="value"
                     v-model="editedCategory.color"
+                    color="primary"
                     variant="outlined"
                     :label="$t('common.color')"
                   >

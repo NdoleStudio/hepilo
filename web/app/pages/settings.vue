@@ -78,6 +78,7 @@ function onSave() {
                 item-title="text"
                 item-value="value"
                 v-model="formCurrency"
+                color="primary"
                 variant="outlined"
                 :label="$t('common.currency')"
               />

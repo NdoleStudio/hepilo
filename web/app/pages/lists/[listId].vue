@@ -316,6 +316,7 @@ onUnmounted(() => {
             :items="itemStore.autocompleteItems"
             item-title="text"
             item-value="value"
+            color="primary"
             variant="solo"
             :auto-select-first="true"
             v-model="itemName"
@@ -537,6 +538,7 @@ onUnmounted(() => {
               :rules="formNameRules"
               :label="$t('common.name')"
               counter="50"
+              color="primary"
               persistent-placeholder
               :placeholder="$t('common.placeholderItemNameShoppingList')"
               variant="outlined"
@@ -549,6 +551,7 @@ onUnmounted(() => {
                 :rules="formQuantityRules"
                 :label="$t('common.quantity')"
                 type="number"
+                color="primary"
                 persistent-placeholder
                 :placeholder="$t('common.placeholderQuantity')"
                 variant="outlined"
@@ -560,6 +563,7 @@ onUnmounted(() => {
                 item-title="text"
                 item-value="value"
                 v-model="formUnit"
+                color="primary"
                 variant="outlined"
                 clearable
                 :label="$t('common.unit')"
@@ -574,6 +578,7 @@ onUnmounted(() => {
               :label="$t('common.pricePerUnit')"
               type="number"
               :prefix="settingsStore.currencySymbol"
+              color="primary"
               persistent-placeholder
               :placeholder="$t('common.placeholderPrice')"
               :hint="$t('list.totalPriceHint', { price: settingsStore.formatCurrency(totalPrice) })"
@@ -587,6 +592,7 @@ onUnmounted(() => {
               item-title="text"
               item-value="value"
               v-model="formCategoryId"
+              color="primary"
               variant="outlined"
               :label="$t('common.category')"
             />
@@ -597,6 +603,7 @@ onUnmounted(() => {
               v-model="formNotes"
               :rules="formNotesRules"
               :label="$t('common.notes')"
+              color="primary"
               persistent-placeholder
               placeholder=""
               variant="outlined"

@@ -99,6 +99,7 @@ async function handleEmailAuth() {
           v-model="email"
           :label="t('auth.email')"
           type="email"
+          color="primary"
           required
           class="mb-2"
         />
@@ -106,6 +107,7 @@ async function handleEmailAuth() {
           v-model="password"
           :label="t('auth.password')"
           type="password"
+          color="primary"
           required
           class="mb-2"
         />

@@ -123,6 +123,7 @@ function clearForm() {
             variant="solo-inverted"
             :placeholder="$t('item.searchItems')"
             density="compact"
+            color="primary"
             v-model="formQuery"
             class="mb-n2 mr-5"
           />
@@ -154,6 +155,7 @@ function clearForm() {
                     :rules="formNameRules"
                     :label="$t('common.name')"
                     counter="15"
+                    color="primary"
                     persistent-placeholder
                     :placeholder="$t('common.placeholderItemName')"
                     variant="outlined"
@@ -167,6 +169,7 @@ function clearForm() {
                     :label="$t('common.pricePerUnit')"
                     type="number"
                     :prefix="settingsStore.currencySymbol"
+                    color="primary"
                     persistent-placeholder
                     :placeholder="$t('common.placeholderPrice')"
                     variant="outlined"
@@ -178,6 +181,7 @@ function clearForm() {
                     item-title="text"
                     item-value="value"
                     v-model="editedItem.categoryId"
+                    color="primary"
                     variant="outlined"
                     :label="$t('common.category')"
                   />
@@ -187,6 +191,7 @@ function clearForm() {
                     item-title="text"
                     item-value="value"
                     v-model="editedItem.unit"
+                    color="primary"
                     variant="outlined"
                     clearable
                     :label="$t('common.unit')"
