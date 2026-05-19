@@ -156,6 +156,7 @@
           v-model="uiStore.isNotificationActive"
           :color="uiStore.notification.type"
           :timeout="uiStore.notification.timeout"
+          variant="tonal"
         >
           <v-icon
             v-if="uiStore.notification.type === 'success'"
