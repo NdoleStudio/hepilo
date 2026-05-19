@@ -63,7 +63,8 @@ export const useItemStore = defineStore('item', () => {
       .filter((item: Item) => !listStore.listHasItemId(item.id))
       .map((item: Item) => ({
         value: item.name,
-        text: item.name,
+        title: item.name,
+        unit: item.unit,
       }))
   })
 
@@ -116,7 +117,7 @@ export const useItemStore = defineStore('item', () => {
     return Array.from(ITEM_UNITS)
       .sort()
       .map(unit => ({
-        text: unit,
+        title: unit,
         value: unit,
       }))
   })

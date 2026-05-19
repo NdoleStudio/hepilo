@@ -124,8 +124,6 @@ function clearForm() {
                     class="mt-2"
                     :disabled="uiStore.saving"
                     :items="listStore.listIconSelectItems"
-                    item-title="text"
-                    item-value="value"
                     v-model="editedList.icon"
                     :append-inner-icon="prependIcon"
                     color="primary"

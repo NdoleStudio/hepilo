@@ -57,7 +57,7 @@ export const useCategoryStore = defineStore('category', () => {
   }
 
   const categorySelectItems = computed((): SelectItem[] =>
-    categories.value.map(c => ({ value: c.id, text: c.name })),
+    categories.value.map(c => ({ value: c.id, title: c.name })),
   )
 
   const categoryColorSelectItems = computed((): SelectItem[] =>
@@ -65,7 +65,7 @@ export const useCategoryStore = defineStore('category', () => {
       .sort()
       .map(color => ({
         value: color,
-        text: color
+        title: color
           .split('-')
           .map(w => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
           .join(' '),

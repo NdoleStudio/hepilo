@@ -75,8 +75,6 @@ function onSave() {
                 class="mt-2"
                 :disabled="uiStore.saving"
                 :items="settingsStore.currencySelectItems"
-                item-title="text"
-                item-value="value"
                 v-model="formCurrency"
                 color="primary"
                 variant="outlined"

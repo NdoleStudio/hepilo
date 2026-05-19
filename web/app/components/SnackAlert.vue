@@ -20,6 +20,7 @@ function onClose() {
     v-model="snackbarShow"
     :timeout="-1"
     location="bottom"
+    variant="tonal"
     multi-line
     class="mb-10"
   >

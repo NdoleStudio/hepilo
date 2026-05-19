@@ -14,7 +14,6 @@ import type {
   Category,
   MaterializedListItem,
   SelectItem,
-  UpdateItemRequest,
 } from '~/types/state'
 import emptyListSvg from '~/assets/images/empty-list.svg'
 
@@ -37,6 +36,7 @@ definePageMeta({
 const itemName = ref('')
 const isBlur = ref(false)
 const isEnterPressed = ref(false)
+const comboboxMenu = ref(false)
 const addFormQuantity = ref(0)
 const selectedItem = ref<null | number>(-1)
 let lastCommittedItem = ''
@@ -141,15 +141,15 @@ function hasQuantity(value: string): boolean {
   return !isNaN(nameQuantity) && nameQuantity > 0
 }
 
-function itemFilter(item: any, queryText: string, _itemText: string): boolean {
-  const text = typeof item === 'string' ? item : (item?.text ?? item?.title ?? '')
-  if (hasQuantity(queryText)) {
-    addFormQuantity.value = parseFloat(queryText.split(' ')[0]!)
-    queryText = queryText.split(' ').slice(1).join(' ')
+function itemFilter(value: string, query: string, _item?: any): boolean {
+  if (value == null || query == null) return false
+  if (hasQuantity(query)) {
+    addFormQuantity.value = parseFloat(query.split(' ')[0]!)
+    query = query.split(' ').slice(1).join(' ')
   } else {
     addFormQuantity.value = 0
   }
-  return text.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
+  return value.toLocaleLowerCase().indexOf(query.toLocaleLowerCase()) > -1
 }
 
 function onChange(chosenItem: string | SelectItem | null) {
@@ -158,9 +158,9 @@ function onChange(chosenItem: string | SelectItem | null) {
   let itemToAdd = ''
   let valueAfterAdd = ''
 
-  if (typeof chosenItem === 'object' && 'text' in chosenItem) {
+  if (typeof chosenItem === 'object' && 'title' in chosenItem) {
     // Object = dropdown selection or auto-select-first → always add
-    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + chosenItem.text
+    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + chosenItem.title
   } else if (typeof chosenItem === 'string' && isEnterPressed.value && !isBlur.value) {
     // String + Enter pressed = user committed typed text → add
     const trimmed = chosenItem.trim()
@@ -181,12 +181,13 @@ function onChange(chosenItem: string | SelectItem | null) {
   setTimeout(() => { lastCommittedItem = '' }, 0)
 
   listStore.addItem(itemToAdd)
+  comboboxMenu.value = false
 
   nextTick(() => {
     itemName.value = valueAfterAdd
-    nextTick(() => {
-      document.getElementById('page-title')?.click()
-    })
+    // Blur input to prevent menu from reopening after click selection
+    const input = document.querySelector('#add-item-input input') as HTMLInputElement | null
+    input?.blur()
   })
 }
 
@@ -309,26 +310,26 @@ onUnmounted(() => {
         <div id="add-item-input">
           <v-combobox
             :custom-filter="itemFilter"
+            v-model:menu="comboboxMenu"
             @update:model-value="onChange"
             @keydown.enter.capture="onComboboxKeydown"
             @blur="onBlur"
             @focus="onFocus"
             :items="itemStore.autocompleteItems"
-            item-title="text"
-            item-value="value"
             color="primary"
             variant="solo"
             :auto-select-first="true"
             v-model="itemName"
             :placeholder="$t('list.addItem')"
             :prepend-inner-icon="mdiPlus"
+            autocomplete="off"
           >
-            <template #item="{ item: selectItem, props: itemProps }">
-              <v-list-item v-bind="itemProps">
+            <template #item="{ item, props: itemProps }">
+              <v-list-item v-bind="itemProps" :title="undefined">
                 <v-list-item-title>
-                  {{ selectItem.raw.text }}
+                  {{ item.title }}
                   <span v-if="addFormQuantity > 0" class="text-medium-emphasis">
-                    ({{ addFormQuantity.toString() + (selectItem.raw.unit ? ' ' + itemStore.itemUnitName(selectItem.raw.unit, addFormQuantity) : '') }})
+                    ({{ addFormQuantity.toString() + (item.unit ? ' ' + itemStore.itemUnitName(item.unit, addFormQuantity) : '') }})
                   </span>
                 </v-list-item-title>
               </v-list-item>
@@ -377,7 +378,7 @@ onUnmounted(() => {
               />
               <template v-for="(categoryItem, index) in listStore.listMaterializedItems" :key="'header-' + categoryItem.category.id">
                 <div :id="'list-category-title-' + index">
-                  <v-list-subheader class="text-label-large text-uppercase" :class="categoryClass(categoryItem.category)">
+                  <v-list-subheader class="text-label-large text-uppercase font-weight-bold" :class="categoryClass(categoryItem.category)">
                     {{ categoryItem.category.name }}
                   </v-list-subheader>
                 </div>
@@ -560,8 +561,6 @@ onUnmounted(() => {
                 class="ml-3"
                 :disabled="uiStore.saving"
                 :items="itemStore.itemUnitSelectItems"
-                item-title="text"
-                item-value="value"
                 v-model="formUnit"
                 color="primary"
                 variant="outlined"
@@ -589,8 +588,6 @@ onUnmounted(() => {
               class="mt-2"
               :disabled="uiStore.saving"
               :items="categoryStore.categorySelectItems"
-              item-title="text"
-              item-value="value"
               v-model="formCategoryId"
               color="primary"
               variant="outlined"

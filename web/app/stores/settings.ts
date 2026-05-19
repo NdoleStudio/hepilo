@@ -30,7 +30,7 @@ export const useSettingsStore = defineStore('settings', () => {
     return [...CURRENCY_LIST]
       .sort((a, b) => a.description.localeCompare(b.description))
       .map(c => ({
-        text: c.description,
+        title: c.description,
         value: c.code,
       }))
   })

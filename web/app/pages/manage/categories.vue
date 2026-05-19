@@ -132,8 +132,6 @@ function clearForm() {
                     class="mt-2"
                     :disabled="uiStore.saving"
                     :items="categoryStore.categoryColorSelectItems"
-                    item-title="text"
-                    item-value="value"
                     v-model="editedCategory.color"
                     color="primary"
                     variant="outlined"

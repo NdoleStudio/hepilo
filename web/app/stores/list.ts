@@ -98,7 +98,7 @@ export const useListStore = defineStore('list', () => {
     LIST_ICONS.forEach((_icon, name) => {
       items.push({
         value: name,
-        text: name.slice(0, 1).toUpperCase() + name.slice(1).toLowerCase(),
+        title: name.slice(0, 1).toUpperCase() + name.slice(1).toLowerCase(),
       })
     })
     return items

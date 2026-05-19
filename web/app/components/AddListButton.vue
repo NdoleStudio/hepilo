@@ -84,8 +84,6 @@ async function onSave() {
             class="mt-2"
             :disabled="uiStore.saving"
             :items="listStore.listIconSelectItems"
-            item-title="text"
-            item-value="value"
             v-model="formIcon"
             :append-inner-icon="prependIcon"
             variant="outlined"

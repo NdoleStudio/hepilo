@@ -178,8 +178,6 @@ function clearForm() {
                     class="mt-2"
                     :disabled="uiStore.saving"
                     :items="categoryStore.categorySelectItems"
-                    item-title="text"
-                    item-value="value"
                     v-model="editedItem.categoryId"
                     color="primary"
                     variant="outlined"
@@ -188,8 +186,6 @@ function clearForm() {
                   <v-select
                     :disabled="uiStore.saving"
                     :items="itemStore.itemUnitSelectItems"
-                    item-title="text"
-                    item-value="value"
                     v-model="editedItem.unit"
                     color="primary"
                     variant="outlined"

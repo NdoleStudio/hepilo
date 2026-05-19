@@ -46,8 +46,9 @@ export interface User {
 }
 
 export interface SelectItem {
-  text: string;
+  title: string;
   value: string;
+  unit?: string | null;
 }
 
 export interface Item {
