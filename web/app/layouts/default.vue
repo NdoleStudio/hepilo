@@ -7,7 +7,7 @@
         <v-container class="position-absolute h-100 d-flex align-center" :style="{ pointerEvents: 'none', left: navDrawerOpen ? '256px' : '0', right: '0', transition: 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }">
           <v-row>
             <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-              <span class="text-title-large" style="pointer-events: auto;">{{ uiStore.title }}</span>
+              <span class="text-display-small" style="pointer-events: auto;">{{ uiStore.title }}</span>
             </v-col>
           </v-row>
         </v-container>
