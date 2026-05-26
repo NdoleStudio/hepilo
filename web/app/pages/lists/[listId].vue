@@ -388,14 +388,17 @@ onUnmounted(() => {
                   @click="itemClicked(item)"
                 >
                   <template #prepend>
-                    <div :id="'list-item-checkbox-' + index + '-' + listIndex">
-                      <v-checkbox-btn
-                        @click.stop
-                        @update:model-value="listStore.addToCart(item.item.id)"
-                        :disabled="uiStore.saving"
-                        :model-value="false"
-                      />
-                    </div>
+                    <v-list-item-action start>
+                      <div :id="'list-item-checkbox-' + index + '-' + listIndex">
+                        <v-checkbox-btn
+                            @click.stop
+                            color="primary"
+                            @update:model-value="listStore.addToCart(item.item.id)"
+                            :disabled="uiStore.saving"
+                            :model-value="false"
+                        />
+                      </div>
+                    </v-list-item-action>
                   </template>
                   <div :id="'list-item-details-' + index + '-' + listIndex">
                     <v-list-item-title>
@@ -450,7 +453,7 @@ onUnmounted(() => {
                   class="ml-4"
                   color="success"
                   variant="text"
-                  size="small"
+                  density="compact"
                   :prepend-icon="mdiNotificationClearAll"
                   @click="onClearCart"
                 >
@@ -458,8 +461,8 @@ onUnmounted(() => {
                 </v-btn>
               </div>
             </v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-list class="mb-n4 pb-0 mx-n4" lines="two">
+            <v-expansion-panel-text class="px-0">
+              <v-list class="mb-n4 pb-0 mx-n6 mt-n4" lines="two">
                 <template v-for="categoryItem in listStore.cartMaterializedItems" :key="'cart-' + categoryItem.category.id">
                   <v-list-item
                     v-for="item in categoryItem.items"
@@ -467,13 +470,17 @@ onUnmounted(() => {
                     @click="itemClicked(item)"
                   >
                     <template #prepend>
-                      <v-checkbox-btn
-                        @click.stop
-                        :disabled="uiStore.saving"
-                        :model-value="true"
-                        @update:model-value="listStore.removeFromCart(item.item.id)"
-                      />
+                      <v-list-item-action start>
+                        <v-checkbox-btn
+                            @click.stop
+                            color="primary"
+                            :disabled="uiStore.saving"
+                            :model-value="true"
+                            @update:model-value="listStore.removeFromCart(item.item.id)"
+                        />
+                      </v-list-item-action>
                     </template>
+
                     <v-list-item-title class="text-decoration-line-through text-medium-emphasis">
                       {{ item.item.name }}
                       <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
@@ -504,13 +511,13 @@ onUnmounted(() => {
               <v-col>
                 <div class="d-flex mb-n2" style="width: 100%">
                   <div>
-                    <p class="text-label-large text-uppercase">{{ $t('list.listTotal') }}</p>
-                    <p class="text-title-large mt-n5">{{ settingsStore.formatCurrency(listStore.listTotal) }}</p>
+                    <p class="text-label-large text-uppercase text-medium-emphasis">{{ $t('list.listTotal') }}</p>
+                    <p class="text-title-large mt-n2">{{ settingsStore.formatCurrency(listStore.listTotal) }}</p>
                   </div>
                   <v-spacer />
                   <div>
-                    <p class="text-label-large text-uppercase text-right">{{ $t('list.cartTotal') }}</p>
-                    <p class="text-title-large mt-n5">{{ settingsStore.formatCurrency(listStore.cartTotal) }}</p>
+                    <p class="text-label-large text-uppercase text-right text-medium-emphasis">{{ $t('list.cartTotal') }}</p>
+                    <p class="text-title-large mt-n2">{{ settingsStore.formatCurrency(listStore.cartTotal) }}</p>
                   </div>
                 </div>
               </v-col>
