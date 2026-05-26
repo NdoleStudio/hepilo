@@ -383,6 +383,7 @@ onUnmounted(() => {
                   </v-list-subheader>
                 </div>
                 <v-list-item
+                    density="compact"
                   v-for="(item, listIndex) in categoryItem.items"
                   :key="item.item.id"
                   @click="itemClicked(item)"
