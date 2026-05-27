@@ -101,6 +101,7 @@
   "settings": {
     "title": "Paramètres",
     "accountSettings": "Paramètres du compte",
+    "saveSettings": "Enregistrer les paramètres",
     "deleteAccount": "Supprimer le compte",
     "deleteAccountConfirmation": "Êtes-vous sûr de vouloir supprimer votre compte ?",
     "deleteAccountWarning": "Cette action est permanente et irréversible !"

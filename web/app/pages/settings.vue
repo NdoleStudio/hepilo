@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getAuth } from 'firebase/auth'
+import { mdiCheck } from '@mdi/js'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -72,24 +73,47 @@ function onSave() {
           <v-card-text>
             <v-form v-model="formValid" lazy-validation>
               <v-select
-                class="mt-2"
+                class="mt-4"
                 :disabled="uiStore.saving"
                 :items="settingsStore.currencySelectItems"
                 v-model="formCurrency"
+                density="compact"
                 color="primary"
                 variant="outlined"
                 :label="$t('common.currency')"
-              />
+              >
+                <template #selection="{ item }">
+                  <span class="text-medium-emphasis me-2">{{ item.value }}</span>
+                  <span>{{ item.title }}</span>
+                </template>
+                <template #item="{ item, props: itemProps }">
+                  <v-list-item v-bind="itemProps" :title="undefined">
+                    <template #default>
+                      <div class="d-flex align-center w-100">
+                        <span class="text-medium-emphasis me-2">{{ item.value }}</span>
+                        <span>{{ item.title }}</span>
+                        <v-spacer />
+                        <v-icon
+                          v-if="item.value === formCurrency"
+                          :icon="mdiCheck"
+                          color="primary"
+                          size="small"
+                        />
+                      </div>
+                    </template>
+                  </v-list-item>
+                </template>
+              </v-select>
             </v-form>
           </v-card-text>
-          <v-card-actions class="mt-n8">
+          <v-card-actions class="mt-n5 pb-5 ml-2">
             <v-btn
-              variant="text"
-              color="success"
+              variant="flat"
+              color="primary"
               :disabled="!formValid || uiStore.saving"
               @click="onSave"
             >
-              {{ $t('common.save') }}
+              {{ $t('settings.saveSettings') }}
             </v-btn>
             <v-spacer />
             <v-btn

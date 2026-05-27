@@ -101,6 +101,7 @@
   "settings": {
     "title": "Settings",
     "accountSettings": "Account Settings",
+    "saveSettings": "Save Settings",
     "deleteAccount": "Delete Account",
     "deleteAccountConfirmation": "Are you sure you want to delete your account?",
     "deleteAccountWarning": "This action is permanent and irreversible!"
