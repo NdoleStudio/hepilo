@@ -382,7 +382,7 @@ onUnmounted(() => {
                     {{ categoryItem.category.name }}
                   </v-list-subheader>
                 </div>
-                <TransitionGroup name="list-item">
+                <TransitionGroup name="list-item" tag="div">
                   <v-list-item
                     v-for="(item, listIndex) in categoryItem.items"
                     :key="item.item.id"
@@ -466,7 +466,7 @@ onUnmounted(() => {
             <v-expansion-panel-text class="px-0">
               <v-list class="mb-n4 pb-0 mx-n6 mt-n4" lines="two">
                 <template v-for="categoryItem in listStore.cartMaterializedItems" :key="'cart-' + categoryItem.category.id">
-                  <TransitionGroup name="cart-item">
+                  <TransitionGroup name="cart-item" tag="div">
                     <v-list-item
                       v-for="item in categoryItem.items"
                       :key="item.item.id"
@@ -646,7 +646,8 @@ onUnmounted(() => {
 }
 .list-item-leave-active {
   position: absolute;
-  width: 100%;
+  left: 0;
+  right: 0;
 }
 .list-item-move {
   transition: transform 0.2s ease-out;
@@ -667,7 +668,8 @@ onUnmounted(() => {
 }
 .cart-item-leave-active {
   position: absolute;
-  width: 100%;
+  left: 0;
+  right: 0;
 }
 .cart-item-move {
   transition: transform 0.2s ease-out;
