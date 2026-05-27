@@ -382,55 +382,57 @@ onUnmounted(() => {
                     {{ categoryItem.category.name }}
                   </v-list-subheader>
                 </div>
-                <v-list-item
-                  v-for="(item, listIndex) in categoryItem.items"
-                  :key="item.item.id"
-                  @click="itemClicked(item)"
-                >
-                  <template #prepend>
-                    <v-list-item-action start>
-                      <div :id="'list-item-checkbox-' + index + '-' + listIndex">
-                        <v-checkbox-btn
-                            @click.stop
-                            color="primary"
-                            @update:model-value="listStore.addToCart(item.item.id)"
-                            :disabled="uiStore.saving"
-                            :model-value="false"
-                        />
-                      </div>
-                    </v-list-item-action>
-                  </template>
-                  <div :id="'list-item-details-' + index + '-' + listIndex">
-                    <v-list-item-title>
-                      {{ item.item.name }}
-                      <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
-                        ({{ item.listItem.quantity + (item.item.unit ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity) : '') }})
-                      </span>
-                      <span v-if="item.listItem.notes.trim()">
-                        <v-icon size="small" class="mt-n1" color="#afb42b" :icon="mdiNoteTextOutline" />
-                      </span>
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="text-body-small">
-                      {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
-                    </v-list-item-subtitle>
-                  </div>
-                  <template #append>
-                    <div :id="'list-item-delete-' + index + '-' + listIndex">
-                      <v-tooltip location="bottom">
-                        <template #activator="{ props: tooltipProps }">
-                          <v-btn
-                            v-bind="tooltipProps"
-                            :icon="mdiDelete"
-                            variant="text"
-                            color="error"
-                            @click.stop="listStore.deleteListItem(item.listItem.itemId)"
+                <TransitionGroup name="list-item">
+                  <v-list-item
+                    v-for="(item, listIndex) in categoryItem.items"
+                    :key="item.item.id"
+                    @click="itemClicked(item)"
+                  >
+                    <template #prepend>
+                      <v-list-item-action start>
+                        <div :id="'list-item-checkbox-' + index + '-' + listIndex">
+                          <v-checkbox-btn
+                              @click.stop
+                              color="primary"
+                              @update:model-value="listStore.addToCart(item.item.id)"
+                              :disabled="uiStore.saving"
+                              :model-value="false"
                           />
-                        </template>
-                        <span>{{ $t('common.delete') }}</span>
-                      </v-tooltip>
+                        </div>
+                      </v-list-item-action>
+                    </template>
+                    <div :id="'list-item-details-' + index + '-' + listIndex">
+                      <v-list-item-title>
+                        {{ item.item.name }}
+                        <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
+                          ({{ item.listItem.quantity + (item.item.unit ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity) : '') }})
+                        </span>
+                        <span v-if="item.listItem.notes.trim()">
+                          <v-icon size="small" class="mt-n1" color="#afb42b" :icon="mdiNoteTextOutline" />
+                        </span>
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="text-body-small">
+                        {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
+                      </v-list-item-subtitle>
                     </div>
-                  </template>
-                </v-list-item>
+                    <template #append>
+                      <div :id="'list-item-delete-' + index + '-' + listIndex">
+                        <v-tooltip location="bottom">
+                          <template #activator="{ props: tooltipProps }">
+                            <v-btn
+                              v-bind="tooltipProps"
+                              :icon="mdiDelete"
+                              variant="text"
+                              color="error"
+                              @click.stop="listStore.deleteListItem(item.listItem.itemId)"
+                            />
+                          </template>
+                          <span>{{ $t('common.delete') }}</span>
+                        </v-tooltip>
+                      </div>
+                    </template>
+                  </v-list-item>
+                </TransitionGroup>
               </template>
             </v-list>
           </v-card-text>
@@ -464,36 +466,38 @@ onUnmounted(() => {
             <v-expansion-panel-text class="px-0">
               <v-list class="mb-n4 pb-0 mx-n6 mt-n4" lines="two">
                 <template v-for="categoryItem in listStore.cartMaterializedItems" :key="'cart-' + categoryItem.category.id">
-                  <v-list-item
-                    v-for="item in categoryItem.items"
-                    :key="item.item.id"
-                    @click="itemClicked(item)"
-                  >
-                    <template #prepend>
-                      <v-list-item-action start>
-                        <v-checkbox-btn
-                            @click.stop
-                            color="primary"
-                            :disabled="uiStore.saving"
-                            :model-value="true"
-                            @update:model-value="listStore.removeFromCart(item.item.id)"
-                        />
-                      </v-list-item-action>
-                    </template>
+                  <TransitionGroup name="cart-item">
+                    <v-list-item
+                      v-for="item in categoryItem.items"
+                      :key="item.item.id"
+                      @click="itemClicked(item)"
+                    >
+                      <template #prepend>
+                        <v-list-item-action start>
+                          <v-checkbox-btn
+                              @click.stop
+                              color="primary"
+                              :disabled="uiStore.saving"
+                              :model-value="true"
+                              @update:model-value="listStore.removeFromCart(item.item.id)"
+                          />
+                        </v-list-item-action>
+                      </template>
 
-                    <v-list-item-title class="text-decoration-line-through text-medium-emphasis">
-                      {{ item.item.name }}
-                      <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
-                        ({{ item.listItem.quantity + (item.item.unit ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity) : '') }})
-                      </span>
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="text-body-small">
-                      {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
-                    </v-list-item-subtitle>
-                    <template #append>
-                      <v-btn :icon="mdiDelete" variant="text" color="error" @click.stop="listStore.deleteListItem(item.listItem.itemId)" />
-                    </template>
-                  </v-list-item>
+                      <v-list-item-title class="text-decoration-line-through text-medium-emphasis">
+                        {{ item.item.name }}
+                        <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
+                          ({{ item.listItem.quantity + (item.item.unit ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity) : '') }})
+                        </span>
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="text-body-small">
+                        {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
+                      </v-list-item-subtitle>
+                      <template #append>
+                        <v-btn :icon="mdiDelete" variant="text" color="error" @click.stop="listStore.deleteListItem(item.listItem.itemId)" />
+                      </template>
+                    </v-list-item>
+                  </TransitionGroup>
                 </template>
               </v-list>
             </v-expansion-panel-text>
@@ -627,6 +631,48 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* List item transitions: slide down + fade when moving to cart */
+.list-item-enter-active,
+.list-item-leave-active {
+  transition: all 0.2s ease-out;
+}
+.list-item-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.list-item-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.list-item-leave-active {
+  position: absolute;
+  width: 100%;
+}
+.list-item-move {
+  transition: transform 0.2s ease-out;
+}
+
+/* Cart item transitions: slide from above + fade when appearing in cart */
+.cart-item-enter-active,
+.cart-item-leave-active {
+  transition: all 0.2s ease-out;
+}
+.cart-item-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.cart-item-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.cart-item-leave-active {
+  position: absolute;
+  width: 100%;
+}
+.cart-item-move {
+  transition: transform 0.2s ease-out;
+}
+
 .dialog-responsive {
   width: 100%;
 }
