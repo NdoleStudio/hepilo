@@ -90,6 +90,11 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  function resetSettings() {
+    currency.value = DEFAULT_CURRENCY
+    showIntro.value = true
+  }
+
   return {
     currency,
     showIntro,
@@ -99,5 +104,6 @@ export const useSettingsStore = defineStore('settings', () => {
     appData,
     setCurrency,
     setShowIntro,
+    resetSettings,
   }
 })
