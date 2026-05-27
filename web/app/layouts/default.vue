@@ -47,18 +47,18 @@
               </v-avatar>
             </v-btn>
           </template>
-          <v-list nav class="px-2">
-            <v-list-item :to="localePath('/settings')">
+          <v-list class="pa-0">
+            <v-list-item color="primary" :to="localePath('/settings')">
               <template #prepend>
-                <v-icon :icon="mdiCog" />
+                <v-icon :icon="mdiAccountCog" />
               </template>
-              <v-list-item-title>{{ t('nav.settings') }}</v-list-item-title>
+              <v-list-item-title class="pr-16">{{ t('nav.settings') }}</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="logout">
+            <v-list-item color="primary" @click="logout">
               <template #prepend>
                 <v-icon :icon="mdiLogout" />
               </template>
-              <v-list-item-title>
+              <v-list-item-title class="pr-16">
                 {{ isAnonymous ? t('nav.exitDemo') : t('nav.logout') }}
               </v-list-item-title>
             </v-list-item>
@@ -200,7 +200,7 @@
 import {
   mdiArchiveCogOutline,
   mdiCheck,
-  mdiCog,
+  mdiAccountCog,
   mdiEmail,
   mdiInformation,
   mdiLogout,
@@ -236,6 +236,7 @@ const isAnonymous = computed(() => user.value?.isAnonymous ?? false)
 const userInitial = computed(() => user.value?.displayName?.charAt(0) || 'A')
 
 const listStore = useListStore()
+const authStore = useAuthStore()
 const lists = computed(() => listStore.lists)
 
 const navDrawerOpen = computed({
@@ -249,8 +250,7 @@ const iconMap = (iconName: string): string => listStore.listIcon(iconName)
 
 async function logout() {
   try {
-    const auth = getFirebaseAuth()
-    await auth.signOut()
+    await authStore.logout()
     uiStore.addNotification({
       type: 'info',
       message: t('auth.logoutSuccess'),
