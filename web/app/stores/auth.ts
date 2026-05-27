@@ -18,9 +18,11 @@ export const useAuthStore = defineStore('auth', () => {
   async function deleteAccount(userId: string) {
     const uiStore = useUIStore()
     const listStore = useListStore()
+    const settingsStore = useSettingsStore()
 
     uiStore.setSaving(true)
     listStore.resetState()
+    settingsStore.resetSettings()
     await deleteDoc(doc(getFirestore(), 'states', userId))
 
     uiStore.addNotification({
@@ -34,6 +36,20 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
+  async function logout() {
+    const listStore = useListStore()
+    const settingsStore = useSettingsStore()
+
+    listStore.resetState()
+    settingsStore.resetSettings()
+
+    const { getFirebaseAuth } = useFirebase()
+    const auth = getFirebaseAuth()
+    await auth.signOut()
+
+    user.value = null
+  }
+
   return {
     user,
     isLoggedIn,
@@ -41,5 +57,6 @@ export const useAuthStore = defineStore('auth', () => {
     setUser,
     deleteAccount,
     resetAuth,
+    logout,
   }
 })
