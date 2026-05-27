@@ -528,17 +528,14 @@ onUnmounted(() => {
     </v-row>
 
     <!-- Edit item dialog -->
-    <v-dialog v-model="dialog" max-width="90%" width="500" transition="scale-transition">
+    <v-dialog v-model="dialog" class="dialog-responsive" opacity="0.8" transition="scale-transition" :style="{ paddingLeft: uiStore.navDrawerOpen ? '256px' : '0', transition: 'padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }">
       <v-card>
-        <v-card-title>
-          <v-btn variant="text" color="success" :disabled="!formValid || uiStore.saving" @click="onSave">
-            {{ $t('common.save') }}
-          </v-btn>
-          <v-spacer />
-          <v-btn :icon="mdiClose" variant="text" color="info" @click="closePopup" />
-        </v-card-title>
         <v-card-text>
           <v-form class="mt-2" v-model="formValid" lazy-validation>
+            <div class="d-flex mt-n4 mb-2 mr-n4">
+              <v-spacer />
+              <v-btn density="compact" :icon="mdiClose" variant="text" color="info" @click="closePopup" />
+            </div>
             <v-text-field
               aria-required="true"
               :disabled="uiStore.saving"
@@ -558,6 +555,7 @@ onUnmounted(() => {
                 v-model="formQuantity"
                 :rules="formQuantityRules"
                 :label="$t('common.quantity')"
+                class="w-50"
                 type="number"
                 color="primary"
                 persistent-placeholder
@@ -565,7 +563,7 @@ onUnmounted(() => {
                 variant="outlined"
               />
               <v-select
-                class="ml-3"
+                class="ml-3 w-50"
                 :disabled="uiStore.saving"
                 :items="itemStore.itemUnitSelectItems"
                 v-model="formUnit"
@@ -627,3 +625,23 @@ onUnmounted(() => {
     </v-dialog>
   </v-container>
 </template>
+
+<style scoped>
+.dialog-responsive {
+  width: 100%;
+}
+
+/* md breakpoint (960px+): match container (900px) × md="8" (8/12) ≈ 600px */
+@media (min-width: 960px) {
+  .dialog-responsive {
+    width: 600px;
+  }
+}
+
+/* lg breakpoint (1280px+): match container (1185px) × lg="6" (6/12) ≈ 592px */
+@media (min-width: 1280px) {
+  .dialog-responsive {
+    width: 592px;
+  }
+}
+</style>
