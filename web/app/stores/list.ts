@@ -334,6 +334,22 @@ export const useListStore = defineStore('list', () => {
       sanitizeState()
       loadingState.value = false
       persistToLocalStorage()
+
+      // Sync default categories and items to Firestore for first-time users
+      const categoryStore = useCategoryStore()
+      const itemStore = useItemStore()
+      await setDoc(
+        doc(getFirestore(), COLLECTION_STATE, userId),
+        {
+          lists: lists.value,
+          categories: categoryStore.categories,
+          items: itemStore.items,
+          showIntro: settingsStore.showIntro,
+          currency: settingsStore.currency,
+          selectedListId: selectedListId.value,
+        },
+        { merge: true },
+      )
       return
     }
 
