@@ -20,7 +20,7 @@
     "better-sqlite3": "^12.10.0",
     "driver.js": "^1.4.0",
     "firebase": "^12.12.0",
-    "import-in-the-middle": "^3.0.1",
+    "import-in-the-middle": "^3.1.0",
     "nuxt": "^4.4.7",
     "pinia": "^3.0.4",
     "sass": "^1.101.0",
