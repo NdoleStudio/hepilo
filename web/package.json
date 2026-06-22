@@ -36,7 +36,7 @@
     "@sentry/nuxt": "10",
     "@vite-pwa/nuxt": "^1.1.1",
     "@vue/test-utils": "^2.4.11",
-    "happy-dom": "^20.9.0",
+    "happy-dom": "^20.10.6",
     "vitest": "^4.1.9"
   },
   "pnpm": {
