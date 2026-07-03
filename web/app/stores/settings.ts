@@ -6,13 +6,13 @@ export const useSettingsStore = defineStore('settings', () => {
   const showIntro = ref(true)
 
   const currencySymbol = computed((): string => {
-    const symbol
-      = new Intl.NumberFormat(undefined, {
+    const symbol =
+      new Intl.NumberFormat(undefined, {
         style: 'currency',
         currency: currency.value,
       })
         .formatToParts(0.0)
-        .find(part => part.type === 'currency')?.value || '$'
+        .find((part) => part.type === 'currency')?.value || '$'
     return symbol.replace('US$', '$').replace('CA$', 'CAD')
   })
 
@@ -29,7 +29,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const currencySelectItems = computed((): SelectItem[] => {
     return [...CURRENCY_LIST]
       .sort((a, b) => a.description.localeCompare(b.description))
-      .map(c => ({
+      .map((c) => ({
         title: c.description,
         value: c.code,
       }))

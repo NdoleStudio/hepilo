@@ -23,22 +23,14 @@ export const isAndroid = (): boolean => {
 }
 
 export const isMobile = (): boolean => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent,
-  )
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
 export const isDarkModeOn = (): boolean => {
-  return (
-    window.matchMedia
-    && window.matchMedia('(prefers-color-scheme: dark)').matches
-  )
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
-export const getBooleanFromLocalStorage = (
-  key: string,
-  defaultValue = false,
-): boolean => {
+export const getBooleanFromLocalStorage = (key: string, defaultValue = false): boolean => {
   const valueString = localStorage.getItem(key)
   if (valueString == null) {
     return defaultValue

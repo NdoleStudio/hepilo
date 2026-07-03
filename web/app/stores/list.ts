@@ -1,14 +1,8 @@
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  onSnapshot,
-  getDoc,
-} from 'firebase/firestore'
+import { getFirestore, doc, setDoc, onSnapshot, getDoc } from 'firebase/firestore'
 import type { Unsubscribe, DocumentData } from 'firebase/firestore'
 import { mdiDomain, mdiFormatListCheckbox, mdiWeightLifter } from '@mdi/js'
 import { captureSentryError } from '~/plugins/sentry.client'
-import { CATEGORY_ID_UNCATEGORIZED, DEFAULT_CATEGORY } from './category'
+import { DEFAULT_CATEGORY } from './category'
 import defaultCategoriesJson from '~/assets/categories.json'
 import type {
   Item,
@@ -41,9 +35,24 @@ const LIST_DEFAULT: List = {
 }
 
 const CATEGORY_COLORS = [
-  'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue',
-  'cyan', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange',
-  'deep-orange', 'brown', 'blue-grey', 'teal',
+  'red',
+  'pink',
+  'purple',
+  'deep-purple',
+  'indigo',
+  'blue',
+  'light-blue',
+  'cyan',
+  'green',
+  'light-green',
+  'lime',
+  'yellow',
+  'amber',
+  'orange',
+  'deep-orange',
+  'brown',
+  'blue-grey',
+  'teal',
 ]
 
 export const useListStore = defineStore('list', () => {
@@ -75,7 +84,7 @@ export const useListStore = defineStore('list', () => {
   })
 
   const selectedListIsValid = computed((): boolean => {
-    return lists.value.find((list:List) => list.id === selectedListId.value) !== undefined
+    return lists.value.find((list: List) => list.id === selectedListId.value) !== undefined
   })
 
   function listExists(listId: string): boolean {
@@ -83,7 +92,7 @@ export const useListStore = defineStore('list', () => {
   }
 
   function listById(listId: string): List | undefined {
-    return lists.value.find((list:List) => list.id === listId)
+    return lists.value.find((list: List) => list.id === listId)
   }
 
   function listIcon(name: string): string {
@@ -105,15 +114,14 @@ export const useListStore = defineStore('list', () => {
   })
 
   function listHasItemId(itemId: string): boolean {
-    return selectedList.value.items.find(
-      (li: ListItem) => li.itemId === itemId,
-    ) !== undefined
+    return selectedList.value.items.find((li: ListItem) => li.itemId === itemId) !== undefined
   }
 
   function ItemIdIsInCart(itemId: string): boolean {
-    return selectedList.value.items.find(
-      (li: ListItem) => li.itemId === itemId && li.addedToCart,
-    ) !== undefined
+    return (
+      selectedList.value.items.find((li: ListItem) => li.itemId === itemId && li.addedToCart) !==
+      undefined
+    )
   }
 
   function materializedList(addedToCart: boolean): MaterializedList {
@@ -123,8 +131,8 @@ export const useListStore = defineStore('list', () => {
 
     if (lists.value.length === 0) return result
 
-    const filteredItems = selectedList.value.items.filter(
-      (li: ListItem) => (addedToCart ? li.addedToCart : !li.addedToCart),
+    const filteredItems = selectedList.value.items.filter((li: ListItem) =>
+      addedToCart ? li.addedToCart : !li.addedToCart,
     )
 
     const categoryNames = new Set<string>()
@@ -170,8 +178,8 @@ export const useListStore = defineStore('list', () => {
   function calculateTotal(list: MaterializedList): number {
     return list.reduce((sum: number, element: MaterializedListElement) => {
       return (
-        sum
-        + element.items.reduce((value: number, item: MaterializedListItem) => {
+        sum +
+        element.items.reduce((value: number, item: MaterializedListItem) => {
           return value + item.item.pricePerUnit * item.listItem.quantity
         }, 0)
       )
@@ -216,8 +224,7 @@ export const useListStore = defineStore('list', () => {
         blogStateLoaded: false,
       }
       localStorage.setItem(COLLECTION_STATE, JSON.stringify(state))
-    }
-    catch {
+    } catch {
       // Ignore localStorage errors
     }
   }
@@ -280,8 +287,8 @@ export const useListStore = defineStore('list', () => {
 
     // Offline or not logged in with valid localStorage data
     if (
-      (!authStore.isLoggedIn || !window.navigator.onLine)
-      && localStorage.getItem(COLLECTION_STATE) != null
+      (!authStore.isLoggedIn || !window.navigator.onLine) &&
+      localStorage.getItem(COLLECTION_STATE) != null
     ) {
       try {
         const stored = JSON.parse(localStorage.getItem(COLLECTION_STATE) ?? '')
@@ -289,8 +296,7 @@ export const useListStore = defineStore('list', () => {
           loadStateFromStore()
           return
         }
-      }
-      catch {
+      } catch {
         // Fall through to other loading strategies
       }
     }
@@ -324,9 +330,7 @@ export const useListStore = defineStore('list', () => {
     loadingState.value = true
     persistToLocalStorage()
 
-    const stateSnapshot = await getDoc(
-      doc(getFirestore(), COLLECTION_STATE, userId),
-    )
+    const stateSnapshot = await getDoc(doc(getFirestore(), COLLECTION_STATE, userId))
 
     if (!stateSnapshot.exists()) {
       settingsStore.currency = await getDefaultCurrency()
@@ -376,8 +380,7 @@ export const useListStore = defineStore('list', () => {
       uiStore.navDrawerOpen = (state?.navDrawerOpen ?? uiStore.navDrawerOpen) && !isMobile()
 
       sanitizeState()
-    }
-    catch {
+    } catch {
       // If localStorage parse fails, fall through
     }
   }
@@ -404,7 +407,7 @@ export const useListStore = defineStore('list', () => {
           id: itemName.trim().toLowerCase(),
           name: itemName
             .split(' ')
-            .map(w => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
+            .map((w) => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
             .join(' '),
           pricePerUnit: 0,
         })
@@ -436,11 +439,10 @@ export const useListStore = defineStore('list', () => {
     list.icon = request.icon
     list.name = request.name
 
-    const index = lists.value.findIndex(l => l.id === list!.id)
+    const index = lists.value.findIndex((l) => l.id === list!.id)
     if (index === -1) {
       lists.value.push(list)
-    }
-    else {
+    } else {
       lists.value[index] = list
     }
     lists.value = [...lists.value]
@@ -480,11 +482,11 @@ export const useListStore = defineStore('list', () => {
     const list = listById(listId)
 
     if (selectedListId.value === listId) {
-      const other = lists.value.find(l => l.id !== listId)
+      const other = lists.value.find((l) => l.id !== listId)
       if (other) selectedListId.value = other.id
     }
 
-    lists.value = lists.value.filter(l => l.id !== listId)
+    lists.value = lists.value.filter((l) => l.id !== listId)
     sanitizeState()
 
     if (authStore.isLoggedIn && authStore.user) {
@@ -565,11 +567,10 @@ export const useListStore = defineStore('list', () => {
         pricePerUnit: 0,
         categoryId: itemStore.findCategoryIdByItemId(itemId),
       }
-      const idx = itemStore.items.findIndex(i => i.id === item.id)
+      const idx = itemStore.items.findIndex((i) => i.id === item.id)
       if (idx === -1) {
         itemStore.items.push(item)
-      }
-      else {
+      } else {
         itemStore.items[idx] = item
       }
       itemStore.items = [...itemStore.items]
@@ -582,7 +583,7 @@ export const useListStore = defineStore('list', () => {
         addedToCart: false,
         quantity,
       }
-      const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
+      const listIndex = lists.value.findIndex((l) => l.id === selectedListId.value)
       if (listIndex !== -1) {
         lists.value[listIndex]!.items.push(listItem)
         lists.value = [...lists.value]
@@ -630,7 +631,7 @@ export const useListStore = defineStore('list', () => {
       item.categoryId = request.categoryId
       item.unit = itemStore.isValidUnit(request.unit) ? request.unit : null
 
-      const idx = itemStore.items.findIndex(i => i.id === item!.id)
+      const idx = itemStore.items.findIndex((i) => i.id === item!.id)
       if (idx !== -1) {
         itemStore.items[idx] = item
       }
@@ -687,7 +688,7 @@ export const useListStore = defineStore('list', () => {
     const authStore = useAuthStore()
     const itemStore = useItemStore()
 
-    const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
+    const listIndex = lists.value.findIndex((l) => l.id === selectedListId.value)
     if (listIndex !== -1) {
       lists.value[listIndex]!.items = lists.value[listIndex]!.items.filter(
         (li: ListItem) => li.itemId !== itemId,
@@ -773,7 +774,7 @@ export const useListStore = defineStore('list', () => {
     const uiStore = useUIStore()
     const authStore = useAuthStore()
 
-    const listIndex = lists.value.findIndex(l => l.id === listId)
+    const listIndex = lists.value.findIndex((l) => l.id === listId)
     if (listIndex !== -1) {
       lists.value[listIndex]!.items = lists.value[listIndex]!.items.filter(
         (li: ListItem) => !li.addedToCart,
@@ -801,7 +802,7 @@ export const useListStore = defineStore('list', () => {
 
   async function toggleCartPanel() {
     const authStore = useAuthStore()
-    const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
+    const listIndex = lists.value.findIndex((l) => l.id === selectedListId.value)
     if (listIndex !== -1) {
       lists.value[listIndex]!.cartPanelOpen = !lists.value[listIndex]!.cartPanelOpen
       lists.value = [...lists.value]
@@ -889,8 +890,7 @@ export const useListStore = defineStore('list', () => {
     if (!selectedListIsValid.value) {
       if (lists.value.length > 0) {
         selectedListId.value = lists.value[0]!.id
-      }
-      else {
+      } else {
         lists.value.push({ ...LIST_DEFAULT })
         selectedListId.value = LIST_DEFAULT.id
       }
@@ -932,27 +932,24 @@ export const useListStore = defineStore('list', () => {
   // ─── Private helpers ───
 
   function _setAddedToCart(itemId: string, addedToCart: boolean) {
-    const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
+    const listIndex = lists.value.findIndex((l) => l.id === selectedListId.value)
     if (listIndex === -1) return
-    lists.value[listIndex]!.items = lists.value[listIndex]!.items.map(
-      (li: ListItem) => {
-        if (li.itemId === itemId) li.addedToCart = addedToCart
-        return li
-      },
-    )
+    lists.value[listIndex]!.items = lists.value[listIndex]!.items.map((li: ListItem) => {
+      if (li.itemId === itemId) li.addedToCart = addedToCart
+      return li
+    })
     lists.value = [...lists.value]
   }
 
   function _upsertListItem(listItem: ListItem) {
-    const listIndex = lists.value.findIndex(l => l.id === selectedListId.value)
+    const listIndex = lists.value.findIndex((l) => l.id === selectedListId.value)
     if (listIndex === -1) return
     const index = lists.value[listIndex]!.items.findIndex(
       (li: ListItem) => li.itemId === listItem.itemId,
     )
     if (index === -1) {
       lists.value[listIndex]!.items.push(listItem)
-    }
-    else {
+    } else {
       lists.value[listIndex]!.items[index] = listItem
     }
     lists.value = [...lists.value]

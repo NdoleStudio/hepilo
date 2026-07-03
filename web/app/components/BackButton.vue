@@ -25,12 +25,7 @@ function goBack() {
 </script>
 
 <template>
-  <v-btn
-    variant="flat"
-    :block="block"
-    :class="{ 'w-full': block }"
-    @click="goBack"
-  >
+  <v-btn variant="flat" :block="block" :class="{ 'w-full': block }" @click="goBack">
     <v-icon :icon="mdiArrowLeft" start />
     {{ t('common.goBack') }}
   </v-btn>

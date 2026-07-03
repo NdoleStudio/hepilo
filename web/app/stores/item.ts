@@ -41,16 +41,16 @@ export const useItemStore = defineStore('item', () => {
   function toTitleCase(value: string): string {
     return value
       .split(' ')
-      .map(w => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
+      .map((w) => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
       .join(' ')
   }
 
   function findItemById(id: string): Item | undefined {
-    return items.value.find(item => item.id === id)
+    return items.value.find((item) => item.id === id)
   }
 
   function itemByName(name: string): Item | undefined {
-    return items.value.find(item => item.id === nameToId(name))
+    return items.value.find((item) => item.id === nameToId(name))
   }
 
   function hasItem(name: string): boolean {
@@ -72,8 +72,8 @@ export const useItemStore = defineStore('item', () => {
     const listStore = useListStore()
     return listStore.lists.reduce((sum: number, list) => {
       return (
-        sum
-        + list.items.reduce((value: number, item: ListItem) => {
+        sum +
+        list.items.reduce((value: number, item: ListItem) => {
           if (item.itemId === itemId && value === 0) {
             return 1
           }
@@ -95,10 +95,7 @@ export const useItemStore = defineStore('item', () => {
     const categoryStore = useCategoryStore()
     const item = findItemById(itemId)
     if (item !== undefined) {
-      return (
-        categoryStore.findCategoryById(item.categoryId)?.name
-        ?? DEFAULT_CATEGORY.name
-      )
+      return categoryStore.findCategoryById(item.categoryId)?.name ?? DEFAULT_CATEGORY.name
     }
     return DEFAULT_CATEGORY.name
   }
@@ -116,7 +113,7 @@ export const useItemStore = defineStore('item', () => {
   const itemUnitSelectItems = computed((): SelectItem[] => {
     return Array.from(ITEM_UNITS)
       .sort()
-      .map(unit => ({
+      .map((unit) => ({
         title: unit,
         value: unit,
       }))
@@ -150,11 +147,10 @@ export const useItemStore = defineStore('item', () => {
     item.categoryId = request.categoryId
 
     // Upsert into items array
-    const index = items.value.findIndex(i => i.id === item!.id)
+    const index = items.value.findIndex((i) => i.id === item!.id)
     if (index === -1) {
       items.value.push(item)
-    }
-    else {
+    } else {
       items.value[index] = item
     }
     items.value = [...items.value]
@@ -207,7 +203,7 @@ export const useItemStore = defineStore('item', () => {
 
     const item = findItemById(itemId)
 
-    items.value = items.value.filter(i => i.id !== itemId)
+    items.value = items.value.filter((i) => i.id !== itemId)
     listStore.lists = listStore.lists.map((list) => {
       list.items = list.items.filter((li: ListItem) => li.itemId !== itemId)
       return list
@@ -246,13 +242,12 @@ export const useItemStore = defineStore('item', () => {
             name: toTitleCase(itemName),
             pricePerUnit: 0,
           })
-        }
-        else {
+        } else {
           allItems = allItems.map((arrayItem: Item) => {
             if (
-              nameToId(itemName) === arrayItem.id
-              && arrayItem.categoryId === CATEGORY_ID_UNCATEGORIZED
-              && category
+              nameToId(itemName) === arrayItem.id &&
+              arrayItem.categoryId === CATEGORY_ID_UNCATEGORIZED &&
+              category
             ) {
               arrayItem.categoryId = category.id
             }

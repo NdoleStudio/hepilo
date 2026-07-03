@@ -4,12 +4,10 @@ import { mdiTranslate } from '@mdi/js'
 const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
-const availableLocales = computed(() =>
-  locales.value.filter(l => typeof l !== 'string'),
-)
+const availableLocales = computed(() => locales.value.filter((l) => typeof l !== 'string'))
 
 const currentLocaleName = computed(() => {
-  const current = availableLocales.value.find(l => l.code === locale.value)
+  const current = availableLocales.value.find((l) => l.code === locale.value)
   return current?.name ?? locale.value
 })
 </script>
@@ -17,11 +15,7 @@ const currentLocaleName = computed(() => {
 <template>
   <v-menu>
     <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        variant="text"
-        :prepend-icon="mdiTranslate"
-      >
+      <v-btn v-bind="props" variant="text" :prepend-icon="mdiTranslate">
         {{ currentLocaleName }}
       </v-btn>
     </template>

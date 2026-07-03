@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { mdiHome } from '@mdi/js'
 import notFoundSvg from '~/assets/images/not-found.svg'
 
 const { t } = useI18n()
@@ -21,13 +20,7 @@ useHead({
             </div>
           </v-card-title>
           <v-card-text>
-            <v-img
-              contain
-              class="mx-auto"
-              max-width="500"
-              max-height="500"
-              :src="notFoundSvg"
-            />
+            <v-img contain class="mx-auto" max-width="500" max-height="500" :src="notFoundSvg" />
           </v-card-text>
           <v-card-actions>
             <v-btn

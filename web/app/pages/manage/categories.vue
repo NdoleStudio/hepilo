@@ -5,9 +5,12 @@ import type { Category, UpsertCategoryRequest } from '~/types/state'
 
 const { t } = useI18n()
 const categoryStore = useCategoryStore()
-const itemStore = useItemStore()
 const listStore = useListStore()
 const uiStore = useUIStore()
+
+useHead({
+  title: () => t('nav.manageCategories'),
+})
 
 definePageMeta({
   layout: 'default',
@@ -93,9 +96,12 @@ function clearForm() {
         <ShoppingListDemoBanner />
         <div
           class="d-flex"
-          :class="{ 'justify-center': categoryStore.editableCategories.length === 0 && $vuetify.display.mdAndDown }"
+          :class="{
+            'justify-center':
+              categoryStore.editableCategories.length === 0 && $vuetify.display.mdAndDown,
+          }"
         >
-          <v-btn @click="onSync" :disabled="synchronizing">
+          <v-btn :disabled="synchronizing" @click="onSync">
             <v-icon v-if="$vuetify.display.lgAndUp" :icon="mdiSync" />
             {{ $t('category.synchronize') }}
           </v-btn>
@@ -116,10 +122,10 @@ function clearForm() {
               <v-card-text>
                 <v-form v-model="formValid" lazy-validation>
                   <v-text-field
+                    v-model="editedCategory.name"
                     class="mt-2"
                     aria-required="true"
                     :disabled="uiStore.saving"
-                    v-model="editedCategory.name"
                     :rules="formNameRules"
                     :label="$t('common.name')"
                     counter="15"
@@ -129,10 +135,10 @@ function clearForm() {
                     variant="outlined"
                   />
                   <v-select
+                    v-model="editedCategory.color"
                     class="mt-2"
                     :disabled="uiStore.saving"
                     :items="categoryStore.categoryColorSelectItems"
-                    v-model="editedCategory.color"
                     color="primary"
                     variant="outlined"
                     :label="$t('common.color')"
@@ -171,18 +177,29 @@ function clearForm() {
         <v-card flat>
           <v-card-text class="px-0 py-0">
             <v-list lines="two" class="pb-0 px-0" nav>
-              <template v-for="(category, index) in categoryStore.editableCategories" :key="category.id">
-                <v-list-item @click="onEditCategory(category)" class="mb-0">
+              <template
+                v-for="(category, index) in categoryStore.editableCategories"
+                :key="category.id"
+              >
+                <v-list-item class="mb-0" @click="onEditCategory(category)">
                   <template #prepend>
                     <v-avatar rounded>
                       <v-icon :color="category.color" :icon="mdiSquare" />
                     </v-avatar>
                   </template>
-                  <v-list-item-title class="text-label-small text-uppercase">{{ category.name }}</v-list-item-title>
+                  <v-list-item-title class="text-label-small text-uppercase">{{
+                    category.name
+                  }}</v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ categoryStore.categoryItemsCount(category.id) === 1
-                      ? $t('list.itemCountSingular', { count: categoryStore.categoryItemsCount(category.id) })
-                      : $t('list.itemCount', { count: categoryStore.categoryItemsCount(category.id) }) }}
+                    {{
+                      categoryStore.categoryItemsCount(category.id) === 1
+                        ? $t('list.itemCountSingular', {
+                            count: categoryStore.categoryItemsCount(category.id),
+                          })
+                        : $t('list.itemCount', {
+                            count: categoryStore.categoryItemsCount(category.id),
+                          })
+                    }}
                   </v-list-item-subtitle>
                   <template #append>
                     <div class="d-flex">
@@ -190,11 +207,11 @@ function clearForm() {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             :icon="mdiSquareEditOutline"
-                            @click="onEditCategory(category)"
                             color="info"
                             class="mr-2"
                             v-bind="tooltipProps"
                             variant="text"
+                            @click="onEditCategory(category)"
                           />
                         </template>
                         <span>{{ $t('common.edit', { name: category.name }) }}</span>
@@ -203,11 +220,11 @@ function clearForm() {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             :icon="mdiTrashCan"
-                            @click.stop="onDeleteCategory(category)"
                             color="error"
                             variant="text"
                             v-bind="tooltipProps"
                             class="ml-2"
+                            @click.stop="onDeleteCategory(category)"
                           />
                         </template>
                         <span>{{ $t('common.deleteItem', { name: category.name }) }}</span>
@@ -226,7 +243,8 @@ function clearForm() {
             <v-card-title class="text-headline-small">
               <div class="text-break">
                 {{ $t('list.deleteConfirmation') }}
-                <code class="d-inline-block">{{ editedCategory.name }}</code>?
+                <code class="d-inline-block">{{ editedCategory.name }}</code
+                >?
               </div>
             </v-card-title>
             <v-card-actions>

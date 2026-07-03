@@ -19,12 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-alert
-    v-if="!isLoggedIn"
-    type="info"
-    variant="tonal"
-    color="info"
-  >
+  <v-alert v-if="!isLoggedIn" type="info" variant="tonal" color="info">
     <v-row align="center">
       <v-col class="flex-grow-1">
         {{ t('demo.bannerText', { platform: platformName }) }}

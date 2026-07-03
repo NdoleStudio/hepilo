@@ -8,6 +8,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test:unit": "vitest run",
     "test:watch": "vitest"
   },
@@ -33,10 +37,15 @@
     "vuetify-nuxt-module": "^0.19.5"
   },
   "devDependencies": {
+    "@nuxt/eslint": "^1.16.0",
     "@sentry/nuxt": "^10.62.0",
     "@vite-pwa/nuxt": "^1.1.1",
     "@vue/test-utils": "^2.4.11",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
     "happy-dom": "^20.10.6",
+    "prettier": "^3.9.4",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.9"
   },
   "pnpm": {

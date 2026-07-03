@@ -8,6 +8,10 @@ const { t } = useI18n()
 const listStore = useListStore()
 const uiStore = useUIStore()
 
+useHead({
+  title: () => t('nav.manageLists'),
+})
+
 definePageMeta({
   layout: 'default',
   middleware: 'auth',
@@ -30,9 +34,7 @@ const formNameRules = [
 const deleteDisabled = computed(() => listStore.lists.length < 2)
 
 const formTitle = computed(() =>
-  editedList.value.id === defaultList.id
-    ? t('list.createList')
-    : t('list.editList'),
+  editedList.value.id === defaultList.id ? t('list.createList') : t('list.editList'),
 )
 
 const prependIcon = computed(() => listStore.listIcon(editedList.value.icon))
@@ -108,10 +110,10 @@ function clearForm() {
               <v-card-text>
                 <v-form v-model="formValid" lazy-validation>
                   <v-text-field
+                    v-model="editedList.name"
                     class="mt-2"
                     aria-required="true"
                     :disabled="uiStore.saving"
-                    v-model="editedList.name"
                     :rules="formNameRules"
                     :label="$t('common.name')"
                     counter="15"
@@ -121,10 +123,10 @@ function clearForm() {
                     variant="outlined"
                   />
                   <v-select
+                    v-model="editedList.icon"
                     class="mt-2"
                     :disabled="uiStore.saving"
                     :items="listStore.listIconSelectItems"
-                    v-model="editedList.icon"
                     :append-inner-icon="prependIcon"
                     color="primary"
                     variant="outlined"
@@ -154,7 +156,7 @@ function clearForm() {
           <v-card-text class="px-0 py-0">
             <v-list lines="two" class="pb-0 px-0" nav>
               <template v-for="(list, index) in listStore.lists" :key="list.id">
-                <v-list-item @click="onEditList(list)" class="mb-0">
+                <v-list-item class="mb-0" @click="onEditList(list)">
                   <template #prepend>
                     <v-avatar rounded>
                       <v-icon :icon="listStore.listIcon(list.icon)" />
@@ -162,7 +164,11 @@ function clearForm() {
                   </template>
                   <v-list-item-title>{{ list.name }}</v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ list.items.length === 1 ? $t('list.itemCountSingular', { count: list.items.length }) : $t('list.itemCount', { count: list.items.length }) }}
+                    {{
+                      list.items.length === 1
+                        ? $t('list.itemCountSingular', { count: list.items.length })
+                        : $t('list.itemCount', { count: list.items.length })
+                    }}
                   </v-list-item-subtitle>
                   <template #append>
                     <div class="d-flex">
@@ -170,11 +176,11 @@ function clearForm() {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             :icon="mdiSquareEditOutline"
-                            @click="onEditList(list)"
                             color="info"
                             class="mr-2"
                             v-bind="tooltipProps"
                             variant="text"
+                            @click="onEditList(list)"
                           />
                         </template>
                         <span>{{ $t('common.edit', { name: list.name }) }}</span>
@@ -183,12 +189,12 @@ function clearForm() {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             :icon="mdiTrashCan"
-                            @click.stop="onDeleteList(list)"
                             color="error"
                             variant="text"
                             v-bind="tooltipProps"
                             class="ml-2"
                             :disabled="deleteDisabled"
+                            @click.stop="onDeleteList(list)"
                           />
                         </template>
                         <span>{{ $t('common.deleteItem', { name: list.name }) }}</span>
@@ -207,7 +213,8 @@ function clearForm() {
             <v-card-title class="text-headline-small">
               <div class="text-break">
                 {{ $t('list.deleteConfirmation') }}
-                <code class="d-inline-block">{{ editedList.name }}</code>?
+                <code class="d-inline-block">{{ editedList.name }}</code
+                >?
               </div>
             </v-card-title>
             <v-card-actions>

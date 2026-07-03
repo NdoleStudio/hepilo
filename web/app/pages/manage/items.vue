@@ -10,6 +10,10 @@ const listStore = useListStore()
 const settingsStore = useSettingsStore()
 const uiStore = useUIStore()
 
+useHead({
+  title: () => t('nav.manageItems'),
+})
+
 definePageMeta({
   layout: 'default',
   middleware: 'auth',
@@ -57,9 +61,7 @@ const filteredItems = computed(() => {
 const canLoadMore = computed(() => filteredItems.value.length > itemSize.value)
 
 const formTitle = computed(() =>
-  editedItem.value.itemId === defaultItem.itemId
-    ? t('item.addItem')
-    : t('item.editItem'),
+  editedItem.value.itemId === defaultItem.itemId ? t('item.addItem') : t('item.editItem'),
 )
 
 onMounted(() => {
@@ -119,39 +121,55 @@ function clearForm() {
           :class="{ 'justify-center': itemStore.items.length === 0 && $vuetify.display.mdAndDown }"
         >
           <v-text-field
+            v-model="formQuery"
             :prepend-inner-icon="mdiMagnify"
             variant="solo-inverted"
             :placeholder="$t('item.searchItems')"
             density="compact"
             color="primary"
-            v-model="formQuery"
             class="mb-n2 mr-5"
           />
-          <v-btn @click="onSync" :disabled="synchronizing">
-            <v-icon v-if="$vuetify.display.lgAndUp" :icon="mdiSync" />
+          <v-btn class="py-5" variant="tonal" :disabled="synchronizing" @click="onSync">
+            <v-icon v-if="$vuetify.display.lgAndUp" start :icon="mdiSync" />
             {{ $t('item.synchronize') }}
           </v-btn>
           <v-spacer />
-          <v-dialog v-model="dialog" max-width="500">
+          <v-dialog
+            v-model="dialog"
+            class="dialog-responsive"
+            opacity="0.8"
+            transition="scale-transition"
+            :style="{
+              paddingLeft: uiStore.navDrawerOpen ? '256px' : '0',
+              transition: 'padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            }"
+          >
             <template #activator="{ props: activatorProps }">
               <v-btn color="primary" v-bind="activatorProps" class="mb-4">
-                <v-icon v-if="$vuetify.display.mdAndUp" :icon="mdiPlus" />
+                <v-icon v-if="$vuetify.display.mdAndUp" :icon="mdiPlus" start />
                 {{ $t('item.addItem') }}
               </v-btn>
             </template>
             <v-card>
-              <v-card-title>
+              <v-card-title class="d-flex align-center ga-2">
                 {{ formTitle }}
                 <v-spacer />
-                <v-btn :icon="mdiClose" color="info" variant="text" @click="closePopup" />
+                <v-btn
+                  :icon="mdiClose"
+                  color="warning"
+                  variant="text"
+                  density="comfortable"
+                  class="mr-n2"
+                  @click="closePopup"
+                />
               </v-card-title>
               <v-card-text>
                 <v-form v-model="formValid" lazy-validation>
                   <v-text-field
+                    v-model="editedItem.name"
                     class="mt-2"
                     aria-required="true"
                     :disabled="uiStore.saving"
-                    v-model="editedItem.name"
                     :rules="formNameRules"
                     :label="$t('common.name')"
                     counter="15"
@@ -161,10 +179,10 @@ function clearForm() {
                     variant="outlined"
                   />
                   <v-text-field
+                    v-model="editedItem.pricePerUnit"
                     class="mt-2"
                     :disabled="uiStore.saving"
                     aria-required="true"
-                    v-model="editedItem.pricePerUnit"
                     :rules="formPricePerUnitRules"
                     :label="$t('common.pricePerUnit')"
                     type="number"
@@ -175,18 +193,18 @@ function clearForm() {
                     variant="outlined"
                   />
                   <v-select
+                    v-model="editedItem.categoryId"
                     class="mt-2"
                     :disabled="uiStore.saving"
                     :items="categoryStore.categorySelectItems"
-                    v-model="editedItem.categoryId"
                     color="primary"
                     variant="outlined"
                     :label="$t('common.category')"
                   />
                   <v-select
+                    v-model="editedItem.unit"
                     :disabled="uiStore.saving"
                     :items="itemStore.itemUnitSelectItems"
-                    v-model="editedItem.unit"
                     color="primary"
                     variant="outlined"
                     clearable
@@ -196,15 +214,15 @@ function clearForm() {
               </v-card-text>
               <v-card-actions class="mt-n8">
                 <v-btn
-                  variant="text"
-                  color="success"
+                  variant="flat"
+                  color="primary"
                   :disabled="!formValid || uiStore.saving"
                   @click="onSave"
                 >
                   {{ $t('common.save') }}
                 </v-btn>
                 <v-spacer />
-                <v-btn color="info" variant="text" @click="closePopup">
+                <v-btn color="warning" variant="text" @click="closePopup">
                   {{ $t('common.cancel') }}
                 </v-btn>
               </v-card-actions>
@@ -214,9 +232,9 @@ function clearForm() {
 
         <v-card flat>
           <v-card-text class="px-0 py-0">
-            <v-list lines="two" class="pb-0 px-0" nav>
+            <v-list lines="two" class="py-0 px-0 mt-0">
               <template v-for="(item, index) in filteredItems.slice(0, itemSize)" :key="item.id">
-                <v-list-item @click="onEditItem(item)" class="mb-0">
+                <v-list-item class="mb-0" @click="onEditItem(item)">
                   <v-list-item-title>{{ item.name }}</v-list-item-title>
                   <v-list-item-subtitle>
                     <span class="text-label-small text-uppercase">
@@ -233,11 +251,11 @@ function clearForm() {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             :icon="mdiSquareEditOutline"
-                            @click="onEditItem(item)"
                             color="info"
                             class="mr-2"
                             v-bind="tooltipProps"
                             variant="text"
+                            @click="onEditItem(item)"
                           />
                         </template>
                         <span>{{ $t('common.edit', { name: item.name }) }}</span>
@@ -246,11 +264,11 @@ function clearForm() {
                         <template #activator="{ props: tooltipProps }">
                           <v-btn
                             :icon="mdiTrashCan"
-                            @click.stop="onDeleteItem(item)"
                             color="error"
                             variant="text"
                             v-bind="tooltipProps"
                             class="ml-2"
+                            @click.stop="onDeleteItem(item)"
                           />
                         </template>
                         <span>{{ $t('common.deleteItem', { name: item.name }) }}</span>
@@ -264,25 +282,45 @@ function clearForm() {
           </v-card-text>
         </v-card>
 
-        <div class="text-center mt-4 mb-4" v-if="canLoadMore" @click="itemSize += 20">
+        <div v-if="canLoadMore" class="text-center mt-4 mb-4" @click="itemSize += 20">
           <v-btn color="primary">{{ $t('item.loadMore') }}</v-btn>
         </div>
 
-        <v-dialog v-model="dialogDelete" max-width="500" width="400">
+        <v-dialog
+          v-model="dialogDelete"
+          class="dialog-responsive"
+          opacity="0.8"
+          transition="scale-transition"
+          :style="{
+            paddingLeft: uiStore.navDrawerOpen ? '256px' : '0',
+            transition: 'padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          }"
+        >
           <v-card>
             <v-card-title class="text-headline-small">
+              <div class="d-flex align-center mb-1 mr-n2">
+                <v-spacer />
+                <v-btn
+                  density="compact"
+                  :icon="mdiClose"
+                  variant="text"
+                  color="warning"
+                  @click="closeDeleteDialog"
+                />
+              </div>
               <div class="text-break">
                 {{ $t('list.deleteConfirmation') }}
-                <code class="d-inline-block">{{ editedItem.name }}</code>?
+                <v-code>{{ editedItem.name }}</v-code
+                >?
               </div>
             </v-card-title>
             <v-card-actions>
-              <v-btn color="info" variant="text" @click="closeDeleteDialog">
+              <v-btn color="primary" variant="flat" @click="closeDeleteDialog">
                 {{ $t('common.no') }}
               </v-btn>
               <v-spacer />
               <v-btn color="error" variant="text" @click="onDeleteItemConfirm">
-                {{ $t('common.yes') }}
+                {{ $t('common.delete') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -291,3 +329,29 @@ function clearForm() {
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+.dialog-responsive {
+  width: 100%;
+}
+
+/* md breakpoint (960px+): match container (900px) × md="8" (8/12) ≈ 600px */
+@media (min-width: 960px) {
+  .dialog-responsive {
+    width: 600px;
+  }
+}
+
+/* lg breakpoint (1280px+): match container (1185px) × lg="6" (6/12) ≈ 592px */
+@media (min-width: 1280px) {
+  .dialog-responsive {
+    width: 592px;
+  }
+}
+
+/* Ensure long content in dialog titles wraps instead of overflowing */
+.dialog-responsive :deep(.v-card-title) {
+  white-space: normal;
+  word-break: break-word;
+}
+</style>

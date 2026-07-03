@@ -2,15 +2,8 @@
   <v-app>
     <v-app-bar>
       <div class="d-flex align-center cursor-pointer ml-4" @click="navigateTo(localePath('/'))">
-        <v-img
-          max-height="55"
-          width="55"
-          :src="logo"
-        />
-        <h4
-          class="ml-2"
-          :class="mdAndUp ? 'text-headline-large' : 'text-headline-small'"
-        >
+        <v-img max-height="55" width="55" :src="logo" />
+        <h4 class="ml-2" :class="mdAndUp ? 'text-headline-large' : 'text-headline-small'">
           {{ config.public.appName }}
         </h4>
       </div>
@@ -82,7 +75,10 @@
       </v-snackbar>
     </v-main>
 
-    <v-footer class="d-flex flex-column align-center ga-2 py-6 text-medium-emphasis" :color="theme.current.value.dark ? undefined : '#eeeeee'">
+    <v-footer
+      class="d-flex flex-column align-center ga-2 py-6 text-medium-emphasis"
+      :color="theme.current.value.dark ? undefined : '#eeeeee'"
+    >
       <div class="d-flex ga-1">
         <v-btn
           v-for="social in socialLinks"
@@ -101,7 +97,7 @@
         </v-btn>
       </div>
 
-      <v-divider/>
+      <v-divider />
       <p class="text-medium-emphasis mb-0 text-label-large">
         {{ t('home.footerMitLicense') }}
       </p>
@@ -119,13 +115,22 @@
       </p>
 
       <div class="d-flex ga-4 mt-2">
-        <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/blog')">
+        <NuxtLink
+          class="text-medium-emphasis text-decoration-none hover:text-decoration-underline"
+          :to="localePath('/blog')"
+        >
           {{ t('home.footerBlog') }}
         </NuxtLink>
-        <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/privacy-policy')">
+        <NuxtLink
+          class="text-medium-emphasis text-decoration-none hover:text-decoration-underline"
+          :to="localePath('/privacy-policy')"
+        >
           {{ t('home.footerPrivacyPolicy') }}
         </NuxtLink>
-        <NuxtLink class="text-medium-emphasis text-decoration-none hover:text-decoration-underline" :to="localePath('/terms-and-conditions')">
+        <NuxtLink
+          class="text-medium-emphasis text-decoration-none hover:text-decoration-underline"
+          :to="localePath('/terms-and-conditions')"
+        >
           {{ t('home.footerTermsAndConditions') }}
         </NuxtLink>
       </div>

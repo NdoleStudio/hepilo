@@ -36,17 +36,15 @@ export const useCategoryStore = defineStore('category', () => {
   const categories = ref<Category[]>([{ ...DEFAULT_CATEGORY }])
 
   const editableCategories = computed(() =>
-    categories.value.filter(c => c.id !== CATEGORY_ID_UNCATEGORIZED),
+    categories.value.filter((c) => c.id !== CATEGORY_ID_UNCATEGORIZED),
   )
 
   function findCategoryById(categoryId: string): Category | undefined {
-    return categories.value.find(c => c.id === categoryId)
+    return categories.value.find((c) => c.id === categoryId)
   }
 
   function findCategoryByName(categoryName: string): Category | undefined {
-    return categories.value.find(
-      c => c.id === categoryName.trim().toLowerCase(),
-    )
+    return categories.value.find((c) => c.id === categoryName.trim().toLowerCase())
   }
 
   function categoryItemsCount(categoryId: string): number {
@@ -57,17 +55,17 @@ export const useCategoryStore = defineStore('category', () => {
   }
 
   const categorySelectItems = computed((): SelectItem[] =>
-    categories.value.map(c => ({ value: c.id, title: c.name })),
+    categories.value.map((c) => ({ value: c.id, title: c.name })),
   )
 
   const categoryColorSelectItems = computed((): SelectItem[] =>
     Array.from(CATEGORY_COLORS)
       .sort()
-      .map(color => ({
+      .map((color) => ({
         value: color,
         title: color
           .split('-')
-          .map(w => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
+          .map((w) => w.slice(0, 1).toUpperCase() + w.slice(1).toLowerCase())
           .join(' '),
       })),
   )
@@ -95,11 +93,10 @@ export const useCategoryStore = defineStore('category', () => {
     category.color = request.color
 
     // Upsert into categories array
-    const index = categories.value.findIndex(c => c.id === category!.id)
+    const index = categories.value.findIndex((c) => c.id === category!.id)
     if (index === -1) {
       categories.value.push(category)
-    }
-    else {
+    } else {
       categories.value[index] = category
     }
     categories.value = [...categories.value]
@@ -143,7 +140,7 @@ export const useCategoryStore = defineStore('category', () => {
 
     uiStore.setSaving(true)
 
-    categories.value = categories.value.filter(c => c.id !== categoryId)
+    categories.value = categories.value.filter((c) => c.id !== categoryId)
     itemStore.items = itemStore.items.map((item: Item) => {
       if (item.categoryId === categoryId) item.categoryId = CATEGORY_ID_UNCATEGORIZED
       return item

@@ -7,9 +7,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 const { data: posts } = await useAsyncData('blog-posts', () =>
-  queryCollection('blog')
-    .order('date', 'DESC')
-    .all(),
+  queryCollection('blog').order('date', 'DESC').all(),
 )
 
 useSeoDefaults({
@@ -30,15 +28,7 @@ function formatDate(date: string) {
 <template>
   <v-container>
     <v-row>
-      <v-col
-        cols="12"
-        md="8"
-        offset-md="2"
-        xl="8"
-        offset-xl="2"
-        xxl="6"
-        offset-xxl="3"
-      >
+      <v-col cols="12" md="8" offset-md="2" xl="8" offset-xl="2" xxl="6" offset-xxl="3">
         <h1 class="text-display-small mb-6">
           {{ t('blog.title') }}
         </h1>

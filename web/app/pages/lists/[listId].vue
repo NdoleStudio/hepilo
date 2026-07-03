@@ -10,11 +10,7 @@ import {
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 import { CATEGORY_ID_UNCATEGORIZED } from '~/stores/category'
-import type {
-  Category,
-  MaterializedListItem,
-  SelectItem,
-} from '~/types/state'
+import type { Category, MaterializedListItem, SelectItem } from '~/types/state'
 import emptyListSvg from '~/assets/images/empty-list.svg'
 
 const { t } = useI18n()
@@ -26,20 +22,22 @@ const categoryStore = useCategoryStore()
 const settingsStore = useSettingsStore()
 const uiStore = useUIStore()
 
+useHead({
+  title: () => listStore.selectedList?.name || t('app.defaultPageTitle'),
+})
+
 definePageMeta({
   layout: 'default',
   middleware: 'auth',
-  key: route => String(route.params.listId),
+  key: (route) => String(route.params.listId),
 })
 
 // Combobox / add item
 const itemName = ref('')
-const isBlur = ref(false)
-const isEnterPressed = ref(false)
+const search = ref('')
 const comboboxMenu = ref(false)
 const addFormQuantity = ref(0)
 const selectedItem = ref<null | number>(-1)
-let lastCommittedItem = ''
 
 // Edit dialog
 const dialog = ref(false)
@@ -60,14 +58,19 @@ const formNameRules = [
     (!!value && value.length <= 50) || t('errors.nameTooLong50'),
 ]
 const formQuantityRules = [
-  (value: number | null): boolean | string =>
-    !!value || t('errors.quantityRequired'),
+  (value: number | null): boolean | string => !!value || t('errors.quantityRequired'),
   (value: number | null | string): boolean | string =>
-    value === '' || value == null || (Number(value) > 0 && Number(value) <= 999) || t('errors.quantityRange'),
+    value === '' ||
+    value == null ||
+    (Number(value) > 0 && Number(value) <= 999) ||
+    t('errors.quantityRange'),
 ]
 const formPricePerUnitRules = [
   (value: number | null | string): boolean | string =>
-    value === null || value === '' || Number(value) >= 0 || t('errors.pricePerUnitMoreThan', { min: settingsStore.formatCurrency(0) }),
+    value === null ||
+    value === '' ||
+    Number(value) >= 0 ||
+    t('errors.pricePerUnitMoreThan', { min: settingsStore.formatCurrency(0) }),
 ]
 const formNotesRules = [
   (value: string | null): boolean | string =>
@@ -122,18 +125,6 @@ function itemClicked(item: MaterializedListItem) {
 
 function onFocus() {
   addFormQuantity.value = 0
-  isBlur.value = false
-}
-
-function onBlur() {
-  isBlur.value = true
-}
-
-function onComboboxKeydown(e: KeyboardEvent) {
-  if (e.key === 'Enter' && !e.isComposing) {
-    isEnterPressed.value = true
-    setTimeout(() => { isEnterPressed.value = false }, 0)
-  }
 }
 
 function hasQuantity(value: string): boolean {
@@ -141,7 +132,7 @@ function hasQuantity(value: string): boolean {
   return !isNaN(nameQuantity) && nameQuantity > 0
 }
 
-function itemFilter(value: string, query: string, _item?: any): boolean {
+function itemFilter(value: string, query: string, _item?: unknown): boolean {
   if (value == null || query == null) return false
   if (hasQuantity(query)) {
     addFormQuantity.value = parseFloat(query.split(' ')[0]!)
@@ -152,43 +143,49 @@ function itemFilter(value: string, query: string, _item?: any): boolean {
   return value.toLocaleLowerCase().indexOf(query.toLocaleLowerCase()) > -1
 }
 
-function onChange(chosenItem: string | SelectItem | null) {
-  if (!chosenItem) return
-
-  let itemToAdd = ''
-  let valueAfterAdd = ''
-
-  if (typeof chosenItem === 'object' && 'title' in chosenItem) {
-    // Object = dropdown selection or auto-select-first → always add
-    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + chosenItem.title
-  } else if (typeof chosenItem === 'string' && isEnterPressed.value && !isBlur.value) {
-    // String + Enter pressed = user committed typed text → add
-    const trimmed = chosenItem.trim()
-    if (!trimmed) return
-    if (trimmed.length > 15) {
-      valueAfterAdd = trimmed
-    }
-    itemToAdd = chosenItem
-  } else {
-    // String without Enter = just typing (keystroke) → ignore
-    return
-  }
-
-  // Prevent double-fire (auto-select-first emits object then string for same Enter)
-  const normalized = itemToAdd.trim().toLowerCase()
-  if (lastCommittedItem === normalized) return
-  lastCommittedItem = normalized
-  setTimeout(() => { lastCommittedItem = '' }, 0)
-
-  listStore.addItem(itemToAdd)
+function resetInput(valueAfterAdd = '') {
   comboboxMenu.value = false
-
   nextTick(() => {
     itemName.value = valueAfterAdd
-    // Blur input to prevent menu from reopening after click selection
+    search.value = valueAfterAdd
     const input = document.querySelector('#add-item-input input') as HTMLInputElement | null
     input?.blur()
   })
+}
+
+// Enter commits the typed text. If it matches an existing item (the entry
+// auto-select-first would highlight) we add that item, otherwise we create a
+// brand new item from the raw text. Adding only happens here or on click, so
+// nothing is ever added while the user is still typing.
+function onEnter(e?: KeyboardEvent) {
+  if (e?.isComposing) return
+  const raw = (search.value ?? '').trim()
+  if (!raw) return
+
+  const matches = itemStore.autocompleteItems.filter((item) =>
+    itemFilter(item.title, search.value ?? ''),
+  )
+
+  let itemToAdd: string
+  let valueAfterAdd = ''
+  if (matches.length > 0) {
+    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + matches[0]!.title
+  } else {
+    itemToAdd = raw
+    if (raw.length > 15) {
+      valueAfterAdd = raw
+    }
+  }
+
+  listStore.addItem(itemToAdd)
+  resetInput(valueAfterAdd)
+}
+
+// A suggestion was clicked in the dropdown.
+function onSelect(item: SelectItem) {
+  const itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + item.title
+  listStore.addItem(itemToAdd)
+  resetInput()
 }
 
 function onClearCart() {
@@ -309,27 +306,29 @@ onUnmounted(() => {
         <ShoppingListDemoBanner />
         <div id="add-item-input">
           <v-combobox
-            :custom-filter="itemFilter"
             v-model:menu="comboboxMenu"
-            @update:model-value="onChange"
-            @keydown.enter.capture="onComboboxKeydown"
-            @blur="onBlur"
-            @focus="onFocus"
+            v-model:search="search"
+            v-model="itemName"
+            :custom-filter="itemFilter"
             :items="itemStore.autocompleteItems"
             color="primary"
             variant="solo"
             :auto-select-first="true"
-            v-model="itemName"
             :placeholder="$t('list.addItem')"
             :prepend-inner-icon="mdiPlus"
             autocomplete="off"
+            @keydown.enter.capture="onEnter"
+            @focus="onFocus"
           >
             <template #item="{ item, props: itemProps }">
-              <v-list-item v-bind="itemProps" :title="undefined">
+              <v-list-item v-bind="itemProps" :title="undefined" @click="onSelect(item)">
                 <v-list-item-title>
                   {{ item.title }}
                   <span v-if="addFormQuantity > 0" class="text-medium-emphasis">
-                    ({{ addFormQuantity.toString() + (item.unit ? ' ' + itemStore.itemUnitName(item.unit, addFormQuantity) : '') }})
+                    ({{
+                      addFormQuantity.toString() +
+                      (item.unit ? ' ' + itemStore.itemUnitName(item.unit, addFormQuantity) : '')
+                    }})
                   </span>
                 </v-list-item-title>
               </v-list-item>
@@ -341,23 +340,25 @@ onUnmounted(() => {
 
     <!-- Loading spinner -->
     <v-progress-circular
+      v-if="!listStore.stateLoaded"
       class="mx-auto d-block my-16"
       :size="100"
       :width="5"
-      v-if="!listStore.stateLoaded"
       color="lime"
       indeterminate
     />
 
     <!-- Empty state -->
-    <v-row v-if="listStore.listMaterializedItems.length === 0 && listStore.cartMaterializedItems.length === 0 && listStore.stateLoaded">
+    <v-row
+      v-if="
+        listStore.listMaterializedItems.length === 0 &&
+        listStore.cartMaterializedItems.length === 0 &&
+        listStore.stateLoaded
+      "
+    >
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
         <div class="text-center">
-          <v-img
-            class="mx-auto mb-4"
-            max-height="150"
-            :src="emptyListSvg"
-          />
+          <v-img class="mx-auto mb-4" max-height="150" :src="emptyListSvg" />
           <h3 class="text-title-large">{{ $t('list.emptyTitle') }}</h3>
           <p class="text-medium-emphasis">{{ $t('list.emptyDescription') }}</p>
         </div>
@@ -371,14 +372,20 @@ onUnmounted(() => {
           <v-card-text class="px-0 py-0">
             <v-list class="pb-0" lines="two">
               <v-progress-linear
+                v-if="uiStore.saving"
                 :active="uiStore.saving"
                 :indeterminate="uiStore.saving"
-                v-if="uiStore.saving"
                 color="lime"
               />
-              <template v-for="(categoryItem, index) in listStore.listMaterializedItems" :key="'header-' + categoryItem.category.id">
+              <template
+                v-for="(categoryItem, index) in listStore.listMaterializedItems"
+                :key="'header-' + categoryItem.category.id"
+              >
                 <div :id="'list-category-title-' + index">
-                  <v-list-subheader class="text-label-large text-uppercase font-weight-bold" :class="categoryClass(categoryItem.category)">
+                  <v-list-subheader
+                    class="text-label-large text-uppercase font-weight-bold"
+                    :class="categoryClass(categoryItem.category)"
+                  >
                     {{ categoryItem.category.name }}
                   </v-list-subheader>
                 </div>
@@ -391,11 +398,11 @@ onUnmounted(() => {
                     <v-list-item-action start>
                       <div :id="'list-item-checkbox-' + index + '-' + listIndex">
                         <v-checkbox-btn
-                            @click.stop
-                            color="primary"
-                            @update:model-value="listStore.addToCart(item.item.id)"
-                            :disabled="uiStore.saving"
-                            :model-value="false"
+                          color="primary"
+                          :disabled="uiStore.saving"
+                          :model-value="false"
+                          @click.stop
+                          @update:model-value="listStore.addToCart(item.item.id)"
                         />
                       </div>
                     </v-list-item-action>
@@ -403,15 +410,32 @@ onUnmounted(() => {
                   <div :id="'list-item-details-' + index + '-' + listIndex">
                     <v-list-item-title>
                       {{ item.item.name }}
-                      <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
-                        ({{ item.listItem.quantity + (item.item.unit ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity) : '') }})
+                      <span
+                        v-if="item.listItem.quantity > 1 || item.item.unit"
+                        class="text-medium-emphasis"
+                      >
+                        ({{
+                          item.listItem.quantity +
+                          (item.item.unit
+                            ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity)
+                            : '')
+                        }})
                       </span>
                       <span v-if="item.listItem.notes.trim()">
-                        <v-icon size="small" class="mt-n1" color="#afb42b" :icon="mdiNoteTextOutline" />
+                        <v-icon
+                          size="small"
+                          class="mt-n1"
+                          color="#afb42b"
+                          :icon="mdiNoteTextOutline"
+                        />
                       </span>
                     </v-list-item-title>
                     <v-list-item-subtitle class="text-body-small">
-                      {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
+                      {{
+                        settingsStore.formatCurrency(
+                          item.listItem.quantity * item.item.pricePerUnit,
+                        )
+                      }}
                     </v-list-item-subtitle>
                   </div>
                   <template #append>
@@ -449,12 +473,12 @@ onUnmounted(() => {
                 <v-icon size="small" :icon="mdiCart" />
                 <v-btn
                   v-if="listStore.cartMaterializedItems.length"
-                  @click.stop.prevent
                   class="ml-4"
                   color="success"
                   variant="text"
                   density="compact"
                   :prepend-icon="mdiNotificationClearAll"
+                  @click.stop.prevent
                   @click="onClearCart"
                 >
                   {{ $t('list.clearCart') }}
@@ -463,7 +487,10 @@ onUnmounted(() => {
             </v-expansion-panel-title>
             <v-expansion-panel-text class="px-0">
               <v-list class="mb-n4 pb-0 mx-n6 mt-n4" lines="two">
-                <template v-for="categoryItem in listStore.cartMaterializedItems" :key="'cart-' + categoryItem.category.id">
+                <template
+                  v-for="categoryItem in listStore.cartMaterializedItems"
+                  :key="'cart-' + categoryItem.category.id"
+                >
                   <v-list-item
                     v-for="item in categoryItem.items"
                     :key="item.item.id"
@@ -472,26 +499,43 @@ onUnmounted(() => {
                     <template #prepend>
                       <v-list-item-action start>
                         <v-checkbox-btn
-                            @click.stop
-                            color="primary"
-                            :disabled="uiStore.saving"
-                            :model-value="true"
-                            @update:model-value="listStore.removeFromCart(item.item.id)"
+                          color="primary"
+                          :disabled="uiStore.saving"
+                          :model-value="true"
+                          @click.stop
+                          @update:model-value="listStore.removeFromCart(item.item.id)"
                         />
                       </v-list-item-action>
                     </template>
 
                     <v-list-item-title class="text-decoration-line-through text-medium-emphasis">
                       {{ item.item.name }}
-                      <span v-if="item.listItem.quantity > 1 || item.item.unit" class="text-medium-emphasis">
-                        ({{ item.listItem.quantity + (item.item.unit ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity) : '') }})
+                      <span
+                        v-if="item.listItem.quantity > 1 || item.item.unit"
+                        class="text-medium-emphasis"
+                      >
+                        ({{
+                          item.listItem.quantity +
+                          (item.item.unit
+                            ? ' ' + itemStore.itemUnitName(item.item.unit, item.listItem.quantity)
+                            : '')
+                        }})
                       </span>
                     </v-list-item-title>
                     <v-list-item-subtitle class="text-body-small">
-                      {{ settingsStore.formatCurrency(item.listItem.quantity * item.item.pricePerUnit) }}
+                      {{
+                        settingsStore.formatCurrency(
+                          item.listItem.quantity * item.item.pricePerUnit,
+                        )
+                      }}
                     </v-list-item-subtitle>
                     <template #append>
-                      <v-btn :icon="mdiDelete" variant="text" color="error" @click.stop="listStore.deleteListItem(item.listItem.itemId)" />
+                      <v-btn
+                        :icon="mdiDelete"
+                        variant="text"
+                        color="error"
+                        @click.stop="listStore.deleteListItem(item.listItem.itemId)"
+                      />
                     </template>
                   </v-list-item>
                 </template>
@@ -511,13 +555,21 @@ onUnmounted(() => {
               <v-col>
                 <div class="d-flex mb-n2" style="width: 100%">
                   <div>
-                    <p class="text-label-large text-uppercase text-medium-emphasis">{{ $t('list.listTotal') }}</p>
-                    <p class="text-title-large mt-n2">{{ settingsStore.formatCurrency(listStore.listTotal) }}</p>
+                    <p class="text-label-large text-uppercase text-medium-emphasis">
+                      {{ $t('list.listTotal') }}
+                    </p>
+                    <p class="text-title-large mt-n2">
+                      {{ settingsStore.formatCurrency(listStore.listTotal) }}
+                    </p>
                   </div>
                   <v-spacer />
                   <div>
-                    <p class="text-label-large text-uppercase text-right text-medium-emphasis">{{ $t('list.cartTotal') }}</p>
-                    <p class="text-title-large mt-n2">{{ settingsStore.formatCurrency(listStore.cartTotal) }}</p>
+                    <p class="text-label-large text-uppercase text-right text-medium-emphasis">
+                      {{ $t('list.cartTotal') }}
+                    </p>
+                    <p class="text-title-large mt-n2">
+                      {{ settingsStore.formatCurrency(listStore.cartTotal) }}
+                    </p>
                   </div>
                 </div>
               </v-col>
@@ -528,18 +580,35 @@ onUnmounted(() => {
     </v-row>
 
     <!-- Edit item dialog -->
-    <v-dialog v-model="dialog" class="dialog-responsive" opacity="0.8" transition="scale-transition" :style="{ paddingLeft: uiStore.navDrawerOpen ? '256px' : '0', transition: 'padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }">
+    <v-dialog
+      v-model="dialog"
+      class="dialog-responsive"
+      opacity="0.8"
+      transition="scale-transition"
+      :style="{
+        paddingLeft: uiStore.navDrawerOpen ? '256px' : '0',
+        transition: 'padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      }"
+    >
       <v-card>
+        <v-card-title class="d-flex align-center ga-2">
+          <span>{{ $t('item.editItem') }}</span>
+          <v-spacer />
+          <v-btn
+            :icon="mdiClose"
+            color="warning"
+            variant="text"
+            density="comfortable"
+            class="mr-n2"
+            @click="closePopup"
+          />
+        </v-card-title>
         <v-card-text>
-          <v-form class="mt-2" v-model="formValid" lazy-validation>
-            <div class="d-flex mt-n4 mb-2 mr-n4">
-              <v-spacer />
-              <v-btn density="compact" :icon="mdiClose" variant="text" color="info" @click="closePopup" />
-            </div>
+          <v-form v-model="formValid" lazy-validation>
             <v-text-field
+              v-model="formName"
               aria-required="true"
               :disabled="uiStore.saving"
-              v-model="formName"
               :rules="formNameRules"
               :label="$t('common.name')"
               counter="50"
@@ -550,9 +619,9 @@ onUnmounted(() => {
             />
             <div class="d-flex mt-2">
               <v-text-field
+                v-model="formQuantity"
                 :disabled="uiStore.saving"
                 aria-required="true"
-                v-model="formQuantity"
                 :rules="formQuantityRules"
                 :label="$t('common.quantity')"
                 class="w-50"
@@ -563,10 +632,10 @@ onUnmounted(() => {
                 variant="outlined"
               />
               <v-select
+                v-model="formUnit"
                 class="ml-3 w-50"
                 :disabled="uiStore.saving"
                 :items="itemStore.itemUnitSelectItems"
-                v-model="formUnit"
                 color="primary"
                 variant="outlined"
                 clearable
@@ -574,10 +643,10 @@ onUnmounted(() => {
               />
             </div>
             <v-text-field
+              v-model="formPricePerUnit"
               class="mt-2"
               :disabled="uiStore.saving"
               aria-required="true"
-              v-model="formPricePerUnit"
               :rules="formPricePerUnitRules"
               :label="$t('common.pricePerUnit')"
               type="number"
@@ -590,19 +659,19 @@ onUnmounted(() => {
               variant="outlined"
             />
             <v-select
+              v-model="formCategoryId"
               class="mt-2"
               :disabled="uiStore.saving"
               :items="categoryStore.categorySelectItems"
-              v-model="formCategoryId"
               color="primary"
               variant="outlined"
               :label="$t('common.category')"
             />
             <v-textarea
+              v-model="formNotes"
               class="mt-2"
               :disabled="uiStore.saving"
               counter="1000"
-              v-model="formNotes"
               :rules="formNotesRules"
               :label="$t('common.notes')"
               color="primary"
@@ -613,7 +682,12 @@ onUnmounted(() => {
           </v-form>
         </v-card-text>
         <v-card-actions class="mt-n4">
-          <v-btn variant="text" color="success" :disabled="!formValid || uiStore.saving" @click="onSave">
+          <v-btn
+            variant="flat"
+            color="primary"
+            :disabled="!formValid || uiStore.saving"
+            @click="onSave"
+          >
             {{ $t('common.save') }}
           </v-btn>
           <v-spacer />

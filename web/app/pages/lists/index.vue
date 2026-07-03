@@ -1,6 +1,11 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const localePath = useLocalePath()
 const listStore = useListStore()
+
+useHead({
+  title: () => t('app.defaultPageTitle'),
+})
 
 definePageMeta({
   layout: 'default',

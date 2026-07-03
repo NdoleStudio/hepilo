@@ -60,18 +60,18 @@ async function onSave() {
       <v-card-title class="d-flex">
         {{ $t('list.createNewList') }}
         <v-spacer />
-        <v-btn density="compact" color="info" icon  variant="text" @click="closePopup">
+        <v-btn density="compact" color="info" icon variant="text" @click="closePopup">
           <v-icon :icon="mdiClose" />
         </v-btn>
       </v-card-title>
       <v-card-text>
         <v-form v-model="formValid" lazy-validation>
           <v-text-field
+            v-model="formName"
             class="mt-2"
             color="primary"
             aria-required="true"
             :disabled="uiStore.saving"
-            v-model="formName"
             :rules="formNameRules"
             :label="$t('common.name')"
             counter="15"
@@ -80,11 +80,11 @@ async function onSave() {
             variant="outlined"
           />
           <v-select
+            v-model="formIcon"
             color="primary"
             class="mt-2"
             :disabled="uiStore.saving"
             :items="listStore.listIconSelectItems"
-            v-model="formIcon"
             :append-inner-icon="prependIcon"
             variant="outlined"
             :label="$t('common.icon')"

@@ -18,7 +18,7 @@ let appCheckInitialized = false
 const ensureApp = (): FirebaseApp => {
   if (!firebaseApp) {
     const existingApps = getApps()
-    firebaseApp = existingApps.length > 0 ? existingApps[0] : initializeApp(firebaseConfig)
+    firebaseApp = existingApps[0] ?? initializeApp(firebaseConfig)
   }
   return firebaseApp
 }

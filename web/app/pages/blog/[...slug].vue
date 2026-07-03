@@ -16,9 +16,7 @@ const slug = computed(() => {
 })
 
 const { data: post } = await useAsyncData(`blog-${slug.value}`, () =>
-  queryCollection('blog')
-    .path(`/blog/${slug.value}`)
-    .first(),
+  queryCollection('blog').path(`/blog/${slug.value}`).first(),
 )
 
 if (!post.value) {
@@ -38,23 +36,12 @@ useSeoDefaults({
 <template>
   <v-container>
     <v-row>
-      <v-col
-        cols="12"
-        md="8"
-        offset-md="2"
-        xl="8"
-        offset-xl="2"
-        xxl="6"
-        offset-xxl="3"
-      >
+      <v-col cols="12" md="8" offset-md="2" xl="8" offset-xl="2" xxl="6" offset-xxl="3">
         <template v-if="post">
           <h1 class="text-display-small mb-4 mt-8">
             {{ post.title }}
           </h1>
-          <p
-            v-if="post.description"
-            class="text-title-large text-medium-emphasis mb-8"
-          >
+          <p v-if="post.description" class="text-title-large text-medium-emphasis mb-8">
             {{ post.description }}
           </p>
 

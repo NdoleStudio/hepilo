@@ -13,9 +13,12 @@ export default defineNuxtConfig({
       appName: process.env.NUXT_PUBLIC_APP_NAME || 'Hepilo',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://hepilo.com',
       siteEmail: process.env.NUXT_PUBLIC_SITE_EMAIL || 'arnold@hepilo.com',
-      siteAndroidAppUrl: process.env.NUXT_PUBLIC_SITE_ANDROID_APP_URL || 'https://play.google.com/store/apps/details?id=com.hepilo.twa',
+      siteAndroidAppUrl:
+        process.env.NUXT_PUBLIC_SITE_ANDROID_APP_URL ||
+        'https://play.google.com/store/apps/details?id=com.hepilo.twa',
       githubLink: process.env.NUXT_PUBLIC_GITHUB_LINK || 'https://github.com/NdoleStudio/hepilo',
-      recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY || '6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA',
+      recaptchaSiteKey:
+        process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY || '6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA',
     },
   },
 
@@ -30,7 +33,14 @@ export default defineNuxtConfig({
     '@sentry/nuxt',
     '@nuxt/fonts',
     '@sentry/nuxt/module',
+    '@nuxt/eslint',
   ],
+
+  eslint: {
+    config: {
+      typescript: true,
+    },
+  },
 
   content: {
     renderer: {

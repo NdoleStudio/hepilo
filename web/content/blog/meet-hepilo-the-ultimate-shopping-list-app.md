@@ -1,11 +1,11 @@
 ---
-title: "Meet the ultimate shopping list app"
-description: "Hepilo is a modern platform for managing your shopping lists. You can create multiple shopping lists, categorize items, and budget your shopping list items for free."
-date: "2022-01-02"
+title: 'Meet the ultimate shopping list app'
+description: 'Hepilo is a modern platform for managing your shopping lists. You can create multiple shopping lists, categorize items, and budget your shopping list items for free.'
+date: '2022-01-02'
 readMinutes: 3
 ---
 
-Hey 👋 
+Hey 👋
 
 I'm [Arnold](https://twitter.com/acho_arnold), founder of Hepilo. I'll love to introduce you to my latest project. A modern platform for managing your shopping lists. Ever gone shopping just to discover that you forgot your shopping list at home, with hepilo your shopping list will always be 1 click away.
 
@@ -15,9 +15,7 @@ Hepilo has an intuitive interface based on [material design](https://material.io
 
 → [Try Our Demo](https://hepilo.com/demo), you don't need to create an account!
 
-
 ![hepilo-mobile.png](/images/blog/hepilo-mobile.png)
-
 
 ## Who's behind Hepilo?
 

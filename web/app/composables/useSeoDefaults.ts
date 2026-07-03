@@ -1,5 +1,5 @@
 export function useSeoDefaults(options: { title: string; description: string; path: string }) {
-  const head = useLocaleHead({ addSeoAttributes: true })
+  const head = useLocaleHead()
 
   useSeoMeta({
     title: options.title,

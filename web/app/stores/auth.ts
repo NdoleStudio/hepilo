@@ -5,9 +5,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
 
   const isLoggedIn = computed(() => user.value !== null)
-  const hasProfilePicture = computed(
-    () => user.value !== null && user.value.photoURL !== null,
-  )
+  const hasProfilePicture = computed(() => user.value !== null && user.value.photoURL !== null)
 
   function setUser(newUser: User | null) {
     if (newUser === null && user.value === null) return

@@ -6,7 +6,7 @@ import type { User } from '~/types/state'
 export default defineNuxtPlugin(() => {
   const firebaseConfig = {
     apiKey: 'AIzaSyAoeOz6cobux6wPOw7XzBJ8wxywjeawpX0',
-    authDomain: 'hepilo-f5cd4.firebaseapp.com',
+    authDomain: 'auth.hepilo.com',
     projectId: 'hepilo-f5cd4',
     storageBucket: 'hepilo-f5cd4.appspot.com',
     messagingSenderId: '188406853589',
@@ -38,8 +38,7 @@ export default defineNuxtPlugin(() => {
         photoURL: firebaseUser.photoURL,
       }
       authStore.setUser(stateUser)
-    }
-    else {
+    } else {
       authStore.setUser(null)
     }
   })

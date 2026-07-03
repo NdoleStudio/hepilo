@@ -7,8 +7,7 @@ export const getDefaultCurrency = async (): Promise<string> => {
       return DEFAULT_CURRENCY
     }
     return response.text()
-  }
-  catch {
+  } catch {
     return DEFAULT_CURRENCY
   }
 }

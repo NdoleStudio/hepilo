@@ -1,0 +1,43 @@
+# Pre-commit hooks for the Hepilo repo.
+# Active development happens in web/ (Nuxt 4 + pnpm); web-legacy/ is frozen.
+# Install once with: pre-commit install
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: web-prettier
+        name: web prettier (format check)
+        entry: pnpm -C web format:check
+        language: system
+        files: ^web/
+        pass_filenames: false
+
+      - id: web-eslint
+        name: web eslint
+        entry: pnpm -C web lint
+        language: system
+        files: ^web/
+        pass_filenames: false
+
+      - id: web-unit-tests
+        name: web unit tests (vitest)
+        entry: pnpm -C web test:unit
+        language: system
+        files: ^web/
+        pass_filenames: false
+
+      - id: web-typecheck
+        name: web typecheck (nuxi typecheck)
+        entry: pnpm -C web exec nuxi typecheck
+        language: system
+        files: ^web/
+        pass_filenames: false

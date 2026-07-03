@@ -168,15 +168,7 @@
     "Salt",
     "Vanilla sugar"
   ],
-  "Frozen foods": [
-    "Chopped fruit",
-    "Fish",
-    "Ice cream",
-    "Ice pops",
-    "Pies",
-    "Pizza",
-    "Waffles"
-  ],
+  "Frozen foods": ["Chopped fruit", "Fish", "Ice cream", "Ice pops", "Pies", "Pizza", "Waffles"],
   "Snacks": [
     "Almonds",
     "Candy",
@@ -259,11 +251,5 @@
     "Pet shampoo",
     "Poop bags"
   ],
-  "Baby products": [
-    "Baby food",
-    "Baby wipes",
-    "Diapers",
-    "Diaper cream",
-    "Formula"
-  ]
+  "Baby products": ["Baby food", "Baby wipes", "Diapers", "Diaper cream", "Formula"]
 }

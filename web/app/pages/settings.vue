@@ -8,6 +8,10 @@ const settingsStore = useSettingsStore()
 const authStore = useAuthStore()
 const uiStore = useUIStore()
 
+useHead({
+  title: () => t('settings.title'),
+})
+
 definePageMeta({
   layout: 'default',
   middleware: 'auth',
@@ -40,8 +44,8 @@ async function onDeleteAccountConfirm() {
     const auth = getAuth()
     await authStore.deleteAccount(auth.currentUser?.uid as string)
     await auth.currentUser?.delete()
-  } catch (e: any) {
-    if (e.code !== 'auth/requires-recent-login') {
+  } catch (e: unknown) {
+    if ((e as { code?: string }).code !== 'auth/requires-recent-login') {
       throw e
     }
     const auth = getAuth()
@@ -73,10 +77,10 @@ function onSave() {
           <v-card-text>
             <v-form v-model="formValid" lazy-validation>
               <v-select
+                v-model="formCurrency"
                 class="mt-4"
                 :disabled="uiStore.saving"
                 :items="settingsStore.currencySelectItems"
-                v-model="formCurrency"
                 density="compact"
                 color="primary"
                 variant="outlined"
@@ -119,8 +123,8 @@ function onSave() {
             <v-btn
               color="error"
               variant="text"
-              @click="onDeleteAccount"
               :disabled="!authStore.isLoggedIn"
+              @click="onDeleteAccount"
             >
               {{ $t('settings.deleteAccount') }}
             </v-btn>

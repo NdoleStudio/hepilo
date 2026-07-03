@@ -18,7 +18,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const localePath = useLocalePath()
 
 const email = ref('')
 const password = ref('')
@@ -35,9 +34,10 @@ async function signInWithGoogle() {
     const provider = new GoogleAuthProvider()
     await signInWithPopup(auth, provider)
     emit('success')
-  } catch (error: any) {
-    errorMessage.value = error.message
-    emit('error', error)
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error))
+    errorMessage.value = err.message
+    emit('error', err)
   } finally {
     loading.value = false
   }
@@ -54,9 +54,10 @@ async function handleEmailAuth() {
       await signInWithEmailAndPassword(auth, email.value, password.value)
     }
     emit('success')
-  } catch (error: any) {
-    errorMessage.value = error.message
-    emit('error', error)
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error))
+    errorMessage.value = err.message
+    emit('error', err)
   } finally {
     loading.value = false
   }
@@ -121,23 +122,29 @@ async function handleEmailAuth() {
         >
           {{ isSignUp ? t('auth.signUp') : t('auth.signIn') }}
         </v-btn>
-        <v-btn
-          block
-          variant="text"
-          size="small"
-          class="mt-2"
-          @click="isSignUp = !isSignUp"
-        >
+        <v-btn block variant="text" size="small" class="mt-2" @click="isSignUp = !isSignUp">
           {{ isSignUp ? t('auth.haveAccount') : t('auth.noAccount') }}
         </v-btn>
       </v-form>
 
-      <i18n-t keypath="auth.byContinuing" tag="p" class="text-body-small text-medium-emphasis text-center mt-4">
+      <i18n-t
+        keypath="auth.byContinuing"
+        tag="p"
+        class="text-body-small text-medium-emphasis text-center mt-4"
+      >
         <template #termsOfService>
-          <NuxtLinkLocale class="text-primary text-decoration-none hover:text-decoration-underline" to="/terms-and-conditions">{{ t('auth.termsOfService') }}</NuxtLinkLocale>
+          <NuxtLinkLocale
+            class="text-primary text-decoration-none hover:text-decoration-underline"
+            to="/terms-and-conditions"
+            >{{ t('auth.termsOfService') }}</NuxtLinkLocale
+          >
         </template>
         <template #privacyPolicy>
-          <NuxtLinkLocale class="text-primary text-decoration-none hover:text-decoration-underline" to="/privacy-policy">{{ t('auth.privacyPolicy') }}</NuxtLinkLocale>
+          <NuxtLinkLocale
+            class="text-primary text-decoration-none hover:text-decoration-underline"
+            to="/privacy-policy"
+            >{{ t('auth.privacyPolicy') }}</NuxtLinkLocale
+          >
         </template>
       </i18n-t>
 
