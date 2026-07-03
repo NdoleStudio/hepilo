@@ -47,10 +47,5 @@
     "prettier": "^3.9.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
-  },
-  "pnpm": {
-    "overrides": {
-      "@vercel/nft": "^0.27.4"
-    }
   }
 }
