@@ -52,7 +52,7 @@ async function onSave() {
   <v-dialog v-model="dialog" max-width="90%" width="500" transition="scale-transition">
     <template #activator="{ props: activatorProps }">
       <v-btn color="primary" v-bind="activatorProps" class="mx-auto">
-        <v-icon :icon="mdiPlus" />
+        <v-icon :icon="mdiPlus" start />
         {{ $t('list.createNewList') }}
       </v-btn>
     </template>
@@ -60,7 +60,7 @@ async function onSave() {
       <v-card-title class="d-flex">
         {{ $t('list.createNewList') }}
         <v-spacer />
-        <v-btn density="compact" color="info" icon variant="text" @click="closePopup">
+        <v-btn density="compact" color="warning" icon variant="text" @click="closePopup">
           <v-icon :icon="mdiClose" />
         </v-btn>
       </v-card-title>
@@ -101,7 +101,7 @@ async function onSave() {
           {{ $t('common.save') }}
         </v-btn>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="closePopup">
+        <v-btn color="warning" variant="text" @click="closePopup">
           {{ $t('common.cancel') }}
         </v-btn>
       </v-card-actions>

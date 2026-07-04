@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar>
+    <v-app-bar :color="isDark ? undefined : 'primary'">
       <div class="d-flex align-center cursor-pointer ml-4" @click="navigateTo(localePath('/'))">
         <v-img max-height="55" width="55" :src="logo" />
         <h4 class="ml-2" :class="mdAndUp ? 'text-headline-large' : 'text-headline-small'">

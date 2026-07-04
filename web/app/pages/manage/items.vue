@@ -104,6 +104,10 @@ async function onSync() {
   synchronizing.value = true
   await itemStore.syncItems()
   synchronizing.value = false
+  uiStore.addNotification({
+    type: 'success',
+    message: t('item.syncSuccess'),
+  })
 }
 
 function clearForm() {

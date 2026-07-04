@@ -9,7 +9,7 @@
     "manageLists": "Gérer les listes",
     "manageCategories": "Gérer les catégories",
     "manageItems": "Gérer les articles",
-    "sendFeedback": "Envoyer un commentaire",
+    "sendFeedback": "Avis",
     "blog": "Blog",
     "refresh": "Actualiser",
     "settings": "Paramètres",
@@ -90,12 +90,14 @@
     "editItem": "Modifier l'article",
     "searchItems": "Rechercher des articles",
     "loadMore": "Charger plus",
-    "synchronize": "Synchroniser"
+    "synchronize": "Synchroniser",
+    "syncSuccess": "Les articles ont été synchronisés avec succès"
   },
   "category": {
     "addCategory": "Ajouter une catégorie",
     "editCategory": "Modifier la catégorie",
     "synchronize": "Synchroniser",
+    "syncSuccess": "Les catégories ont été synchronisées avec succès",
     "uncategorized": "Non catégorisé"
   },
   "settings": {

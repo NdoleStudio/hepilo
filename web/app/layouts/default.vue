@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-layout>
-      <v-app-bar>
+      <v-app-bar :color="isDark ? undefined : 'primary'">
         <v-app-bar-nav-icon @click="uiStore.toggleNavDrawer()" />
 
         <v-container
@@ -162,6 +162,7 @@
           <a :href="config.public.githubLink as string" target="_blank">
             <img
               alt="GitHub Repo stars"
+              width="100px"
               src="https://img.shields.io/github/stars/NdoleStudio/hepilo"
             />
           </a>
@@ -194,7 +195,7 @@
           <template #actions>
             <v-btn
               :color="uiStore.notification.type"
-              variant="text"
+              variant="tonal"
               @click="uiStore.disableNotification()"
             >
               {{ t('common.close') }}

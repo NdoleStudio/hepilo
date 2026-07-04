@@ -90,12 +90,14 @@
     "editItem": "Edit Item",
     "searchItems": "Search items",
     "loadMore": "Load More",
-    "synchronize": "Synchronize"
+    "synchronize": "Synchronize",
+    "syncSuccess": "Items have been synchronized successfully"
   },
   "category": {
     "addCategory": "Add Category",
     "editCategory": "Edit Category",
     "synchronize": "Synchronize",
+    "syncSuccess": "Categories have been synchronized successfully",
     "uncategorized": "Uncategorized"
   },
   "settings": {
