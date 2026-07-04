@@ -919,6 +919,7 @@ export const useListStore = defineStore('list', () => {
     const uiStore = useUIStore()
 
     lists.value = []
+    selectedListId.value = ''
     categoryStore.categories = [{ ...DEFAULT_CATEGORY }]
     itemStore.items = []
     stateLoaded.value = false

@@ -38,12 +38,12 @@ export const useAuthStore = defineStore('auth', () => {
     const listStore = useListStore()
     const settingsStore = useSettingsStore()
 
-    listStore.resetState()
-    settingsStore.resetSettings()
-
     const { getFirebaseAuth } = useFirebase()
     const auth = getFirebaseAuth()
     await auth.signOut()
+
+    listStore.resetState()
+    settingsStore.resetSettings()
 
     user.value = null
   }

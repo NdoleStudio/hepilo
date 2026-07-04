@@ -17,6 +17,7 @@ export default defineNuxtConfig({
         process.env.NUXT_PUBLIC_SITE_ANDROID_APP_URL ||
         'https://play.google.com/store/apps/details?id=com.hepilo.twa',
       githubLink: process.env.NUXT_PUBLIC_GITHUB_LINK || 'https://github.com/NdoleStudio/hepilo',
+      commitHash: process.env.NUXT_PUBLIC_COMMIT_HASH || process.env.CF_PAGES_COMMIT_SHA || '',
       recaptchaSiteKey:
         process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY || '6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA',
     },
@@ -89,12 +90,14 @@ export default defineNuxtConfig({
           light: {
             colors: {
               primary: '#5F7800',
+              secondary: '#C2185B',
               background: '#fafafa',
             },
           },
           dark: {
             colors: {
               primary: '#C6FF00',
+              secondary: '#FF80AB',
             },
           },
         },

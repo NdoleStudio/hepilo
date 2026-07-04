@@ -41,6 +41,7 @@ jobs:
           NUXT_PUBLIC_SITE_EMAIL: arnold@hepilo.com
           NUXT_PUBLIC_SITE_ANDROID_APP_URL: https://play.google.com/store/apps/details?id=com.hepilo.twa
           NUXT_PUBLIC_GITHUB_LINK: https://github.com/NdoleStudio/hepilo
+          NUXT_PUBLIC_COMMIT_HASH: ${{ github.sha }}
           NUXT_PUBLIC_RECAPTCHA_SITE_KEY: 6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA
           SENTRY_DSN: https://1e5300c5ad8449968a2edbd2fb25e255@o291224.ingest.sentry.io/6244114
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

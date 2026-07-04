@@ -166,6 +166,18 @@
               src="https://img.shields.io/github/stars/NdoleStudio/hepilo"
             />
           </a>
+          <v-tooltip v-if="version" location="bottom" :text="t('nav.version')">
+            <template #activator="{ props }">
+              <a
+                v-bind="props"
+                class="text-decoration-none text-body-2 text-medium-emphasis mt-2"
+                :href="config.public.githubLink as string"
+                target="_blank"
+              >
+                {{ version }}
+              </a>
+            </template>
+          </v-tooltip>
         </div>
       </v-navigation-drawer>
 
@@ -233,6 +245,8 @@ const { getFirebaseAuth } = useFirebase()
 const theme = useTheme()
 
 const isDark = computed(() => theme.global.current.value.dark)
+
+const version = computed(() => (config.public.commitHash as string).slice(0, 7))
 
 function toggleTheme() {
   const newTheme = isDark.value ? 'light' : 'dark'
