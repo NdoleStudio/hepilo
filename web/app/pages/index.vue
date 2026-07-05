@@ -42,6 +42,7 @@ const typewriterDefault = computed(() => {
 const showGooglePlayBadge = ref(true)
 const canDownloadApp = ref(false)
 const typewriterEl = ref<HTMLElement | null>(null)
+let typewriter: Typewriter | null = null
 
 onMounted(() => {
   const { isInStandaloneMode, isAndroid } = useUtils()
@@ -57,11 +58,16 @@ onMounted(() => {
   // the element instead of typing on top of the existing content.
   typewriterEl.value.textContent = ''
 
-  new Typewriter(typewriterEl.value, {
+  typewriter = new Typewriter(typewriterEl.value, {
     strings,
     autoStart: true,
     loop: true,
   })
+})
+
+onBeforeUnmount(() => {
+  typewriter?.stop()
+  typewriter = null
 })
 </script>
 
