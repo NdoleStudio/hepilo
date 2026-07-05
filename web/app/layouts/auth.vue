@@ -17,14 +17,14 @@
         v-if="lgAndUp && route.name !== 'blog'"
         variant="text"
         class="mr-2 text-none"
-        :color="isDark ? 'lime' : 'secondary'"
+        :color="isDark ? 'lime' : 'white'"
         :to="localePath('/blog')"
       >
         {{ t('nav.blog') }}
       </v-btn>
       <v-btn
         v-if="!isLoginRoute"
-        color="primary"
+        color="secondary"
         variant="flat"
         class="text-none mr-2"
         :to="localePath('/login')"

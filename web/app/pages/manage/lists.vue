@@ -14,7 +14,7 @@ useHead({
 
 definePageMeta({
   layout: 'default',
-  middleware: 'auth',
+  middleware: 'demo-or-auth',
 })
 
 const formValid = ref(false)

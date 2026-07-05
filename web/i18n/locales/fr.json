@@ -103,6 +103,11 @@
   "settings": {
     "title": "Paramètres",
     "accountSettings": "Paramètres du compte",
+    "appearance": "Apparence",
+    "language": "Langue",
+    "theme": "Thème",
+    "darkMode": "Sombre",
+    "lightMode": "Clair",
     "saveSettings": "Enregistrer les paramètres",
     "deleteAccount": "Supprimer le compte",
     "deleteAccountConfirmation": "Êtes-vous sûr de vouloir supprimer votre compte ?",
@@ -154,9 +159,11 @@
     "listPopulated": "La liste a été remplie avec succès"
   },
   "demo": {
-    "bannerText": "Vos modifications ne seront pas enregistrées lorsque vous quitterez ce {platform} à moins de vous",
-    "bannerLoginLink": "connecter.",
-    "loginButton": "Connexion"
+    "bannerText": "Vos modifications ne seront pas enregistrées lorsque vous quitterez ce {platform} à moins de",
+    "bannerLoginLink": "créer un compte.",
+    "loginButton": "Connexion",
+    "platformApp": "application",
+    "platformWebsite": "site web"
   },
   "blog": {
     "title": "Blog",

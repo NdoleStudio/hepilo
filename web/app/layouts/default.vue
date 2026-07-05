@@ -26,12 +26,6 @@
 
         <v-spacer />
 
-        <LanguageSwitcher v-if="mdAndUp" />
-
-        <v-btn v-if="mdAndUp" icon @click="toggleTheme">
-          <v-icon :icon="isDark ? mdiWeatherSunny : mdiWeatherNight" />
-        </v-btn>
-
         <v-progress-circular
           v-if="uiStore.saving"
           indeterminate
@@ -63,7 +57,7 @@
                 <v-icon :icon="mdiLogout" />
               </template>
               <v-list-item-title class="pr-16">
-                {{ isAnonymous ? t('nav.exitDemo') : t('nav.logout') }}
+                {{ isDemo ? t('nav.exitDemo') : t('nav.logout') }}
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -230,8 +224,6 @@ import {
   mdiPlaylistEdit,
   mdiShapeOutline,
   mdiTagText,
-  mdiWeatherSunny,
-  mdiWeatherNight,
 } from '@mdi/js'
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth'
 
@@ -248,16 +240,8 @@ const isDark = computed(() => theme.global.current.value.dark)
 
 const version = computed(() => (config.public.commitHash as string).slice(0, 7))
 
-function toggleTheme() {
-  const newTheme = isDark.value ? 'light' : 'dark'
-  theme.change(newTheme)
-  if (import.meta.client) {
-    localStorage.setItem('hepilo-theme', newTheme)
-  }
-}
-
 const user = ref<FirebaseUser | null>(null)
-const isAnonymous = computed(() => user.value?.isAnonymous ?? false)
+const isDemo = computed(() => user.value === null)
 const userInitial = computed(() => user.value?.displayName?.charAt(0) || 'A')
 
 const listStore = useListStore()

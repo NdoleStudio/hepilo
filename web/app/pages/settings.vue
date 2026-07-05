@@ -2,11 +2,24 @@
 import { getAuth } from 'firebase/auth'
 import { mdiCheck } from '@mdi/js'
 
-const { t } = useI18n()
+const { t, locale, locales } = useI18n()
 const localePath = useLocalePath()
+const switchLocalePath = useSwitchLocalePath()
 const settingsStore = useSettingsStore()
 const authStore = useAuthStore()
 const uiStore = useUIStore()
+const theme = useTheme()
+
+const isDark = computed(() => theme.global.current.value.dark)
+
+const availableLocales = computed(() => locales.value.filter((l) => typeof l !== 'string'))
+
+function setTheme(newTheme: string) {
+  theme.change(newTheme)
+  if (import.meta.client) {
+    localStorage.setItem('hepilo-theme', newTheme)
+  }
+}
 
 useHead({
   title: () => t('settings.title'),
@@ -14,7 +27,7 @@ useHead({
 
 definePageMeta({
   layout: 'default',
-  middleware: 'auth',
+  middleware: 'demo-or-auth',
 })
 
 const dialogDelete = ref(false)
@@ -72,6 +85,33 @@ function onSave() {
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
+        <v-card class="mb-4">
+          <v-card-title>{{ $t('settings.appearance') }}</v-card-title>
+          <v-card-text>
+            <v-select
+              :model-value="locale"
+              class="mt-4"
+              :items="availableLocales.map((l) => ({ title: l.name, value: l.code }))"
+              density="compact"
+              color="primary"
+              variant="outlined"
+              :label="$t('settings.language')"
+              @update:model-value="(code) => navigateTo(switchLocalePath(code))"
+            />
+            <v-select
+              :model-value="isDark ? 'dark' : 'light'"
+              :items="[
+                { title: $t('settings.darkMode'), value: 'dark' },
+                { title: $t('settings.lightMode'), value: 'light' },
+              ]"
+              density="compact"
+              color="primary"
+              variant="outlined"
+              :label="$t('settings.theme')"
+              @update:model-value="setTheme"
+            />
+          </v-card-text>
+        </v-card>
         <v-card>
           <v-card-title>{{ $t('settings.accountSettings') }}</v-card-title>
           <v-card-text>

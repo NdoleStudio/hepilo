@@ -28,7 +28,7 @@ useHead({
 
 definePageMeta({
   layout: 'default',
-  middleware: 'auth',
+  middleware: 'demo-or-auth',
   key: (route) => String(route.params.listId),
 })
 

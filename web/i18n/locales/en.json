@@ -103,6 +103,11 @@
   "settings": {
     "title": "Settings",
     "accountSettings": "Account Settings",
+    "appearance": "Appearance",
+    "language": "Language",
+    "theme": "Theme",
+    "darkMode": "Dark",
+    "lightMode": "Light",
     "saveSettings": "Save Settings",
     "deleteAccount": "Delete Account",
     "deleteAccountConfirmation": "Are you sure you want to delete your account?",
@@ -155,8 +160,10 @@
   },
   "demo": {
     "bannerText": "Your changes will not be saved when you leave this {platform} unless you",
-    "bannerLoginLink": "login.",
-    "loginButton": "Login"
+    "bannerLoginLink": "create an account.",
+    "loginButton": "Login",
+    "platformApp": "app",
+    "platformWebsite": "website"
   },
   "blog": {
     "title": "Blog",
