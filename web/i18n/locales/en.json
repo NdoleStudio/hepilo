@@ -141,6 +141,11 @@
     "placeholderPrice": "1.99",
     "placeholderQuantity": "e.g 1"
   },
+  "pwa": {
+    "newContent": "A new version of Hepilo is available.",
+    "reload": "Reload",
+    "offlineReady": "Hepilo is ready to work offline."
+  },
   "notification": {
     "accountDeleted": "Your account has been deleted successfully",
     "currencySet": "Currency has been set successfully",

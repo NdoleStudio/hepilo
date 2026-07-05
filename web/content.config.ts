@@ -1,4 +1,5 @@
 import { defineCollection, defineContentConfig } from '@nuxt/content'
+import { defineSitemapSchema } from '@nuxtjs/sitemap/content'
 import { z } from 'zod'
 
 export default defineContentConfig({
@@ -11,6 +12,13 @@ export default defineContentConfig({
         description: z.string().optional(),
         date: z.date(),
         readMinutes: z.number().optional(),
+        sitemap: defineSitemapSchema({
+          name: 'blog',
+          z,
+          onUrl: (url) => {
+            url._i18nTransform = true
+          },
+        }),
       }),
     }),
   },

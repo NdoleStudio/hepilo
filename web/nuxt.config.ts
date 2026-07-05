@@ -28,6 +28,7 @@ export default defineNuxtConfig({
   modules: [
     'vuetify-nuxt-module',
     '@pinia/nuxt',
+    '@nuxtjs/sitemap',
     '@nuxt/content',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
@@ -68,8 +69,21 @@ export default defineNuxtConfig({
   app: {
     head: {
       charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
+      viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
       titleTemplate: '%s - Hepilo',
+      link: [
+        {
+          rel: 'apple-touch-icon',
+          sizes: '152x152',
+          href: '/img/icons/apple-touch-icon-152x152.png',
+        },
+        { rel: 'mask-icon', href: '/img/icons/safari-pinned-tab.svg', color: '#C6FF00' },
+      ],
+      meta: [
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Hepilo' },
+      ],
     },
   },
 
@@ -136,13 +150,89 @@ export default defineNuxtConfig({
   },
 
   pwa: {
+    registerType: 'prompt',
     manifest: {
       name: 'Hepilo - Shopping List',
       short_name: 'Hepilo',
+      description:
+        'Hepilo is a simple, offline-first shopping list app that keeps your lists in sync across all your devices.',
+      lang: 'en',
       theme_color: '#C6FF00',
-      background_color: '#C6FF00',
+      background_color: '#121212',
       id: 'com.hepilo.twa',
+      start_url: '/lists',
+      scope: '/',
+      display: 'standalone',
       orientation: 'portrait',
+      categories: ['productivity', 'shopping', 'lifestyle'],
+      icons: [
+        {
+          src: '/img/icons/android-chrome-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'any',
+        },
+        {
+          src: '/img/icons/android-chrome-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any',
+        },
+        {
+          src: '/img/icons/android-chrome-maskable-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+        {
+          src: '/img/icons/android-chrome-maskable-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
+      navigateFallback: undefined,
+      navigateFallbackDenylist: [/^\/api\//, /^\/\.well-known\//],
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
+      runtimeCaching: [
+        {
+          urlPattern: ({ request }) => request.destination === 'image',
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'hepilo-images',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24 * 30,
+            },
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+        {
+          urlPattern: ({ request }) =>
+            request.destination === 'font' || request.destination === 'style',
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'hepilo-assets',
+            expiration: {
+              maxEntries: 60,
+              maxAgeSeconds: 60 * 60 * 24 * 30,
+            },
+          },
+        },
+      ],
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600,
+    },
+    devOptions: {
+      enabled: false,
+      suppressWarnings: true,
+      type: 'module',
     },
   },
 
@@ -161,6 +251,14 @@ export default defineNuxtConfig({
   sentry: {
     org: 'ndolestudio',
     project: 'hepilo',
+  },
+
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://hepilo.com',
+  },
+
+  sitemap: {
+    exclude: ['/lists', '/lists/**', '/manage/**', '/settings'],
   },
 
   vite: {
