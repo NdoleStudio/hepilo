@@ -208,6 +208,8 @@
             </v-btn>
           </template>
         </v-snackbar>
+
+        <PwaReloadPrompt />
       </v-main>
     </v-layout>
   </v-app>

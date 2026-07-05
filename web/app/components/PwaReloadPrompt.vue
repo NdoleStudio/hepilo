@@ -7,8 +7,18 @@ const { $pwa } = useNuxtApp()
 
 const show = computed(() => Boolean($pwa?.needRefresh || $pwa?.offlineReady))
 
-function reload() {
-  $pwa?.updateServiceWorker()
+async function reload() {
+  if (import.meta.client && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload(), {
+      once: true,
+    })
+  }
+
+  await $pwa?.updateServiceWorker(true)
+
+  if (import.meta.client) {
+    window.setTimeout(() => window.location.reload(), 2000)
+  }
 }
 
 function close() {
