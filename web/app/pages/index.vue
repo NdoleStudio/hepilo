@@ -41,15 +41,23 @@ const typewriterDefault = computed(() => {
 
 const showGooglePlayBadge = ref(true)
 const canDownloadApp = ref(false)
+const typewriterEl = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   const { isInStandaloneMode, isAndroid } = useUtils()
   showGooglePlayBadge.value = !isInStandaloneMode()
   canDownloadApp.value = isAndroid() && !isInStandaloneMode()
 
+  if (!typewriterEl.value) return
+
   const raw: unknown = tm('home.typewriterStrings')
   const strings = Array.isArray(raw) ? raw.map((s) => rt(s as Parameters<typeof rt>[0])) : []
-  new Typewriter('#typewriter', {
+
+  // Clear the SSR/prerendered fallback text so Typewriter fully controls
+  // the element instead of typing on top of the existing content.
+  typewriterEl.value.textContent = ''
+
+  new Typewriter(typewriterEl.value, {
     strings,
     autoStart: true,
     loop: true,
@@ -65,7 +73,9 @@ onMounted(() => {
         <v-row align="center" class="mt-5">
           <v-col cols="12" lg="4" :class="{ 'text-center': mdAndDown }">
             <h1 class="text-display-medium">
-              <span id="typewriter" class="text-lime-darken-2">{{ typewriterDefault }}</span>
+              <span id="typewriter" ref="typewriterEl" class="text-lime-darken-2">{{
+                typewriterDefault
+              }}</span>
               <br />
               {{ t('home.heroTitle') }}
             </h1>
