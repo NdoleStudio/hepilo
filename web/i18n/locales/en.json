@@ -164,6 +164,8 @@
     "listPopulated": "List has been populated successfully"
   },
   "demo": {
+    "seoTitle": "Try the Free Live Demo",
+    "seoDescription": "Explore Hepilo without an account. Create shopping lists, sort items by category, and track your budget in a fully interactive demo — no signup required.",
     "bannerText": "Your changes will not be saved when you leave this {platform} unless you",
     "bannerLoginLink": "create an account.",
     "loginButton": "Login",

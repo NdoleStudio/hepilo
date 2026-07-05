@@ -12,6 +12,8 @@ export default defineContentConfig({
         description: z.string().optional(),
         date: z.date(),
         readMinutes: z.number().optional(),
+        image: z.string().optional(),
+        author: z.string().optional(),
         sitemap: defineSitemapSchema({
           name: 'blog',
           z,

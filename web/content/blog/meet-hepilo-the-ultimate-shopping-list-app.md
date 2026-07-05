@@ -3,6 +3,8 @@ title: 'Meet the ultimate shopping list app'
 description: 'Hepilo is a modern platform for managing your shopping lists. You can create multiple shopping lists, categorize items, and budget your shopping list items for free.'
 date: '2022-01-02'
 readMinutes: 3
+image: '/images/blog/hepilo-mobile.png'
+author: 'Arnold Achoa'
 ---
 
 Hey 👋

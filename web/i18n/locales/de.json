@@ -164,6 +164,8 @@
     "listPopulated": "Die Liste wurde erfolgreich befüllt"
   },
   "demo": {
+    "seoTitle": "Teste die kostenlose Demo",
+    "seoDescription": "Entdecke Hepilo ohne Konto. Erstelle Einkaufslisten, sortiere Artikel nach Kategorie und behalte dein Budget in einer voll interaktiven Demo im Blick – ohne Anmeldung.",
     "bannerText": "Deine Änderungen werden nicht gespeichert, wenn du diese {platform} verlässt, es sei denn, du",
     "bannerLoginLink": "erstellst ein Konto.",
     "loginButton": "Anmelden",

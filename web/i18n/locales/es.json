@@ -164,6 +164,8 @@
     "listPopulated": "La lista se ha rellenado correctamente"
   },
   "demo": {
+    "seoTitle": "Prueba la demo gratuita",
+    "seoDescription": "Explora Hepilo sin crear una cuenta. Crea listas de la compra, ordena tus productos por categoría y controla tu presupuesto en una demo totalmente interactiva, sin registro.",
     "bannerText": "Tus cambios no se guardarán cuando salgas de este {platform} a menos que",
     "bannerLoginLink": "crees una cuenta.",
     "loginButton": "Iniciar sesión",

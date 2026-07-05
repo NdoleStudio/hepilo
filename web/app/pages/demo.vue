@@ -3,8 +3,10 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const listStore = useListStore()
 
-useHead({
-  title: () => t('app.defaultPageTitle'),
+useSeoDefaults({
+  title: t('demo.seoTitle'),
+  description: t('demo.seoDescription'),
+  path: '/demo',
 })
 
 definePageMeta({

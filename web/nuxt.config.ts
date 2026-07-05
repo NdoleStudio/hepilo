@@ -28,7 +28,7 @@ export default defineNuxtConfig({
   modules: [
     'vuetify-nuxt-module',
     '@pinia/nuxt',
-    '@nuxtjs/sitemap',
+    '@nuxtjs/seo',
     '@nuxt/content',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
@@ -255,16 +255,37 @@ export default defineNuxtConfig({
 
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://hepilo.com',
+    name: process.env.NUXT_PUBLIC_APP_NAME || 'Hepilo',
+    description:
+      'Hepilo is a simple, offline-first shopping list app that keeps your lists in sync across all your devices.',
   },
 
   sitemap: {
     exclude: ['/lists', '/lists/**', '/manage/**', '/settings'],
   },
 
+  robots: {
+    disallow: ['/lists', '/lists/**', '/manage/**', '/settings'],
+  },
+
+  ogImage: {
+    enabled: false,
+  },
+
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Hepilo',
+      url: 'https://hepilo.com',
+      logo: 'https://hepilo.com/img/icons/android-chrome-512x512.png',
+    },
+  },
+
   vite: {
     optimizeDeps: {
       include: [
         '@mdi/js',
+        '@unhead/schema-org/vue',
         'firebase/app',
         'firebase/app-check',
         'firebase/auth',

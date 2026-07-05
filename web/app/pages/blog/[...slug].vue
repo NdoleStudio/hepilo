@@ -26,11 +26,43 @@ if (!post.value) {
   })
 }
 
+const SITE_URL = 'https://hepilo.com'
+
+const ogImage = computed(() =>
+  post.value?.image ? `${SITE_URL}${post.value.image}` : `${SITE_URL}/img/header.png`,
+)
+const publishedTime = computed(() =>
+  post.value?.date ? new Date(post.value.date).toISOString() : undefined,
+)
+
 useSeoDefaults({
   title: post.value?.title ?? t('blog.title'),
   description: post.value?.description ?? '',
   path: `/blog/${slug.value}`,
+  type: 'article',
+  image: post.value?.image,
+  publishedTime: publishedTime.value,
 })
+
+useSchemaOrg([
+  defineArticle({
+    '@type': 'BlogPosting',
+    headline: post.value?.title,
+    description: post.value?.description,
+    image: ogImage.value,
+    datePublished: publishedTime.value,
+    dateModified: publishedTime.value,
+    author: post.value?.author
+      ? { '@type': 'Person', name: post.value.author }
+      : { '@type': 'Organization', name: 'Hepilo' },
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: t('blog.title'), item: `${SITE_URL}${localePath('/blog')}` },
+      { name: post.value?.title ?? t('blog.title') },
+    ],
+  }),
+])
 </script>
 
 <template>

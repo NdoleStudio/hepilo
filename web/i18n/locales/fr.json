@@ -164,6 +164,8 @@
     "listPopulated": "La liste a été remplie avec succès"
   },
   "demo": {
+    "seoTitle": "Essayez la démo gratuite",
+    "seoDescription": "Découvrez Hepilo sans créer de compte. Créez des listes de courses, triez vos articles par catégorie et suivez votre budget dans une démo entièrement interactive — sans inscription.",
     "bannerText": "Vos modifications ne seront pas enregistrées lorsque vous quitterez ce {platform} à moins de",
     "bannerLoginLink": "créer un compte.",
     "loginButton": "Connexion",
