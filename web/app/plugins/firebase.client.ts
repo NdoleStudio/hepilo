@@ -38,8 +38,18 @@ export default defineNuxtPlugin(() => {
         photoURL: firebaseUser.photoURL,
       }
       authStore.setUser(stateUser)
+      try {
+        localStorage.setItem(AUTHED_STORAGE_KEY, '1')
+      } catch {
+        // Ignore storage errors (private mode, disabled storage, etc.)
+      }
     } else {
       authStore.setUser(null)
+      try {
+        localStorage.removeItem(AUTHED_STORAGE_KEY)
+      } catch {
+        // Ignore storage errors (private mode, disabled storage, etc.)
+      }
     }
   })
 })

@@ -22,6 +22,11 @@ export const NOTIFICATION = {
   },
 } as const
 
+// localStorage flag written once Firebase confirms an authenticated user.
+// Used to redirect signed-in users away from the prerendered landing page
+// before it paints, avoiding a flash of the marketing page on app open.
+export const AUTHED_STORAGE_KEY = 'hepilo-authed'
+
 export const useConstants = () => {
   const config = useRuntimeConfig()
 

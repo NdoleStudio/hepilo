@@ -83,6 +83,9 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'Hepilo' },
+        // Status/network bar color: black in dark mode, lime in light mode.
+        { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#000000' },
+        { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#C6FF00' },
       ],
     },
   },
