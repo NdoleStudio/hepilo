@@ -66,7 +66,7 @@
 
       <v-navigation-drawer v-model="navDrawerOpen">
         <!-- Shopping lists -->
-        <v-list nav color="primary">
+        <v-list nav prepend-gap="16" color="primary">
           <v-list-item
             v-for="list in lists"
             :key="list.id"
@@ -99,7 +99,7 @@
         <v-divider />
 
         <!-- Manage navigation items -->
-        <v-list nav rounded color="primary">
+        <v-list nav rounded prepend-gap="16" color="primary">
           <v-list-item :to="localePath('/manage/lists')" link>
             <template #prepend>
               <v-icon :icon="mdiPlaylistEdit" />
@@ -131,7 +131,7 @@
         <v-divider />
 
         <!-- Blog & Feedback -->
-        <v-list nav rounded color="primary">
+        <v-list nav rounded prepend-gap="16" color="primary">
           <v-list-item :href="`mailto:${config.public.siteEmail}`" link>
             <template #prepend>
               <v-icon :icon="mdiEmail" />
