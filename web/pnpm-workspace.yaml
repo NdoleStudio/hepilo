@@ -1,4 +1,6 @@
 dangerouslyAllowAllBuilds: true
+minimumReleaseAgeExclude:
+  - '@tiptap/*'
 
 overrides:
   '@vercel/nft': ^0.27.4
