@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.16.0",
-    "@nuxtjs/seo": "^5.3.2",
+    "@nuxtjs/seo": "^5.3.3",
     "@sentry/nuxt": "^10.65.0",
     "@vite-pwa/nuxt": "^1.1.1",
     "@vue/test-utils": "^2.4.11",
