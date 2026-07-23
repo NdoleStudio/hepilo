@@ -2,7 +2,7 @@
   <v-app>
     <v-layout>
       <v-app-bar :color="isDark ? undefined : 'primary'">
-        <v-app-bar-nav-icon @click="uiStore.toggleNavDrawer()" />
+        <v-app-bar-nav-icon @click="navDrawerOpen = !navDrawerOpen" />
 
         <v-container
           class="position-absolute h-100 d-flex align-center"
@@ -234,7 +234,7 @@ const localePath = useLocalePath()
 const config = useRuntimeConfig()
 const router = useRouter()
 const uiStore = useUIStore()
-const { mdAndUp } = useDisplay()
+const { mdAndUp, mobile } = useDisplay()
 const { getFirebaseAuth } = useFirebase()
 const theme = useTheme()
 
@@ -253,7 +253,7 @@ const lists = computed(() => listStore.lists)
 const navDrawerOpen = computed({
   get: () => uiStore.navDrawerOpen,
   set: (value: boolean) => {
-    uiStore.setNavDrawer(value)
+    uiStore.setNavDrawer(value, !mobile.value)
   },
 })
 
