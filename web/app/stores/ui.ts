@@ -56,10 +56,6 @@ export const useUIStore = defineStore('ui', () => {
     notification.value = { ...notification.value, active: false }
   }
 
-  async function toggleNavDrawer(persistToFirestore = true) {
-    await setNavDrawer(!navDrawerOpen.value, persistToFirestore)
-  }
-
   async function setNavDrawer(isOpen: boolean, persistToFirestore = true) {
     navDrawerOpen.value = isOpen
 
@@ -89,7 +85,6 @@ export const useUIStore = defineStore('ui', () => {
     setPageTitle,
     addNotification,
     disableNotification,
-    toggleNavDrawer,
     setNavDrawer,
   }
 })

@@ -68,4 +68,15 @@ describe('UI store nav drawer persistence', () => {
     expect(persistToLocalStorageMock).toHaveBeenCalledOnce()
     expect(setDocMock).not.toHaveBeenCalled()
   })
+
+  it('keeps drawer changes local when the user is logged out', async () => {
+    authStore.isLoggedIn = false
+    const store = useUIStore()
+
+    await store.setNavDrawer(true)
+
+    expect(store.navDrawerOpen).toBe(true)
+    expect(persistToLocalStorageMock).toHaveBeenCalledOnce()
+    expect(setDocMock).not.toHaveBeenCalled()
+  })
 })
