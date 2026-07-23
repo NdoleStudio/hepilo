@@ -234,9 +234,9 @@ const localePath = useLocalePath()
 const config = useRuntimeConfig()
 const router = useRouter()
 const uiStore = useUIStore()
-const { mdAndUp, mobile } = useDisplay()
+const { mdAndUp, mobile } = useVDisplay()
 const { getFirebaseAuth } = useFirebase()
-const theme = useTheme()
+const theme = useVTheme()
 
 const isDark = computed(() => theme.global.current.value.dark)
 

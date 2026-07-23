@@ -92,6 +92,7 @@ export default defineNuxtConfig({
 
   vuetify: {
     moduleOptions: {
+      prefixComposables: true,
       ssrClientHints: {
         reloadOnFirstRequest: false,
         viewportSize: true,
