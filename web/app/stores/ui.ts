@@ -56,18 +56,14 @@ export const useUIStore = defineStore('ui', () => {
     notification.value = { ...notification.value, active: false }
   }
 
-  function toggleNavDrawer() {
-    setNavDrawer(!navDrawerOpen.value)
-  }
-
-  async function setNavDrawer(isOpen: boolean) {
+  async function setNavDrawer(isOpen: boolean, persistToFirestore = true) {
     navDrawerOpen.value = isOpen
 
     const authStore = useAuthStore()
     const listStore = useListStore()
     listStore.persistToLocalStorage()
 
-    if (!authStore.isLoggedIn || !listStore.stateLoaded) return
+    if (!persistToFirestore || !authStore.isLoggedIn || !listStore.stateLoaded) return
 
     await setDoc(
       doc(getFirestore(), 'states', authStore.user!.id),
@@ -89,7 +85,6 @@ export const useUIStore = defineStore('ui', () => {
     setPageTitle,
     addNotification,
     disableNotification,
-    toggleNavDrawer,
     setNavDrawer,
   }
 })

@@ -8,7 +8,7 @@ const switchLocalePath = useSwitchLocalePath()
 const settingsStore = useSettingsStore()
 const authStore = useAuthStore()
 const uiStore = useUIStore()
-const theme = useTheme()
+const theme = useVTheme()
 
 const isDark = computed(() => theme.global.current.value.dark)
 

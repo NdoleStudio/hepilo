@@ -28,7 +28,7 @@ useHead({
 const { t, tm, rt } = useI18n()
 const localePath = useLocalePath()
 const config = useRuntimeConfig()
-const { mdAndDown } = useDisplay()
+const { mdAndDown } = useVDisplay()
 
 useSeoDefaults({
   title: t('home.heroTitle'),

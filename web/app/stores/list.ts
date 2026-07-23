@@ -238,7 +238,6 @@ export const useListStore = defineStore('list', () => {
     const itemStore = useItemStore()
     const categoryStore = useCategoryStore()
     const settingsStore = useSettingsStore()
-    const uiStore = useUIStore()
 
     await setDoc(
       doc(getFirestore(), COLLECTION_STATE, authStore.user.id),
@@ -249,7 +248,6 @@ export const useListStore = defineStore('list', () => {
         categories: categoryStore.categories,
         currency: settingsStore.currency,
         showIntro: settingsStore.showIntro,
-        navDrawerOpen: uiStore.navDrawerOpen,
       },
       { merge: true },
     )

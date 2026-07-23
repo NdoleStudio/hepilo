@@ -33,11 +33,35 @@ export function useSeoDefaults(options: {
   })
 
   // Canonical URL, hreflang alternates, og:url and og:locale are provided
-  // per-locale by @nuxtjs/i18n's useLocaleHead(), so we spread them here
-  // instead of hardcoding a URL that would miss the locale prefix.
-  useHead({
+  // per-locale by @nuxtjs/i18n's useLocaleHead(), so normalize its broad
+  // attribute types instead of hardcoding a URL that would miss the locale prefix.
+  useHead(() => ({
     htmlAttrs: { lang: head.value.htmlAttrs?.lang },
-    link: [...(head.value.link || [])],
-    meta: [...(head.value.meta || [])],
-  })
+    link: [
+      ...(head.value.link ?? []).flatMap((attrs) =>
+        attrs.rel === 'canonical' && attrs.href
+          ? [{ id: attrs.id, rel: 'canonical' as const, href: attrs.href }]
+          : [],
+      ),
+      ...(head.value.link ?? []).flatMap((attrs) =>
+        attrs.rel === 'alternate' && attrs.href && attrs.hreflang
+          ? [
+              {
+                id: attrs.id,
+                rel: 'alternate' as const,
+                href: attrs.href,
+                hreflang: attrs.hreflang,
+              },
+            ]
+          : [],
+      ),
+    ],
+    meta: (head.value.meta ?? []).flatMap((attrs) => {
+      const property = attrs.property
+      const content = attrs.content
+      if (!property || !content) return []
+
+      return [{ id: attrs.id, property, content }]
+    }),
+  }))
 }
