@@ -21,7 +21,7 @@ drawer value.
 ## Design
 
 The authenticated layout will read Vuetify's reactive `mobile` value from
-`useDisplay()`. When its drawer computed setter calls `uiStore.setNavDrawer`, it
+`useVDisplay()`. When its drawer computed setter calls `uiStore.setNavDrawer`, it
 will pass whether Firestore persistence is allowed.
 
 `setNavDrawer` will always:

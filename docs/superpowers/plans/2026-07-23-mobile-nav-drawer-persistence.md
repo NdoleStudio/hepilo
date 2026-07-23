@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Active development is limited to `web/`; do not modify `web-legacy/`.
-- Use Vuetify's reactive `mobile` value from `useDisplay()` for mobile detection.
+- Use Vuetify's reactive `mobile` value from `useVDisplay()` for mobile detection.
 - Mobile drawer changes must still update Pinia and localStorage.
 - Only desktop drawer changes may update the Firestore `navDrawerOpen` field.
 - Preserve the existing authentication and `stateLoaded` guards.
@@ -35,9 +35,8 @@
 - Modify: `web/app/layouts/default.vue:4,237-259`
 
 **Interfaces:**
-- Consumes: Vuetify `useDisplay(): { mobile: Ref<boolean> }`
+- Consumes: Vuetify `useVDisplay(): { mobile: Ref<boolean> }`
 - Produces: `setNavDrawer(isOpen: boolean, persistToFirestore?: boolean): Promise<void>`
-- Produces: `toggleNavDrawer(persistToFirestore?: boolean): Promise<void>`
 
 - [ ] **Step 1: Write failing UI store tests**
 
@@ -136,10 +135,6 @@ Expected: FAIL because `setNavDrawer(true, false)` still calls `setDoc`.
 Update the drawer actions in `web/app/stores/ui.ts`:
 
 ```typescript
-async function toggleNavDrawer(persistToFirestore = true) {
-  await setNavDrawer(!navDrawerOpen.value, persistToFirestore)
-}
-
 async function setNavDrawer(isOpen: boolean, persistToFirestore = true) {
   navDrawerOpen.value = isOpen
 
@@ -169,7 +164,7 @@ computed drawer setter:
 Read Vuetify's mobile ref:
 
 ```typescript
-const { mdAndUp, mobile } = useDisplay()
+const { mdAndUp, mobile } = useVDisplay()
 ```
 
 Pass desktop persistence intent from the computed setter:

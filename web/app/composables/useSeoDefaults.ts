@@ -38,12 +38,12 @@ export function useSeoDefaults(options: {
   useHead(() => ({
     htmlAttrs: { lang: head.value.htmlAttrs?.lang },
     link: [
-      ...head.value.link.flatMap((attrs) =>
+      ...(head.value.link ?? []).flatMap((attrs) =>
         attrs.rel === 'canonical' && attrs.href
           ? [{ id: attrs.id, rel: 'canonical' as const, href: attrs.href }]
           : [],
       ),
-      ...head.value.link.flatMap((attrs) =>
+      ...(head.value.link ?? []).flatMap((attrs) =>
         attrs.rel === 'alternate' && attrs.href && attrs.hreflang
           ? [
               {
@@ -56,7 +56,7 @@ export function useSeoDefaults(options: {
           : [],
       ),
     ],
-    meta: head.value.meta.flatMap((attrs) => {
+    meta: (head.value.meta ?? []).flatMap((attrs) => {
       const property = attrs.property
       const content = attrs.content
       if (!property || !content) return []
