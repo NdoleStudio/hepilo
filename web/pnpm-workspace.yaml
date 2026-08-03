@@ -6,6 +6,7 @@ onlyBuiltDependencies:
   - esbuild
   - protobufjs
   - unrs-resolver
+  - workerd
 
 minimumReleaseAgeExclude:
   - '@tiptap/*'
