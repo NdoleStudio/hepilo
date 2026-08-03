@@ -31,8 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile --ignore-scripts
-          pnpm rebuild @firebase/util @parcel/watcher @sentry/cli better-sqlite3 esbuild protobufjs unrs-resolver
-          pnpm run postinstall
+          pnpm rebuild --pending
 
       - name: Generate static site
         run: pnpm run generate
