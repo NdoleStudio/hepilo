@@ -31,7 +31,8 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile --ignore-scripts
-          pnpm rebuild --pending
+          npm rebuild better-sqlite3
+          pnpm run postinstall
 
       - name: Generate static site
         run: pnpm run generate
