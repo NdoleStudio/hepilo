@@ -42,7 +42,7 @@
     "@sentry/nuxt": "^10.70.0",
     "@vite-pwa/nuxt": "^1.1.1",
     "@vue/test-utils": "^2.4.11",
-    "eslint": "^10.8.0",
+    "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "happy-dom": "^20.11.1",
     "prettier": "^3.9.5",
