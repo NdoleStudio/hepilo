@@ -9,7 +9,6 @@ useHead({
 
 definePageMeta({
   layout: 'default',
-  middleware: 'auth',
 })
 
 onMounted(async () => {
