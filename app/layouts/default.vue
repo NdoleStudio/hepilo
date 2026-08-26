@@ -127,52 +127,6 @@
             }}</v-list-item-title>
           </v-list-item>
         </v-list>
-
-        <v-divider />
-
-        <!-- Blog & Feedback -->
-        <v-list nav rounded prepend-gap="16" color="primary">
-          <v-list-item :href="`mailto:${config.public.siteEmail}`" link>
-            <template #prepend>
-              <v-icon :icon="mdiEmail" />
-            </template>
-            <v-list-item-title class="text-body-large">{{
-              t('nav.sendFeedback')
-            }}</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item :to="localePath('/blog')" link>
-            <template #prepend>
-              <v-icon :icon="mdiTagText" />
-            </template>
-            <v-list-item-title class="text-body-large">{{ t('nav.blog') }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-
-        <v-divider />
-
-        <!-- GitHub stars -->
-        <div class="d-flex flex-column align-center mt-8 mb-4">
-          <a :href="config.public.githubLink as string" target="_blank">
-            <img
-              alt="GitHub Repo stars"
-              width="100px"
-              src="https://img.shields.io/github/stars/NdoleStudio/hepilo"
-            />
-          </a>
-          <v-tooltip v-if="version" location="bottom" :text="t('nav.version')">
-            <template #activator="{ props }">
-              <a
-                v-bind="props"
-                class="text-decoration-none text-body-2 text-medium-emphasis mt-2"
-                :href="config.public.githubLink as string"
-                target="_blank"
-              >
-                {{ version }}
-              </a>
-            </template>
-          </v-tooltip>
-        </div>
       </v-navigation-drawer>
 
       <v-main>
