@@ -1,0 +1,15 @@
+allowBuilds:
+  '@firebase/util': true
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  better-sqlite3: true
+  esbuild: true
+  protobufjs: true
+  unrs-resolver: true
+  workerd: true
+
+minimumReleaseAgeExclude:
+  - '@tiptap/*'
+
+overrides:
+  '@vercel/nft': ^0.27.4

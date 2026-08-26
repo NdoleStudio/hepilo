@@ -1,0 +1,9 @@
+.nuxt
+.output
+.data
+dist
+node_modules
+pnpm-lock.yaml
+public
+*.min.*
+i18n/locales
