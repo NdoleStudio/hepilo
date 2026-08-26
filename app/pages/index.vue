@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import Typewriter from 'typewriter-effect/dist/core'
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'default',
 })
 
 // Redirect already-signed-in users to their lists before the prerendered
@@ -20,8 +19,9 @@ useHead({
   ],
 })
 
-const { t, tm, rt } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
+const listStore = useListStore()
 
 useSeoDefaults({
   title: t('home.heroTitle'),
@@ -29,39 +29,23 @@ useSeoDefaults({
   path: '/',
 })
 
-const typewriterEl = ref<HTMLElement | null>(null)
-let typewriter: Typewriter | null = null
-
-onMounted(() => {
-  if (!typewriterEl.value) return
-
-  const raw: unknown = tm('home.typewriterStrings')
-  const strings = Array.isArray(raw) ? raw.map((s) => rt(s as Parameters<typeof rt>[0])) : []
-
-  // Clear the SSR/prerendered fallback text so Typewriter fully controls
-  // the element instead of typing on top of the existing content.
-  typewriterEl.value.textContent = ''
-
-  typewriter = new Typewriter(typewriterEl.value, {
-    strings,
-    autoStart: true,
-    loop: true,
-  })
-})
-
-onBeforeUnmount(() => {
-  typewriter?.stop()
-  typewriter = null
+onMounted(async () => {
+  await listStore.loadState()
+  const list = listStore.selectedList
+  if (list) {
+    navigateTo(localePath(`/lists/${list.id}`))
+  }
 })
 </script>
 
 <template>
-  <div>
-    <!-- Hero Section -->
-    <v-responsive max-width="1264" class="mx-auto">
-      <v-btn size="large" color="secondary" class="mt-4 mb-4 ml-4" :to="localePath('/demo')">
-        {{ t('home.liveDemo') }}
-      </v-btn>
-    </v-responsive>
-  </div>
+  <v-container>
+    <v-progress-circular
+      class="mx-auto d-block my-16"
+      :size="100"
+      :width="5"
+      color="lime"
+      indeterminate
+    />
+  </v-container>
 </template>
