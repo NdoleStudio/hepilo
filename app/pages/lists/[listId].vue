@@ -28,7 +28,6 @@ useHead({
 
 definePageMeta({
   layout: 'default',
-  middleware: 'demo-or-auth',
   key: (route) => String(route.params.listId),
 })
 
@@ -303,7 +302,6 @@ onUnmounted(() => {
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <ShoppingListDemoBanner />
         <div id="add-item-input">
           <v-combobox
             v-model:menu="comboboxMenu"

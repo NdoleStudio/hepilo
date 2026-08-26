@@ -6,8 +6,7 @@ import homeBudgetDark from '~/assets/images/home-budget-dark.png'
 import homeGithubDark from '~/assets/images/home-github-dark.png'
 
 definePageMeta({
-  layout: 'auth',
-  middleware: 'guest',
+  layout: 'auth'
 })
 
 // Redirect already-signed-in users to their lists before the prerendered
@@ -103,9 +102,6 @@ onBeforeUnmount(() => {
             <h2 class="text-medium-emphasis text-title-large mt-2">
               {{ t('home.heroSubtitle') }}
             </h2>
-            <v-btn color="primary" size="large" class="mt-4 mb-4" :to="localePath('/login')">
-              {{ t('home.getStarted') }}
-            </v-btn>
             <v-btn size="large" color="secondary" class="mt-4 mb-4 ml-4" :to="localePath('/demo')">
               {{ t('home.liveDemo') }}
             </v-btn>

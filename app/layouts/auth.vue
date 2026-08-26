@@ -22,15 +22,6 @@
       >
         {{ t('nav.blog') }}
       </v-btn>
-      <v-btn
-        v-if="!isLoginRoute"
-        color="secondary"
-        variant="flat"
-        class="text-none mr-2"
-        :to="localePath('/login')"
-      >
-        {{ t('nav.getStarted') }}
-      </v-btn>
 
       <v-progress-linear
         :active="uiStore.saving"
@@ -154,7 +145,6 @@ const theme = useVTheme()
 const { mdAndUp, lgAndUp } = useVDisplay()
 
 const isDark = computed(() => theme.global.current.value.dark)
-const isLoginRoute = computed(() => String(route.name).includes('login'))
 
 const socialLinks = computed(() => {
   return [

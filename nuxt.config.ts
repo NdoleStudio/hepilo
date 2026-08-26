@@ -245,7 +245,6 @@ export default defineNuxtConfig({
     '/blog/**': { prerender: true },
     '/privacy-policy': { prerender: true },
     '/terms-and-conditions': { prerender: true },
-    '/login': { prerender: true },
     '/demo': { prerender: true },
     '/lists/**': { ssr: false },
     '/manage/**': { ssr: false },

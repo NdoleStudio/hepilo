@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { getAuth } from 'firebase/auth'
 import { mdiCheck } from '@mdi/js'
 
 const { t, locale, locales } = useI18n()
-const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const settingsStore = useSettingsStore()
-const authStore = useAuthStore()
 const uiStore = useUIStore()
 const theme = useVTheme()
 
@@ -26,8 +23,7 @@ useHead({
 })
 
 definePageMeta({
-  layout: 'default',
-  middleware: 'demo-or-auth',
+  layout: 'default'
 })
 
 const dialogDelete = ref(false)
@@ -46,33 +42,6 @@ function closeDeleteDialog() {
 
 function clearForm() {
   formCurrency.value = settingsStore.currency
-}
-
-function onDeleteAccount() {
-  dialogDelete.value = true
-}
-
-async function onDeleteAccountConfirm() {
-  try {
-    const auth = getAuth()
-    await authStore.deleteAccount(auth.currentUser?.uid as string)
-    await auth.currentUser?.delete()
-  } catch (e: unknown) {
-    if ((e as { code?: string }).code !== 'auth/requires-recent-login') {
-      throw e
-    }
-    const auth = getAuth()
-    auth.signOut().then(() => {
-      uiStore.addNotification({
-        type: 'info',
-        message: t('auth.reLoginToDelete'),
-      })
-      navigateTo(localePath('/login'))
-    })
-    return
-  }
-  closeDeleteDialog()
-  navigateTo(localePath('/'))
 }
 
 function onSave() {
@@ -160,14 +129,6 @@ function onSave() {
               {{ $t('settings.saveSettings') }}
             </v-btn>
             <v-spacer />
-            <v-btn
-              color="error"
-              variant="text"
-              :disabled="!authStore.isLoggedIn"
-              @click="onDeleteAccount"
-            >
-              {{ $t('settings.deleteAccount') }}
-            </v-btn>
           </v-card-actions>
         </v-card>
         <div class="text-center mt-4">
@@ -187,9 +148,6 @@ function onSave() {
                 {{ $t('common.no') }}
               </v-btn>
               <v-spacer />
-              <v-btn color="error" variant="text" @click="onDeleteAccountConfirm">
-                {{ $t('common.yes') }}
-              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>

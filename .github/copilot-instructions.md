@@ -61,7 +61,7 @@ All stores write to localStorage after mutations. The list store manages Firesto
 
 SSR is enabled globally. Route rules in `nuxt.config.ts` fine-tune behavior:
 
-- **Prerendered:** `/`, `/blog/**`, `/privacy-policy`, `/terms-and-conditions`, `/login`, `/demo`
+- **Prerendered:** `/`, `/blog/**`, `/privacy-policy`, `/terms-and-conditions`, `/demo`
 - **CSR only (ssr: false):** `/lists/**`, `/manage/**`, `/settings` (authenticated routes)
 
 ### State Management (Pinia)

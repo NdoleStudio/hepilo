@@ -1,5 +1,5 @@
 import { type FirebaseApp, initializeApp, getApps } from 'firebase/app'
-import { type Auth, getAuth, onAuthStateChanged, type User } from 'firebase/auth'
+import { type Auth, getAuth} from 'firebase/auth'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const firebaseConfig = {
@@ -44,22 +44,8 @@ export const getFirebaseAuth = (): Auth => {
   return getAuth(app)
 }
 
-export const getCurrentUser = (): Promise<User | null> => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = onAuthStateChanged(
-      getFirebaseAuth(),
-      (user) => {
-        unsubscribe()
-        resolve(user)
-      },
-      reject,
-    )
-  })
-}
-
 export const useFirebase = () => {
   return {
     getFirebaseAuth,
-    getCurrentUser,
   }
 }

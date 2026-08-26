@@ -16,7 +16,6 @@ useHead({
 
 definePageMeta({
   layout: 'default',
-  middleware: 'demo-or-auth',
 })
 
 const formValid = ref(false)
@@ -119,7 +118,6 @@ function clearForm() {
   <v-container>
     <v-row>
       <v-col cols="12" lg="6" md="8" offset-md="2" offset-lg="3">
-        <ShoppingListDemoBanner />
         <div
           class="d-flex"
           :class="{ 'justify-center': itemStore.items.length === 0 && $vuetify.display.mdAndDown }"
