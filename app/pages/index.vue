@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { mdiCheckCircle } from '@mdi/js'
 import Typewriter from 'typewriter-effect/dist/core'
-import homeIntroDark from '~/assets/images/home-intro-dark.png'
-import homeBudgetDark from '~/assets/images/home-budget-dark.png'
-import homeGithubDark from '~/assets/images/home-github-dark.png'
 
 definePageMeta({
   layout: 'auth'
@@ -26,8 +22,6 @@ useHead({
 
 const { t, tm, rt } = useI18n()
 const localePath = useLocalePath()
-const config = useRuntimeConfig()
-const { mdAndDown } = useVDisplay()
 
 useSeoDefaults({
   title: t('home.heroTitle'),
@@ -35,34 +29,10 @@ useSeoDefaults({
   path: '/',
 })
 
-const githubLink = computed(() => config.public.githubLink as string)
-const androidAppUrl = computed(() => config.public.siteAndroidAppUrl as string)
-const appName = computed(() => config.public.appName as string)
-const appIconUrl = '/img/icons/android-chrome-maskable-192x192.png'
-
-const googlePlayBadgeUrl = computed(
-  () =>
-    `${androidAppUrl.value}&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1`,
-)
-
-const typewriterDefault = computed(() => {
-  const raw: unknown = tm('home.typewriterStrings')
-  if (Array.isArray(raw) && raw.length > 0) {
-    return rt(raw[raw.length - 1] as Parameters<typeof rt>[0])
-  }
-  return 'Ultimate'
-})
-
-const showGooglePlayBadge = ref(true)
-const canDownloadApp = ref(false)
 const typewriterEl = ref<HTMLElement | null>(null)
 let typewriter: Typewriter | null = null
 
 onMounted(() => {
-  const { isInStandaloneMode, isAndroid } = useUtils()
-  showGooglePlayBadge.value = !isInStandaloneMode()
-  canDownloadApp.value = isAndroid() && !isInStandaloneMode()
-
   if (!typewriterEl.value) return
 
   const raw: unknown = tm('home.typewriterStrings')
@@ -89,110 +59,9 @@ onBeforeUnmount(() => {
   <div>
     <!-- Hero Section -->
     <v-responsive max-width="1264" class="mx-auto">
-      <v-container>
-        <v-row align="center" class="mt-5">
-          <v-col cols="12" lg="4" :class="{ 'text-center': mdAndDown }">
-            <h1 class="text-display-medium">
-              <span id="typewriter" ref="typewriterEl" class="text-lime-darken-2">{{
-                typewriterDefault
-              }}</span>
-              <br />
-              {{ t('home.heroTitle') }}
-            </h1>
-            <h2 class="text-medium-emphasis text-title-large mt-2">
-              {{ t('home.heroSubtitle') }}
-            </h2>
-            <v-btn size="large" color="secondary" class="mt-4 mb-4 ml-4" :to="localePath('/demo')">
-              {{ t('home.liveDemo') }}
-            </v-btn>
-            <a v-if="showGooglePlayBadge" class="ml-n4" :href="googlePlayBadgeUrl">
-              <img
-                height="100"
-                :alt="t('home.getItOnGooglePlay')"
-                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-              />
-            </a>
-            <div class="mt-4">
-              <v-icon color="lime-darken-2" :icon="mdiCheckCircle" />
-              {{ t('home.freeToUse') }}
-              <v-icon class="ml-4" color="lime-darken-2" :icon="mdiCheckCircle" />
-              {{ t('home.noCreditCard') }}
-            </div>
-            <v-divider class="mt-6 mr-16" :class="{ 'ml-16': mdAndDown }" color="lime" />
-          </v-col>
-          <v-col cols="12" lg="8">
-            <v-img class="mt-4 mx-auto" max-height="600" :src="homeIntroDark" />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-btn size="large" color="secondary" class="mt-4 mb-4 ml-4" :to="localePath('/demo')">
+        {{ t('home.liveDemo') }}
+      </v-btn>
     </v-responsive>
-
-    <!-- Budget Section -->
-    <v-sheet class="mt-10">
-      <v-responsive max-width="1264" class="mx-auto">
-        <v-container>
-          <v-row align="center" class="mt-5 mb-5">
-            <v-col cols="12" lg="6" class="order-lg-2" :class="{ 'text-center': mdAndDown }">
-              <h1 class="text-headline-large">{{ t('home.budgetTitle') }}</h1>
-              <h2 class="text-medium-emphasis text-title-large mt-2">
-                {{ t('home.budgetSubtitle') }}
-              </h2>
-            </v-col>
-            <v-col cols="12" lg="6" class="order-lg-1">
-              <v-img class="mt-4 mx-auto" max-height="800" :src="homeBudgetDark" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-responsive>
-    </v-sheet>
-
-    <!-- Open Source Section -->
-    <v-responsive max-width="1264" class="mx-auto">
-      <v-container>
-        <v-row align="center" class="mt-5">
-          <v-col cols="12" lg="5" :class="{ 'text-center': mdAndDown }">
-            <h1 class="text-headline-large">{{ t('home.openSourceTitle') }}</h1>
-            <h2 class="text-medium-emphasis text-title-large mt-2">
-              {{ t('home.openSourceSubtitle') }}
-              <a href="https://opensource.org/licenses/MIT" class="text-decoration-none">{{
-                t('home.mitLicense')
-              }}</a
-              >{{ t('home.openSourceSubtitleSuffix') }}
-            </h2>
-            <div class="d-flex align-center" :class="{ 'justify-center': mdAndDown }">
-              <a :href="githubLink" class="mt-2">
-                <img
-                  width="150px"
-                  alt="GitHub Repo stars"
-                  src="https://img.shields.io/github/stars/NdoleStudio/hepilo?style=social"
-                />
-              </a>
-            </div>
-          </v-col>
-          <v-col cols="12" lg="7">
-            <v-img class="mt-4 mx-auto" max-height="700" :src="homeGithubDark" />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-responsive>
-
-    <!-- Android App Download Banner -->
-    <SnackAlert v-if="canDownloadApp" :href="androidAppUrl">
-      <div class="d-flex">
-        <a :href="androidAppUrl">
-          <v-img
-            class="rounded-lg"
-            max-height="50"
-            max-width="50"
-            :src="appIconUrl"
-            :alt="appName + ' app icon'"
-          />
-        </a>
-        <div class="pl-2">
-          <h6 class="text-title-large mt-0 mb-0">{{ appName }}</h6>
-          <p class="mb-0 mt-n1 text-medium-emphasis">{{ t('app.getTheOfficialApp') }}</p>
-        </div>
-      </div>
-    </SnackAlert>
   </div>
 </template>
