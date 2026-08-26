@@ -9,7 +9,6 @@
       </div>
 
       <v-spacer />
-      <LanguageSwitcher />
       <v-btn icon @click="toggleTheme">
         <v-icon :icon="isDark ? mdiWeatherSunny : mdiWeatherNight" />
       </v-btn>

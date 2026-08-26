@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { mdiCheck } from '@mdi/js'
 
-const { t, locale, locales } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
+const { t } = useI18n()
 const settingsStore = useSettingsStore()
 const uiStore = useUIStore()
 const theme = useVTheme()
 
 const isDark = computed(() => theme.global.current.value.dark)
-
-const availableLocales = computed(() => locales.value.filter((l) => typeof l !== 'string'))
 
 function setTheme(newTheme: string) {
   theme.change(newTheme)
@@ -57,16 +54,6 @@ function onSave() {
         <v-card class="mb-4">
           <v-card-title>{{ $t('settings.appearance') }}</v-card-title>
           <v-card-text>
-            <v-select
-              :model-value="locale"
-              class="mt-4"
-              :items="availableLocales.map((l) => ({ title: l.name, value: l.code }))"
-              density="compact"
-              color="primary"
-              variant="outlined"
-              :label="$t('settings.language')"
-              @update:model-value="(code) => navigateTo(switchLocalePath(code))"
-            />
             <v-select
               :model-value="isDark ? 'dark' : 'light'"
               :items="[
