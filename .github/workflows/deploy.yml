@@ -1,0 +1,62 @@
+name: Deploy to Cloudflare Pages
+
+# NOTE: This workflow was inherited from the upstream Hepilo project and is
+# NOT wired up for this fork. It still points at the upstream's Cloudflare
+# project, secrets, and env values. To avoid failing checks on every push it
+# is set to manual-only (workflow_dispatch). Before enabling automatic
+# deploys you must:
+#   1. Replace the CLOUDFLARE_* secrets with your own.
+#   2. Update the NUXT_PUBLIC_* env values below to your own site.
+#   3. Remove the `working-directory: ./web` default (this fork has no ./web).
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./web
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.3.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          npm rebuild better-sqlite3
+          pnpm run postinstall
+
+      - name: Generate static site
+        run: pnpm run generate
+        env:
+          NUXT_PUBLIC_APP_NAME: Hepilo
+          NUXT_PUBLIC_SITE_URL: https://hepilo.com
+          NUXT_PUBLIC_SITE_EMAIL: arnold@hepilo.com
+          NUXT_PUBLIC_SITE_ANDROID_APP_URL: https://play.google.com/store/apps/details?id=com.hepilo.twa
+          NUXT_PUBLIC_GITHUB_LINK: https://github.com/NdoleStudio/hepilo
+          NUXT_PUBLIC_COMMIT_HASH: ${{ github.sha }}
+          NUXT_PUBLIC_RECAPTCHA_SITE_KEY: 6Le4-jseAAAAACQavdg0uBHEk6cIPnfQ-jRCYklA
+          SENTRY_DSN: https://1e5300c5ad8449968a2edbd2fb25e255@o291224.ingest.sentry.io/6244114
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .output/public --project-name=hepilo
+          workingDirectory: web
