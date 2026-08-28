@@ -238,9 +238,6 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
     '/blog/**': { prerender: true },
-    '/privacy-policy': { prerender: true },
-    '/terms-and-conditions': { prerender: true },
-    '/demo': { prerender: true },
     '/lists/**': { ssr: false },
     '/manage/**': { ssr: false },
     '/settings': { ssr: false },
