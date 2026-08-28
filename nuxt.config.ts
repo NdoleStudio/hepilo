@@ -135,9 +135,7 @@ export default defineNuxtConfig({
 
   i18n: {
     defaultLocale: 'en',
-    locales: [
-      { code: 'en', name: 'English', language: 'en-US', file: 'en.json' },
-    ],
+    locales: [{ code: 'en', name: 'English', language: 'en-US', file: 'en.json' }],
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
       useCookie: true,

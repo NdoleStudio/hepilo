@@ -30,11 +30,13 @@
 ### Task 1: Guard UI Store Drawer Persistence by Viewport
 
 **Files:**
+
 - Create: `web/app/stores/__tests__/ui.spec.ts`
 - Modify: `web/app/stores/ui.ts:59-78`
 - Modify: `web/app/layouts/default.vue:4,237-259`
 
 **Interfaces:**
+
 - Consumes: Vuetify `useVDisplay(): { mobile: Ref<boolean> }`
 - Produces: `setNavDrawer(isOpen: boolean, persistToFirestore?: boolean): Promise<void>`
 
@@ -100,11 +102,7 @@ describe('UI store nav drawer persistence', () => {
 
     await store.setNavDrawer(true)
 
-    expect(setDocMock).toHaveBeenCalledWith(
-      'state-doc',
-      { navDrawerOpen: true },
-      { merge: true },
-    )
+    expect(setDocMock).toHaveBeenCalledWith('state-doc', { navDrawerOpen: true }, { merge: true })
   })
 
   it('does not persist before list state is loaded', async () => {
@@ -201,10 +199,12 @@ git commit -m "fix(nav): keep mobile drawer state local" -m "Co-authored-by: Cop
 ### Task 2: Remove the List Store Drawer Write Path
 
 **Files:**
+
 - Create: `web/app/stores/__tests__/list.spec.ts`
 - Modify: `web/app/stores/list.ts:235-258`
 
 **Interfaces:**
+
 - Consumes: `useListStore().saveState(): Promise<void>`
 - Produces: A list-state Firestore payload that never contains `navDrawerOpen`
 

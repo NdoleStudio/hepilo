@@ -13,6 +13,7 @@
 ### Task 1: Add `resetSettings()` to settings store
 
 **Files:**
+
 - Modify: `web/app/stores/settings.ts:93-103`
 
 - [ ] **Step 1: Add the `resetSettings` function**
@@ -56,6 +57,7 @@ git commit -S -m "feat: add resetSettings to settings store"
 ### Task 2: Add `logout()` to auth store
 
 **Files:**
+
 - Modify: `web/app/stores/auth.ts`
 
 - [ ] **Step 1: Add the useFirebase import usage and logout function**
@@ -129,6 +131,7 @@ git commit -S -m "feat: add logout function to auth store with full state reset"
 ### Task 3: Update layout to use `authStore.logout()`
 
 **Files:**
+
 - Modify: `web/app/layouts/default.vue:250-263`
 
 - [ ] **Step 1: Add authStore reference**
@@ -153,8 +156,7 @@ async function logout() {
       message: t('auth.logoutSuccess'),
     })
     await router.push(localePath('/'))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Logout failed:', error)
   }
 }
@@ -171,8 +173,7 @@ async function logout() {
       message: t('auth.logoutSuccess'),
     })
     await router.push(localePath('/'))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Logout failed:', error)
   }
 }
@@ -218,6 +219,7 @@ Expected: All existing tests pass.
 - [ ] **Step 3: Manual verification checklist**
 
 Confirm mentally:
+
 - `listStore.resetState()` unsubscribes Firestore, clears lists/items/categories/navDrawer/localStorage ✓
 - `settingsStore.resetSettings()` resets currency and showIntro ✓
 - `auth.signOut()` clears Firebase auth state ✓

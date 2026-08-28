@@ -36,15 +36,15 @@ yarn lint                    # ESLint
 
 Hepilo is a shopping list PWA with two deployments during an ongoing migration:
 
-| | New App (`web/`) | Legacy App (`web-legacy/`) |
-|---|---|---|
-| **Framework** | Nuxt 4 + Vue 3 | Vue 2 + Vue CLI |
-| **UI** | Vuetify 4 (MD3) | Vuetify 2 |
-| **State** | Pinia (6 stores) | Vuex (monolithic) |
-| **Testing** | Vitest + happy-dom | Jest |
-| **Deployment** | Cloudflare Pages | Firebase Hosting |
-| **Package Manager** | pnpm | yarn |
-| **Node** | 20 | 17 |
+|                     | New App (`web/`)   | Legacy App (`web-legacy/`) |
+| ------------------- | ------------------ | -------------------------- |
+| **Framework**       | Nuxt 4 + Vue 3     | Vue 2 + Vue CLI            |
+| **UI**              | Vuetify 4 (MD3)    | Vuetify 2                  |
+| **State**           | Pinia (6 stores)   | Vuex (monolithic)          |
+| **Testing**         | Vitest + happy-dom | Jest                       |
+| **Deployment**      | Cloudflare Pages   | Firebase Hosting           |
+| **Package Manager** | pnpm               | yarn                       |
+| **Node**            | 20                 | 17                         |
 
 **Active development happens in `web/`.** The legacy app at `web-legacy/` is archived.
 
@@ -68,25 +68,25 @@ SSR is enabled globally. Route rules in `nuxt.config.ts` fine-tune behavior:
 
 Six composition-API stores in `web/app/stores/`:
 
-| Store | Purpose |
-|-------|---------|
-| `auth` | User authentication state, account deletion |
-| `list` | Shopping lists, items in lists, cart, Firestore sync (~980 lines, largest store) |
-| `item` | Master item registry with units, prices, categories |
-| `category` | Item categories with colors; default is `uncategorized` |
-| `settings` | Currency preference (auto-detected via ipapi.co), intro flag |
-| `ui` | Loading/saving flags, notifications, page title, nav drawer |
+| Store      | Purpose                                                                          |
+| ---------- | -------------------------------------------------------------------------------- |
+| `auth`     | User authentication state, account deletion                                      |
+| `list`     | Shopping lists, items in lists, cart, Firestore sync (~980 lines, largest store) |
+| `item`     | Master item registry with units, prices, categories                              |
+| `category` | Item categories with colors; default is `uncategorized`                          |
+| `settings` | Currency preference (auto-detected via ipapi.co), intro flag                     |
+| `ui`       | Loading/saving flags, notifications, page title, nav drawer                      |
 
 Cross-store calls are common — `list.ts` reads from `item`, `category`, `auth`, `settings`, and `ui` stores.
 
 ### Domain Model (`web/types/state.ts`)
 
-| Type | Purpose |
-|------|---------|
-| `List` | Shopping list with `id`, `name`, `icon`, `items: ListItem[]`, `cartPanelOpen` |
-| `Item` | Reusable catalog item with `name`, `unit`, `pricePerUnit`, `categoryId` |
-| `ListItem` | Instance of an Item in a List (`itemId`, `quantity`, `notes`, `addedToCart`) |
-| `Category` | Grouping with `name` and `color`; default is `"uncategorized"` |
+| Type       | Purpose                                                                       |
+| ---------- | ----------------------------------------------------------------------------- |
+| `List`     | Shopping list with `id`, `name`, `icon`, `items: ListItem[]`, `cartPanelOpen` |
+| `Item`     | Reusable catalog item with `name`, `unit`, `pricePerUnit`, `categoryId`       |
+| `ListItem` | Instance of an Item in a List (`itemId`, `quantity`, `notes`, `addedToCart`)  |
+| `Category` | Grouping with `name` and `color`; default is `"uncategorized"`                |
 
 Views use `MaterializedList` / `MaterializedListItem` types that join Items with ListItems grouped by Category for rendering.
 
