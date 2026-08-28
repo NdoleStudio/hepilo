@@ -1,0 +1,2 @@
+# Run the test suite before pushing so broken code never leaves your machine.
+pnpm test:unit

@@ -1,5 +1,5 @@
 import { type FirebaseApp, initializeApp, getApps } from 'firebase/app'
-import { type Auth, getAuth} from 'firebase/auth'
+import { type Auth, getAuth } from 'firebase/auth'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const firebaseConfig = {

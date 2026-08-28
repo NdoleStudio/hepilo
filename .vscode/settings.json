@@ -1,2 +1,31 @@
 {
+  // Format every file on save using Prettier (matches .prettierrc.json:
+  // no semicolons, single quotes, trailing commas, 100 char width).
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Run ESLint's auto-fixes on save (e.g. import ordering, Vue attribute order).
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // Make sure Prettier owns formatting for each language in this project.
+  "[vue]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[scss]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  // Use the project's local Prettier/ESLint versions, not a bundled one.
+  "prettier.prettierPath": "node_modules/prettier",
+  // Point Prettier at this project's config file. This overrides any global
+  // user setting (e.g. a stale "prettier.configPath": ".prettierrc") that would
+  // otherwise fail to load and silently disable format-on-save.
+  "prettier.configPath": ".prettierrc.json",
+  "eslint.workingDirectories": [{ "mode": "auto" }]
 }
