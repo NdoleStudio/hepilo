@@ -10,10 +10,10 @@ Use Vue's `<TransitionGroup>` component around the `v-list-item` loops in both t
 
 ## Animation Details
 
-| Direction | Exit animation | Enter animation |
-|-----------|---------------|-----------------|
-| List → Cart (check) | Slide down 20px + fade out (200ms) | Slide in from -20px above + fade in (200ms) |
-| Cart → List (uncheck) | Slide up 20px + fade out (200ms) | Slide in from 20px below + fade in (200ms) |
+| Direction             | Exit animation                     | Enter animation                             |
+| --------------------- | ---------------------------------- | ------------------------------------------- |
+| List → Cart (check)   | Slide down 20px + fade out (200ms) | Slide in from -20px above + fade in (200ms) |
+| Cart → List (uncheck) | Slide up 20px + fade out (200ms)   | Slide in from 20px below + fade in (200ms)  |
 
 - **Easing:** `ease-out` for both enter and leave
 - **Duration:** 200ms (snappy feel)

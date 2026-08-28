@@ -13,6 +13,7 @@
 ### Task 1: Add TransitionGroup to Shopping List Items
 
 **Files:**
+
 - Modify: `web/app/pages/lists/[listId].vue:385-433` (list items v-for)
 
 - [ ] **Step 1: Wrap list items with TransitionGroup**
@@ -20,6 +21,7 @@
 In the template, find the inner `v-list-item` v-for loop (line 385-433) inside the category template loop. Wrap it with `<TransitionGroup>`:
 
 Replace:
+
 ```vue
 <v-list-item
   v-for="(item, listIndex) in categoryItem.items"
@@ -29,6 +31,7 @@ Replace:
 ```
 
 With:
+
 ```vue
 <TransitionGroup name="list-item">
   <v-list-item
@@ -53,6 +56,7 @@ Expected: Build succeeds with no template compilation errors.
 ### Task 2: Add TransitionGroup to Cart Items
 
 **Files:**
+
 - Modify: `web/app/pages/lists/[listId].vue:467-496` (cart items v-for)
 
 - [ ] **Step 1: Wrap cart items with TransitionGroup**
@@ -60,6 +64,7 @@ Expected: Build succeeds with no template compilation errors.
 In the cart section, find the inner `v-list-item` v-for loop (line 467-496) inside the category template loop. Wrap it with `<TransitionGroup>`:
 
 Replace:
+
 ```vue
 <v-list-item
   v-for="item in categoryItem.items"
@@ -69,6 +74,7 @@ Replace:
 ```
 
 With:
+
 ```vue
 <TransitionGroup name="cart-item">
   <v-list-item
@@ -93,6 +99,7 @@ Expected: Build succeeds.
 ### Task 3: Add CSS Transition Classes
 
 **Files:**
+
 - Modify: `web/app/pages/lists/[listId].vue:629-647` (scoped style block)
 
 - [ ] **Step 1: Add transition CSS before the existing `.dialog-responsive` rule**
@@ -141,10 +148,10 @@ Insert the following CSS at line 630 (after `<style scoped>`, before `.dialog-re
 .cart-item-move {
   transition: transform 0.2s ease-out;
 }
-
 ```
 
 Key notes:
+
 - `leave-active { position: absolute }` ensures leaving items don't hold space, allowing remaining items to smoothly reposition via the move class.
 - List items slide DOWN (positive translateY) on both enter-from and leave-to — entering items appear to arrive from above, leaving items fall away.
 - Cart items slide from ABOVE (negative translateY) — entering items drop in from the top, leaving items rise up.
@@ -178,6 +185,7 @@ Run: `cd web && pnpm dev`
 - [ ] **Step 2: Test in browser**
 
 Navigate to a list page with multiple items. Verify:
+
 1. Checking an item: it slides down + fades out, remaining items shift up smoothly, item appears in cart with a slide-in from above
 2. Unchecking a cart item: it slides up + fades out, item reappears in the list with a slide-in from below
 3. Rapid toggling: animations don't stack or glitch

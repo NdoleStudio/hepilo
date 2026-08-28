@@ -20,7 +20,7 @@ useHead({
 })
 
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 const dialogDelete = ref(false)

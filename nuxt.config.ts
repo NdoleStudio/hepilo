@@ -135,9 +135,7 @@ export default defineNuxtConfig({
 
   i18n: {
     defaultLocale: 'en',
-    locales: [
-      { code: 'en', name: 'English', language: 'en-US', file: 'en.json' },
-    ],
+    locales: [{ code: 'en', name: 'English', language: 'en-US', file: 'en.json' }],
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
       useCookie: true,
@@ -240,9 +238,6 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
     '/blog/**': { prerender: true },
-    '/privacy-policy': { prerender: true },
-    '/terms-and-conditions': { prerender: true },
-    '/demo': { prerender: true },
     '/lists/**': { ssr: false },
     '/manage/**': { ssr: false },
     '/settings': { ssr: false },

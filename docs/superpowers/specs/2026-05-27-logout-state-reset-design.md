@@ -58,8 +58,7 @@ async function logout() {
       message: t('auth.logoutSuccess'),
     })
     await router.push(localePath('/'))
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Logout failed:', error)
   }
 }

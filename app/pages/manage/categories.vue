@@ -103,7 +103,7 @@ function clearForm() {
               categoryStore.editableCategories.length === 0 && $vuetify.display.mdAndDown,
           }"
         >
-          <v-btn :disabled="synchronizing" @click="onSync" variant="tonal">
+          <v-btn :disabled="synchronizing" variant="tonal" @click="onSync">
             <v-icon v-if="$vuetify.display.lgAndUp" :icon="mdiSync" start />
             {{ $t('category.synchronize') }}
           </v-btn>
