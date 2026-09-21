@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { initializeFirestore } from 'firebase/firestore'
 import type { User } from '~/types/state'
 
 export default defineNuxtPlugin(() => {
@@ -16,6 +17,9 @@ export default defineNuxtPlugin(() => {
 
   if (!getApps().length) {
     const app = initializeApp(firebaseConfig)
+    initializeFirestore(app, {
+      experimentalForceLongPolling: true,
+    })
 
     // App Check with ReCAPTCHA v3
     const recaptchaKey = useRuntimeConfig().public.recaptchaSiteKey as string
