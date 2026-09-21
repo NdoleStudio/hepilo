@@ -323,6 +323,11 @@ export const useListStore = defineStore('list', () => {
         _hydrateStores(snapshot.data()!)
         uiStore.setSaving(false)
       },
+      (error) => {
+        loadingState.value = false
+        uiStore.setSaving(false)
+        captureSentryError(error)
+      },
     )
 
     loadingState.value = true
