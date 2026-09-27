@@ -288,6 +288,6 @@ function clearForm() {
 /* Ensure long content in dialog titles wraps instead of overflowing */
 .dialog-responsive :deep(.v-card-title) {
   white-space: normal;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 </style>

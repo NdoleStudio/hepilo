@@ -114,14 +114,11 @@ export const useListStore = defineStore('list', () => {
   })
 
   function listHasItemId(itemId: string): boolean {
-    return selectedList.value.items.find((li: ListItem) => li.itemId === itemId) !== undefined
+    return selectedList.value.items.some((li: ListItem) => li.itemId === itemId)
   }
 
   function ItemIdIsInCart(itemId: string): boolean {
-    return (
-      selectedList.value.items.find((li: ListItem) => li.itemId === itemId && li.addedToCart) !==
-      undefined
-    )
+    return selectedList.value.items.some((li: ListItem) => li.itemId === itemId && li.addedToCart)
   }
 
   function materializedList(addedToCart: boolean): MaterializedList {
@@ -554,8 +551,8 @@ export const useListStore = defineStore('list', () => {
     }
 
     let quantity = 1
-    const nameQuantity = parseFloat(name.split(' ')[0]!)
-    if (!isNaN(nameQuantity) && nameQuantity > 0) {
+    const nameQuantity = Number.parseFloat(name.split(' ')[0]!)
+    if (!Number.isNaN(nameQuantity) && nameQuantity > 0) {
       quantity = nameQuantity
       name = name.split(' ').slice(1).join(' ')
     }

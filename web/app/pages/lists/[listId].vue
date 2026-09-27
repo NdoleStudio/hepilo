@@ -128,14 +128,14 @@ function onFocus() {
 }
 
 function hasQuantity(value: string): boolean {
-  const nameQuantity = parseFloat(value.split(' ')[0]!)
-  return !isNaN(nameQuantity) && nameQuantity > 0
+  const nameQuantity = Number.parseFloat(value.split(' ')[0]!)
+  return !Number.isNaN(nameQuantity) && nameQuantity > 0
 }
 
 function itemFilter(value: string, query: string, _item?: unknown): boolean {
   if (value == null || query == null) return false
   if (hasQuantity(query)) {
-    addFormQuantity.value = parseFloat(query.split(' ')[0]!)
+    addFormQuantity.value = Number.parseFloat(query.split(' ')[0]!)
     query = query.split(' ').slice(1).join(' ')
   } else {
     addFormQuantity.value = 0

@@ -286,8 +286,8 @@ function clearForm() {
           </v-card-text>
         </v-card>
 
-        <div v-if="canLoadMore" class="text-center mt-4 mb-4" @click="itemSize += 20">
-          <v-btn color="primary">{{ $t('item.loadMore') }}</v-btn>
+        <div v-if="canLoadMore" class="text-center mt-4 mb-4">
+          <v-btn color="primary" @click="itemSize += 20">{{ $t('item.loadMore') }}</v-btn>
         </div>
 
         <v-dialog
@@ -356,6 +356,6 @@ function clearForm() {
 /* Ensure long content in dialog titles wraps instead of overflowing */
 .dialog-responsive :deep(.v-card-title) {
   white-space: normal;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 </style>

@@ -27,7 +27,7 @@ export const isMobile = (): boolean => {
 }
 
 export const isDarkModeOn = (): boolean => {
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
 }
 
 export const getBooleanFromLocalStorage = (key: string, defaultValue = false): boolean => {
