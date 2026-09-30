@@ -162,6 +162,11 @@ function onEnter(e?: KeyboardEvent) {
   const raw = (search.value ?? '').trim()
   if (!raw) return
 
+  // The combobox otherwise handles Enter after this capture listener and
+  // restores its auto-selected first suggestion after resetInput clears it.
+  e?.preventDefault()
+  e?.stopPropagation()
+
   const matches = itemStore.autocompleteItems.filter((item) =>
     itemFilter(item.title, search.value ?? ''),
   )
