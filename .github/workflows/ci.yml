@@ -96,7 +96,7 @@ jobs:
           node-version: 22
 
       - name: Download static site
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: static-site
           path: web/.output/public
