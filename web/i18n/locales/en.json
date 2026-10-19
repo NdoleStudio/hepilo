@@ -76,6 +76,7 @@
     "emptyDescription": "Start adding things that you need to make sure nothing is left behind.",
     "cart": "Cart",
     "clearCart": "Clear Cart",
+    "clearCartConfirmation": "Are you sure you want to clear the cart? All items in the cart will be removed from this list.",
     "listTotal": "List Total",
     "cartTotal": "Cart Total",
     "totalPriceHint": "Total Price: {price}",

@@ -7,6 +7,8 @@ settings:
 overrides:
   '@vercel/nft': ^0.27.4
 
+packageExtensionsChecksum: sha256-SqD/1qAGWggzQ1SsA0DXXSaPOnAnG0EUqMeNeiF+mE0=
+
 importers:
 
   .:
@@ -18149,6 +18151,7 @@ snapshots:
       '@nuxt/kit': 4.5.2(magic-string@1.2.0)(magicast@0.5.4)(oxc-parser@0.141.0)(rolldown@1.2.4)(unplugin@3.3.0(esbuild@0.25.12)(rolldown@1.2.4)(rollup@4.62.4)(vite@8.2.1(@types/node@26.6.2)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.105.1)(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0)))
       defu: 6.1.7
       destr: 2.0.5
+      h3: 1.15.11
       local-pkg: 1.2.1
       pathe: 1.1.2
       perfect-debounce: 1.0.0

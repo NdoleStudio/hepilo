@@ -76,6 +76,7 @@
     "emptyDescription": "Füge alles hinzu, was du brauchst, damit nichts vergessen wird.",
     "cart": "Warenkorb",
     "clearCart": "Warenkorb leeren",
+    "clearCartConfirmation": "Möchtest du den Warenkorb wirklich leeren? Alle Artikel im Warenkorb werden aus dieser Liste entfernt.",
     "listTotal": "Listensumme",
     "cartTotal": "Warenkorbsumme",
     "totalPriceHint": "Gesamtpreis: {price}",

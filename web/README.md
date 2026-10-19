@@ -20,6 +20,9 @@ yarn install
 bun install
 ```
 
+The `pnpm-workspace.yaml` package extension supplies Vuetify's missing H3 v1 dependency.
+Keep it while using `vuetify-nuxt-module` 0.19.5 so SSR client hints remain compatible with Nuxt's request events.
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:

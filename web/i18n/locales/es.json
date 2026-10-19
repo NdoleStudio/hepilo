@@ -76,6 +76,7 @@
     "emptyDescription": "Empieza a añadir lo que necesitas para no dejarte nada.",
     "cart": "Carrito",
     "clearCart": "Vaciar carrito",
+    "clearCartConfirmation": "¿Seguro que quieres vaciar el carrito? Todos los artículos del carrito se eliminarán de esta lista.",
     "listTotal": "Total de la lista",
     "cartTotal": "Total del carrito",
     "totalPriceHint": "Precio total: {price}",

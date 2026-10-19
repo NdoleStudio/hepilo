@@ -76,6 +76,7 @@
     "emptyDescription": "Commencez à ajouter les choses dont vous avez besoin pour ne rien oublier.",
     "cart": "Panier",
     "clearCart": "Vider le panier",
+    "clearCartConfirmation": "Voulez-vous vraiment vider le panier ? Tous les articles du panier seront supprimés de cette liste.",
     "listTotal": "Total de la liste",
     "cartTotal": "Total du panier",
     "totalPriceHint": "Prix total : {price}",

@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  mdiCart,
-  mdiClose,
-  mdiDelete,
-  mdiPlus,
-  mdiNoteTextOutline,
-  mdiNotificationClearAll,
-} from '@mdi/js'
+import { mdiCart, mdiClose, mdiPlus, mdiNoteTextOutline, mdiNotificationClearAll } from '@mdi/js'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 import { CATEGORY_ID_UNCATEGORIZED } from '~/stores/category'
@@ -41,6 +34,7 @@ const selectedItem = ref<null | number>(-1)
 
 // Edit dialog
 const dialog = ref(false)
+const clearCartDialog = ref(false)
 const formValid = ref(false)
 const formItemId = ref('')
 const formName = ref('')
@@ -195,6 +189,7 @@ function onSelect(item: SelectItem) {
 
 function onClearCart() {
   listStore.emptyCartItems(listStore.selectedList.id)
+  clearCartDialog.value = false
 }
 
 function onSave() {
@@ -244,13 +239,6 @@ function loadIntroductions() {
         popover: {
           title: t('intro.moveToCartTitle'),
           description: t('intro.moveToCartDescription'),
-        },
-      },
-      {
-        element: '#list-item-delete-0-0',
-        popover: {
-          title: t('intro.deleteItemTitle'),
-          description: t('intro.deleteItemDescription'),
         },
       },
       {
@@ -443,22 +431,6 @@ onUnmounted(() => {
                       }}
                     </v-list-item-subtitle>
                   </div>
-                  <template #append>
-                    <div :id="'list-item-delete-' + index + '-' + listIndex">
-                      <v-tooltip location="bottom">
-                        <template #activator="{ props: tooltipProps }">
-                          <v-btn
-                            v-bind="tooltipProps"
-                            :icon="mdiDelete"
-                            variant="text"
-                            color="error"
-                            @click.stop="listStore.deleteListItem(item.listItem.itemId)"
-                          />
-                        </template>
-                        <span>{{ $t('common.delete') }}</span>
-                      </v-tooltip>
-                    </div>
-                  </template>
                 </v-list-item>
               </template>
             </v-list>
@@ -483,8 +455,7 @@ onUnmounted(() => {
                   variant="text"
                   density="compact"
                   :prepend-icon="mdiNotificationClearAll"
-                  @click.stop.prevent
-                  @click="onClearCart"
+                  @click.stop.prevent="clearCartDialog = true"
                 >
                   {{ $t('list.clearCart') }}
                 </v-btn>
@@ -534,14 +505,6 @@ onUnmounted(() => {
                         )
                       }}
                     </v-list-item-subtitle>
-                    <template #append>
-                      <v-btn
-                        :icon="mdiDelete"
-                        variant="text"
-                        color="error"
-                        @click.stop="listStore.deleteListItem(item.listItem.itemId)"
-                      />
-                    </template>
                   </v-list-item>
                 </template>
               </v-list>
@@ -583,6 +546,37 @@ onUnmounted(() => {
         </v-card>
       </v-col>
     </v-row>
+
+    <v-dialog
+      v-model="clearCartDialog"
+      class="dialog-responsive"
+      opacity="0.8"
+      transition="scale-transition"
+      aria-labelledby="clear-cart-title"
+      aria-describedby="clear-cart-description"
+      :style="{
+        paddingLeft: uiStore.navDrawerOpen ? '256px' : '0',
+        transition: 'padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      }"
+    >
+      <v-card>
+        <v-card-title id="clear-cart-title" class="text-wrap">
+          {{ $t('list.clearCart') }}
+        </v-card-title>
+        <v-card-text id="clear-cart-description">
+          {{ $t('list.clearCartConfirmation') }}
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" variant="flat" @click="clearCartDialog = false">
+            {{ $t('common.cancel') }}
+          </v-btn>
+          <v-spacer />
+          <v-btn color="error" variant="text" :disabled="uiStore.saving" @click="onClearCart">
+            {{ $t('list.clearCart') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- Edit item dialog -->
     <v-dialog
