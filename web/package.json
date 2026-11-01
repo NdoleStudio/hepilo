@@ -27,7 +27,7 @@
     "import-in-the-middle": "^3.5.1",
     "nuxt": "~4.6.3",
     "pinia": "^4.0.3",
-    "sass": "^1.105.0",
+    "sass": "^1.107.0",
     "short-uuid": "^6.0.3",
     "simple-icons": "^16.27.1",
     "typewriter-effect": "^2.22.0",
