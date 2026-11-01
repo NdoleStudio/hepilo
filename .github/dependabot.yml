@@ -3,6 +3,8 @@ updates:
   # Fetch and update latest `npm` packages
   - package-ecosystem: npm
     directory: '/web'
+    cooldown:
+      default-days: 1
     schedule:
       interval: monthly
       time: '00:00'
