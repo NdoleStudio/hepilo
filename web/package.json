@@ -18,21 +18,21 @@
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@nuxt/content": "^3.15.2",
-    "@nuxt/fonts": "^0.14.0",
+    "@nuxt/fonts": "^1.2.0",
     "@nuxtjs/i18n": "^10.5.0",
     "@pinia/nuxt": "^1.0.1",
     "better-sqlite3": "^13.0.3",
     "driver.js": "^1.8.0",
     "firebase": "^12.19.0",
-    "import-in-the-middle": "^3.5.1",
-    "nuxt": "~4.6.2",
-    "pinia": "^4.0.3",
-    "sass": "^1.105.0",
+    "import-in-the-middle": "^3.5.3",
+    "nuxt": "~4.6.3",
+    "pinia": "^4.1.0",
+    "sass": "^1.107.0",
     "short-uuid": "^6.0.3",
     "simple-icons": "^16.27.1",
-    "typewriter-effect": "^2.22.0",
+    "typewriter-effect": "^3.3.0",
     "vue": "^3.5.44",
-    "vue-router": "^5.2.0",
+    "vue-router": "^5.4.0",
     "vuetify": "^4.2.2",
     "vuetify-nuxt-module": "^0.19.5"
   },
@@ -44,10 +44,10 @@
     "@vue/test-utils": "^2.5.1",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
-    "happy-dom": "^20.14.5",
+    "happy-dom": "^21.0.4",
     "prettier": "^3.9.5",
     "typescript": "^6.0.3",
     "vitest": "^5.0.2",
-    "vue-tsc": "^3.3.11"
+    "vue-tsc": "^3.3.13"
   }
 }
