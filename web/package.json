@@ -22,7 +22,7 @@
     "@nuxtjs/i18n": "^10.5.0",
     "@pinia/nuxt": "^1.0.3",
     "better-sqlite3": "^13.0.3",
-    "driver.js": "^1.8.0",
+    "driver.js": "^1.10.2",
     "firebase": "^12.19.0",
     "import-in-the-middle": "^3.5.3",
     "nuxt": "~4.6.3",
