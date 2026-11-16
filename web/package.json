@@ -25,7 +25,7 @@
     "driver.js": "^1.10.2",
     "firebase": "^13.1.0",
     "import-in-the-middle": "^3.5.3",
-    "nuxt": "~4.6.3",
+    "nuxt": "~4.6.4",
     "pinia": "^4.1.0",
     "sass": "^1.107.0",
     "short-uuid": "^6.0.3",
