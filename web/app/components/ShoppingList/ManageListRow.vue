@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mdiCursorMove, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
+import { mdiPanVertical, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
 import { makeSortableItem } from '@vue-dnd-kit/core'
 import type { List } from '~/types/state'
 
@@ -36,7 +36,7 @@ makeSortableItem(row, {
           @click.stop
           @keydown.stop
         >
-          <v-icon :icon="mdiCursorMove" aria-hidden="true" />
+          <v-icon :icon="mdiPanVertical" aria-hidden="true" />
         </button>
       </template>
       <v-list-item-title>{{ list.name }}</v-list-item-title>
