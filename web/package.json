@@ -21,6 +21,7 @@
     "@nuxt/fonts": "^1.2.0",
     "@nuxtjs/i18n": "^10.5.0",
     "@pinia/nuxt": "^1.0.3",
+    "@vue-dnd-kit/core": "^3.1.0",
     "better-sqlite3": "^13.0.3",
     "driver.js": "^1.10.2",
     "firebase": "^13.1.0",
