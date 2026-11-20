@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
+import { mdiCursorMove, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
 import { makeSortableItem } from '@vue-dnd-kit/core'
 import type { List } from '~/types/state'
 
@@ -15,7 +15,6 @@ const emit = defineEmits<{
   delete: []
 }>()
 
-const listStore = useListStore()
 const row = useTemplateRef<HTMLElement>('row')
 
 makeSortableItem(row, {
@@ -31,13 +30,13 @@ makeSortableItem(row, {
       <template #prepend>
         <button
           type="button"
-          class="list-drag-handle mr-2"
+          class="list-drag-handle text-primary mr-2"
           :disabled="!canReorder"
           :aria-label="$t('list.reorderList', { name: list.name })"
           @click.stop
           @keydown.stop
         >
-          <v-icon :icon="listStore.listIcon(list.icon)" aria-hidden="true" />
+          <v-icon :icon="mdiCursorMove" aria-hidden="true" />
         </button>
       </template>
       <v-list-item-title>{{ list.name }}</v-list-item-title>
@@ -90,8 +89,15 @@ makeSortableItem(row, {
   place-items: center;
   width: 36px;
   height: 44px;
+  border: 0;
+  border-radius: 4px;
   background: transparent;
   cursor: grab;
+}
+
+.list-drag-handle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 .list-drag-handle:active {
@@ -100,5 +106,6 @@ makeSortableItem(row, {
 
 .list-drag-handle:disabled {
   cursor: default;
+  opacity: 0.38;
 }
 </style>
