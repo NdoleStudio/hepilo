@@ -82,6 +82,8 @@
     "totalPriceHint": "Gesamtpreis: {price}",
     "itemCount": "{count} Artikel",
     "itemCountSingular": "{count} Artikel",
+    "reorderList": "{name} verschieben",
+    "reorderFailed": "Die Reihenfolge der Listen konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "deleteConfirmation": "Möchtest du wirklich löschen",
     "deleteListItem": "Löschen",
     "minRead": "Min. Lesezeit"

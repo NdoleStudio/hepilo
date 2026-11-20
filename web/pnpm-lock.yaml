@@ -28,6 +28,9 @@ importers:
       '@pinia/nuxt':
         specifier: ^1.0.3
         version: 1.0.3(@nuxt/schema@4.6.4)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(pinia@4.1.0(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.44(typescript@6.0.3)))(rolldown@1.2.15)(unplugin@3.7.0(esbuild@0.25.12)(rolldown@1.2.15)(rollup@4.68.4)(vite@8.3.5(@types/node@26.6.2)(esbuild@0.25.12)(jiti@2.7.0)(sass@1.107.1)(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0)))
+      '@vue-dnd-kit/core':
+        specifier: ^3.1.0
+        version: 3.1.0(vue@3.5.44(typescript@6.0.3))
       better-sqlite3:
         specifier: ^13.0.3
         version: 13.0.3
@@ -3870,6 +3873,11 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  '@vue-dnd-kit/core@3.1.0':
+    resolution: {integrity: sha512-7cPCNJmo8WYjSQHsgKu/iQRj8MUC0EIWRCMgFmIOS1YrrWv7nOt8BdNI6F1oUJoH/u/o9jbxWMbXVdnYSgf1Zw==}
+    peerDependencies:
+      vue: ^3.5.0
 
   '@vue-macros/common@3.1.4':
     resolution: {integrity: sha512-/5Fv+6DgIcM9ajY05ZmKBv+LMX1M9A0X+IUwDRVdt67ciw8OV9bvG2r34p3RiEadlsQybjhKPRKNXDC8Bp23cw==}
@@ -12871,6 +12879,11 @@ snapshots:
       vscode-uri: 3.1.0
     optionalDependencies:
       typescript: 6.0.3
+
+  '@vue-dnd-kit/core@3.1.0(vue@3.5.44(typescript@6.0.3))':
+    dependencies:
+      '@vueuse/core': 15.0.0(vue@3.5.44(typescript@6.0.3))
+      vue: 3.5.44(typescript@6.0.3)
 
   '@vue-macros/common@3.1.4(vue@3.5.44(typescript@6.0.3))':
     dependencies:

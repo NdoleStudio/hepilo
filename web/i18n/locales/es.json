@@ -82,6 +82,8 @@
     "totalPriceHint": "Precio total: {price}",
     "itemCount": "{count} artículos",
     "itemCountSingular": "{count} artículo",
+    "reorderList": "Mover {name}",
+    "reorderFailed": "No se pudo guardar el orden de las listas. Inténtalo de nuevo.",
     "deleteConfirmation": "¿Seguro que quieres eliminar",
     "deleteListItem": "Eliminar",
     "minRead": "min de lectura"

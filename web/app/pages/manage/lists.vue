@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { mdiPlus, mdiClose, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
+import { mdiPlus, mdiClose } from '@mdi/js'
+import { DnDProvider } from '@vue-dnd-kit/core'
 import { generate as generateShortUUID } from 'short-uuid'
 import { LIST_ICON_DEFAULT, useListStore } from '~/stores/list'
 import type { List, UpsertListRequest } from '~/types/state'
@@ -30,8 +31,6 @@ const formNameRules = [
   (value: string | null): boolean | string =>
     (!!value && value.length <= 15) || t('errors.nameTooLong15'),
 ]
-
-const deleteDisabled = computed(() => listStore.lists.length < 2)
 
 const formTitle = computed(() =>
   editedList.value.id === defaultList.id ? t('list.createList') : t('list.editList'),
@@ -170,55 +169,9 @@ function clearForm() {
 
         <v-card flat>
           <v-card-text class="px-0 py-0">
-            <v-list lines="two" class="pa-0">
-              <template v-for="(list, index) in listStore.lists" :key="list.id">
-                <v-list-item class="mb-0" @click="onEditList(list)">
-                  <template #prepend>
-                    <v-icon :icon="listStore.listIcon(list.icon)" />
-                  </template>
-                  <v-list-item-title>{{ list.name }}</v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{
-                      list.items.length === 1
-                        ? $t('list.itemCountSingular', { count: list.items.length })
-                        : $t('list.itemCount', { count: list.items.length })
-                    }}
-                  </v-list-item-subtitle>
-                  <template #append>
-                    <div class="d-flex">
-                      <v-tooltip location="bottom">
-                        <template #activator="{ props: tooltipProps }">
-                          <v-btn
-                            :icon="mdiSquareEditOutline"
-                            color="info"
-                            class="mr-2"
-                            v-bind="tooltipProps"
-                            variant="text"
-                            @click="onEditList(list)"
-                          />
-                        </template>
-                        <span>{{ $t('common.edit', { name: list.name }) }}</span>
-                      </v-tooltip>
-                      <v-tooltip location="bottom">
-                        <template #activator="{ props: tooltipProps }">
-                          <v-btn
-                            :icon="mdiTrashCan"
-                            color="error"
-                            variant="text"
-                            v-bind="tooltipProps"
-                            class="ml-2"
-                            :disabled="deleteDisabled"
-                            @click.stop="onDeleteList(list)"
-                          />
-                        </template>
-                        <span>{{ $t('common.deleteItem', { name: list.name }) }}</span>
-                      </v-tooltip>
-                    </div>
-                  </template>
-                </v-list-item>
-                <v-divider v-if="index < listStore.lists.length - 1" />
-              </template>
-            </v-list>
+            <DnDProvider>
+              <ShoppingListManageListRows @edit="onEditList" @delete="onDeleteList" />
+            </DnDProvider>
           </v-card-text>
         </v-card>
 

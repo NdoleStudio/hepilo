@@ -464,6 +464,41 @@ export const useListStore = defineStore('list', () => {
     uiStore.setSaving(false)
   }
 
+  async function reorderLists(ids: string[]) {
+    const previous = lists.value
+    const byId = new Map(previous.map((list) => [list.id, list]))
+    if (
+      ids.length !== previous.length ||
+      new Set(ids).size !== ids.length ||
+      ids.some((id) => !byId.has(id))
+    ) {
+      throw new Error('Cannot reorder lists: list IDs have changed')
+    }
+
+    if (ids.every((id, index) => id === previous[index]?.id)) return
+
+    lists.value = ids.map((id) => byId.get(id)!)
+    const reordered = lists.value
+    persistToLocalStorage()
+
+    const authStore = useAuthStore()
+    if (authStore.isLoggedIn && authStore.user) {
+      try {
+        await setDoc(
+          doc(getFirestore(), COLLECTION_STATE, authStore.user.id),
+          { lists: reordered },
+          { merge: true },
+        )
+      } catch (error) {
+        if (lists.value === reordered) {
+          lists.value = previous
+          persistToLocalStorage()
+        }
+        throw error
+      }
+    }
+  }
+
   async function deleteList(listId: string) {
     const uiStore = useUIStore()
     const authStore = useAuthStore()
@@ -983,6 +1018,7 @@ export const useListStore = defineStore('list', () => {
     loadStateFromStore,
     setDefaultItems,
     upsertList,
+    reorderLists,
     deleteList,
     setSelectedListId,
     setTitleByListId,
