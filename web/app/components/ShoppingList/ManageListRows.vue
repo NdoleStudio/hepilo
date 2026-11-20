@@ -39,7 +39,6 @@ const { items } = makeSortableList(container, {
         v-for="(list, index) in items"
         :key="list.id"
         :list="list"
-        :position="index + 1"
         :last="index === items.length - 1"
         :can-reorder="canReorder"
         :delete-disabled="items.length < 2"

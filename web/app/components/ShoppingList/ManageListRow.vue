@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { mdiDragVertical, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
+import { mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
 import { makeSortableItem } from '@vue-dnd-kit/core'
 import type { List } from '~/types/state'
 
 const props = defineProps<{
   list: List
-  position: number
   last: boolean
   canReorder: boolean
   deleteDisabled: boolean
@@ -38,11 +37,10 @@ makeSortableItem(row, {
           @click.stop
           @keydown.stop
         >
-          <v-icon :icon="mdiDragVertical" aria-hidden="true" />
+          <v-icon :icon="listStore.listIcon(list.icon)" aria-hidden="true" />
         </button>
-        <v-icon :icon="listStore.listIcon(list.icon)" />
       </template>
-      <v-list-item-title>{{ position }}. {{ list.name }}</v-list-item-title>
+      <v-list-item-title>{{ list.name }}</v-list-item-title>
       <v-list-item-subtitle>
         {{
           list.items.length === 1
@@ -92,6 +90,7 @@ makeSortableItem(row, {
   place-items: center;
   width: 36px;
   height: 44px;
+  background: transparent;
   cursor: grab;
 }
 
@@ -101,6 +100,5 @@ makeSortableItem(row, {
 
 .list-drag-handle:disabled {
   cursor: default;
-  opacity: 0.38;
 }
 </style>
