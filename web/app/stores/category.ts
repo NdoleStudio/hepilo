@@ -33,10 +33,14 @@ export const DEFAULT_CATEGORY: Category = {
 }
 
 export const useCategoryStore = defineStore('category', () => {
+  const { $i18n } = useNuxtApp()
+  const { displayName, storedName } = useCatalogNames('categories')
   const categories = ref<Category[]>([{ ...DEFAULT_CATEGORY }])
 
   const editableCategories = computed(() =>
-    categories.value.filter((c) => c.id !== CATEGORY_ID_UNCATEGORIZED),
+    categories.value
+      .filter((c) => c.id !== CATEGORY_ID_UNCATEGORIZED)
+      .map((c) => ({ ...c, name: displayName(c) })),
   )
 
   function findCategoryById(categoryId: string): Category | undefined {
@@ -55,7 +59,7 @@ export const useCategoryStore = defineStore('category', () => {
   }
 
   const categorySelectItems = computed((): SelectItem[] =>
-    categories.value.map((c) => ({ value: c.id, title: c.name })),
+    categories.value.map((c) => ({ value: c.id, title: displayName(c) })),
   )
 
   const categoryColorSelectItems = computed((): SelectItem[] =>
@@ -77,19 +81,22 @@ export const useCategoryStore = defineStore('category', () => {
 
     uiStore.setSaving(true)
 
-    const nameId = request.name.trim().toLowerCase()
     let category = findCategoryById(request.id)
+    const name = storedName(category, request.name)
+    const nameId = name.toLowerCase()
     let isNew = false
     if (!category) {
       isNew = true
       category = {
-        name: request.name,
+        name,
+        customName: true,
         id: nameId,
         color: request.color,
       }
     }
 
-    category.name = request.name
+    if (category.name !== name) category.customName = true
+    category.name = name
     category.color = request.color
 
     // Upsert into categories array
@@ -128,7 +135,7 @@ export const useCategoryStore = defineStore('category', () => {
 
     uiStore.addNotification({
       type: 'success',
-      message: `Category has been ${categoryIsUpdated ? 'updated' : 'added'} successfully`,
+      message: $i18n.t(isNew ? 'notification.categoryAdded' : 'notification.categoryUpdated'),
     })
     uiStore.setSaving(false)
   }
@@ -159,7 +166,7 @@ export const useCategoryStore = defineStore('category', () => {
 
     uiStore.addNotification({
       type: 'info',
-      message: 'Category has been deleted successfully',
+      message: $i18n.t('notification.categoryDeleted'),
     })
     uiStore.setSaving(false)
   }
@@ -193,6 +200,7 @@ export const useCategoryStore = defineStore('category', () => {
 
   return {
     categories,
+    displayName,
     editableCategories,
     findCategoryById,
     findCategoryByName,

@@ -168,7 +168,7 @@ function onEnter(e?: KeyboardEvent) {
   let itemToAdd: string
   let valueAfterAdd = ''
   if (matches.length > 0) {
-    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + matches[0]!.title
+    itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + matches[0]!.value
   } else {
     itemToAdd = raw
     if (raw.length > 15) {
@@ -182,7 +182,7 @@ function onEnter(e?: KeyboardEvent) {
 
 // A suggestion was clicked in the dropdown.
 function onSelect(item: SelectItem) {
-  const itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + item.title
+  const itemToAdd = (addFormQuantity.value > 0 ? addFormQuantity.value + ' ' : '') + item.value
   listStore.addItem(itemToAdd)
   resetInput()
 }

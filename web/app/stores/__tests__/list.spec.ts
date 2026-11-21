@@ -1,6 +1,9 @@
 import { createPinia, defineStore, setActivePinia } from 'pinia'
 import { computed, ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { useCatalogNames } from '../../composables/useCatalogNames'
+import fr from '../../../i18n/locales/catalog-fr.json'
+import et from '../../../i18n/locales/catalog-et.json'
 
 const { setDocMock } = vi.hoisted(() => ({
   setDocMock: vi.fn(),
@@ -36,19 +39,85 @@ const uiStore = {
 vi.stubGlobal('defineStore', defineStore)
 vi.stubGlobal('ref', ref)
 vi.stubGlobal('computed', computed)
-vi.stubGlobal('useAuthStore', () => authStore)
-vi.stubGlobal('useItemStore', () => itemStore)
-vi.stubGlobal('useCategoryStore', () => categoryStore)
-vi.stubGlobal('useSettingsStore', () => settingsStore)
-vi.stubGlobal('useUIStore', () => uiStore)
 
 const { useListStore } = await import('../list')
+const { useItemStore } = await import('../item')
+const { useCategoryStore } = await import('../category')
 
-describe('List store Firestore persistence', () => {
+describe('List store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     setDocMock.mockReset()
     localStorage.clear()
+    vi.stubGlobal('useNuxtApp', () => ({ $i18n: {} }))
+    vi.stubGlobal('useAuthStore', () => authStore)
+    vi.stubGlobal('useItemStore', () => itemStore)
+    vi.stubGlobal('useCategoryStore', () => categoryStore)
+    vi.stubGlobal('useSettingsStore', () => settingsStore)
+    vi.stubGlobal('useUIStore', () => uiStore)
+  })
+
+  it('switches seeded labels without renaming stored entries or custom names', async () => {
+    const locale = ref<'fr' | 'et'>('fr')
+    function lookup(key: string) {
+      const [, group, id] = key.split('.')
+      const messages: Record<string, Record<string, string>> = { fr, et }[locale.value].catalog
+      return messages[group!]?.[id!]
+    }
+    vi.stubGlobal('useNuxtApp', () => ({ $i18n: { locale, te: lookup, t: lookup } }))
+    vi.stubGlobal('useItemStore', useItemStore)
+    vi.stubGlobal('useCategoryStore', useCategoryStore)
+    vi.stubGlobal('useListStore', useListStore)
+    vi.stubGlobal('useCatalogNames', useCatalogNames)
+    vi.stubGlobal('useAuthStore', () => ({ isLoggedIn: false, user: null }))
+    vi.stubGlobal('useUIStore', () => ({ setSaving: vi.fn(), addNotification: vi.fn() }))
+    const lists = useListStore()
+    const items = useItemStore()
+    const categories = useCategoryStore()
+    lists.selectedListId = 'weekly'
+    lists.lists = [{ id: 'weekly', name: 'My list', icon: 'list', items: [], cartPanelOpen: false }]
+    lists.setDefaultItems()
+
+    expect(items.autocompleteItems).toContainEqual({ title: 'Lait', value: 'Milk', unit: null })
+    await lists.addItem('2 Lait')
+    const dairy = lists.listMaterializedItems[0]!
+    expect(dairy.category.name).toBe('Produits laitiers')
+    expect(dairy.items[0]!.item.name).toBe('Lait')
+    await lists.updateItem({
+      itemId: 'milk',
+      name: 'Lait',
+      categoryId: 'dairy',
+      quantity: 3,
+      notes: 'My usual brand',
+      unit: 'l',
+      pricePerUnit: 2,
+      addedToCart: true,
+    })
+    await categories.upsertCategory({ id: 'dairy', name: 'Produits laitiers', color: 'blue' })
+    expect(items.findItemById('milk')?.name).toBe('Milk')
+    expect(categories.findCategoryById('dairy')?.name).toBe('Dairy')
+
+    locale.value = 'et'
+    const cart = lists.cartMaterializedItems[0]!
+    expect(cart.category.name).toBe('Piimatooted')
+    expect(cart.items[0]!.item.name).toBe('Piim')
+    expect(cart.items[0]!.listItem).toMatchObject({
+      itemId: 'milk',
+      quantity: 3,
+      notes: 'My usual brand',
+    })
+    await items.upsertItem({
+      itemId: 'milk',
+      name: 'Farm milk',
+      unit: 'l',
+      pricePerUnit: 2,
+      categoryId: 'dairy',
+    })
+    locale.value = 'fr'
+    expect(lists.cartMaterializedItems[0]!.items[0]!.item.name).toBe('Farm milk')
+    await items.deleteItem('farm milk')
+    await lists.addItem('Milk')
+    expect(lists.listMaterializedItems[0]!.items[0]!.item.name).toBe('Milk')
   })
 
   it('does not persist the nav drawer preference', async () => {
