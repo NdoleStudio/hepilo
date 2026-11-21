@@ -82,6 +82,8 @@
     "totalPriceHint": "Total Price: {price}",
     "itemCount": "{count} items",
     "itemCountSingular": "{count} item",
+    "reorderList": "Reorder {name}",
+    "reorderFailed": "Could not save the list order. Please try again.",
     "deleteConfirmation": "Are you sure you want to delete",
     "deleteListItem": "Delete",
     "minRead": "min read"

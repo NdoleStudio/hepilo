@@ -40,9 +40,13 @@ vi.stubGlobal('defineStore', defineStore)
 vi.stubGlobal('ref', ref)
 vi.stubGlobal('computed', computed)
 
-const { useListStore } = await import('../list')
+const { LIST_ICON_DEFAULT, useListStore } = await import('../list')
 const { useItemStore } = await import('../item')
 const { useCategoryStore } = await import('../category')
+
+function shoppingList(id: string) {
+  return { id, name: id, icon: LIST_ICON_DEFAULT, items: [], cartPanelOpen: true }
+}
 
 describe('List store', () => {
   beforeEach(() => {
@@ -127,5 +131,41 @@ describe('List store', () => {
 
     const payload = setDocMock.mock.calls[0]![1]
     expect(payload).not.toHaveProperty('navDrawerOpen')
+  })
+
+  it('saves the dropped order without changing the selected list', async () => {
+    const store = useListStore()
+    const [first, second, third] = ['first', 'second', 'third'].map(shoppingList)
+    store.lists = [first!, second!, third!]
+    store.selectedListId = 'second'
+
+    await store.reorderLists(['third', 'first', 'second'])
+
+    const lists = [third, first, second]
+    expect(store.lists).toEqual(lists)
+    expect(store.selectedListId).toBe('second')
+    expect(setDocMock).toHaveBeenCalledExactlyOnceWith('state-doc', { lists }, { merge: true })
+  })
+
+  it('ignores a no-op drop and rejects an order with missing or duplicate lists', async () => {
+    const store = useListStore()
+    store.lists = ['first', 'second'].map(shoppingList)
+
+    await store.reorderLists(['first', 'second'])
+    await expect(store.reorderLists(['first'])).rejects.toThrow('list IDs have changed')
+    await expect(store.reorderLists(['first', 'first'])).rejects.toThrow('list IDs have changed')
+
+    expect(store.lists.map(({ id }) => id)).toEqual(['first', 'second'])
+    expect(setDocMock).not.toHaveBeenCalled()
+  })
+
+  it('restores the previous order when the save fails', async () => {
+    const store = useListStore()
+    store.lists = ['first', 'second'].map(shoppingList)
+    setDocMock.mockRejectedValueOnce(new Error('permission denied'))
+
+    await expect(store.reorderLists(['second', 'first'])).rejects.toThrow('permission denied')
+
+    expect(store.lists.map(({ id }) => id)).toEqual(['first', 'second'])
   })
 })
