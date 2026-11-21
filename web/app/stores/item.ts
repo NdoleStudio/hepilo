@@ -32,6 +32,8 @@ const PLURAL_ITEM_UNITS = new Map<string, string>([
 ])
 
 export const useItemStore = defineStore('item', () => {
+  const { $i18n } = useNuxtApp()
+  const { displayName, storedName } = useCatalogNames('items')
   const items = ref<Item[]>([])
 
   function nameToId(name: string): string {
@@ -63,7 +65,7 @@ export const useItemStore = defineStore('item', () => {
       .filter((item: Item) => !listStore.listHasItemId(item.id))
       .map((item: Item) => ({
         value: item.name,
-        title: item.name,
+        title: displayName(item),
         unit: item.unit,
       }))
   })
@@ -94,10 +96,9 @@ export const useItemStore = defineStore('item', () => {
   function findCategoryNameByItemId(itemId: string): string {
     const categoryStore = useCategoryStore()
     const item = findItemById(itemId)
-    if (item !== undefined) {
-      return categoryStore.findCategoryById(item.categoryId)?.name ?? DEFAULT_CATEGORY.name
-    }
-    return DEFAULT_CATEGORY.name
+    return categoryStore.displayName(
+      (item && categoryStore.findCategoryById(item.categoryId)) ?? DEFAULT_CATEGORY,
+    )
   }
 
   function itemUnitName(unit: string, quantity: number | string): string {
@@ -131,10 +132,12 @@ export const useItemStore = defineStore('item', () => {
     uiStore.setSaving(true)
 
     let item = findItemById(request.itemId)
+    const name = storedName(item, request.name)
     if (!item) {
       item = {
-        id: nameToId(request.name),
-        name: request.name.trim(),
+        id: nameToId(name),
+        name,
+        customName: true,
         unit: null,
         pricePerUnit: 0,
         categoryId: CATEGORY_ID_UNCATEGORIZED,
@@ -142,7 +145,8 @@ export const useItemStore = defineStore('item', () => {
     }
 
     item.unit = isValidUnit(request.unit) ? request.unit : null
-    item.name = request.name.trim()
+    if (item.name !== name) item.customName = true
+    item.name = name
     item.pricePerUnit = request.pricePerUnit
     item.categoryId = request.categoryId
 
@@ -156,7 +160,7 @@ export const useItemStore = defineStore('item', () => {
     items.value = [...items.value]
 
     // Update ID if name changed
-    const newId = nameToId(request.name)
+    const newId = nameToId(name)
     if (newId !== item.id) {
       const oldId = request.itemId
       // Update item ID in items array
@@ -221,7 +225,7 @@ export const useItemStore = defineStore('item', () => {
 
     uiStore.addNotification({
       type: 'info',
-      message: `${item?.name ?? 'Item'} has been deleted successfully`,
+      message: $i18n.t('notification.itemDeleted', { name: item ? displayName(item) : itemId }),
     })
     uiStore.setSaving(false)
   }
@@ -281,6 +285,8 @@ export const useItemStore = defineStore('item', () => {
 
   return {
     items,
+    displayName,
+    storedName,
     findItemById,
     itemByName,
     hasItem,

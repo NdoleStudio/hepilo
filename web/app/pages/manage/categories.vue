@@ -24,12 +24,17 @@ const synchronizing = ref(false)
 
 const defaultCategory: UpsertCategoryRequest = { name: '', id: '', color: CATEGORY_COLOR_TEAL }
 const editedCategory = ref<UpsertCategoryRequest>({ ...defaultCategory })
+const originalDisplayName = computed(() => {
+  const category = categoryStore.findCategoryById(editedCategory.value.id)
+  return category && categoryStore.displayName(category)
+})
 
 const formNameRules = [
   (value: string | null): boolean | string =>
     (!!value && value.trim() !== '') || t('errors.categoryNameRequired'),
   (value: string | null): boolean | string =>
-    (!!value && value.length <= 15) || t('errors.categoryNameTooLong'),
+    (!!value && (value.length <= 15 || value === originalDisplayName.value)) ||
+    t('errors.categoryNameTooLong'),
 ]
 
 const formTitle = computed(() =>
