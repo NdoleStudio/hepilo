@@ -11,7 +11,13 @@ const config = {
     i18n: { defaultLocale: 'en', detectBrowserLanguage: { cookieKey: 'i18n_redirected' } },
   },
 }
-const localePaths = { en: '/lists', fr: '/fr/lists', es: '/es/lists', de: '/de/lists' }
+const localePaths = {
+  en: '/lists',
+  fr: '/fr/lists',
+  es: '/es/lists',
+  de: '/de/lists',
+  et: '/et/lists',
+}
 const script = new Function(
   'AUTHED_STORAGE_KEY',
   'localePaths',
@@ -34,6 +40,7 @@ describe('prerendered homepage redirect', () => {
     ['i18n_redirected=fr', '/fr/lists'],
     ['other=value; i18n_redirected=es', '/es/lists'],
     ['i18n_redirected=de', '/de/lists'],
+    ['i18n_redirected=et', '/et/lists'],
     ['i18n_redirected=en', '/lists'],
     ['', '/lists'],
     ['i18n_redirected=unknown', '/lists'],
@@ -43,6 +50,10 @@ describe('prerendered homepage redirect', () => {
 
   it('keeps an explicitly localized homepage ahead of the saved language', () => {
     expect(runRedirect('i18n_redirected=de', '/fr')).toHaveBeenCalledWith('/fr/lists')
+  })
+
+  it('keeps an explicitly Estonian homepage ahead of the saved language', () => {
+    expect(runRedirect('i18n_redirected=en', '/et')).toHaveBeenCalledWith('/et/lists')
   })
 
   it('does not redirect signed-out visitors', () => {
