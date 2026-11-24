@@ -19,10 +19,11 @@ const currentLocaleName = computed(() => {
         {{ currentLocaleName }}
       </v-btn>
     </template>
-    <v-list>
+    <v-list class="py-0">
       <v-list-item
         v-for="loc in availableLocales"
         :key="loc.code"
+        class="mr-0 ml-0 pl-8"
         :to="switchLocalePath(loc.code)"
         :active="loc.code === locale"
       >
