@@ -54,6 +54,7 @@ export interface SelectItem {
 export interface Item {
   id: string
   name: string
+  customName?: boolean
   unit: string | null
   pricePerUnit: number
   categoryId: string
@@ -62,6 +63,7 @@ export interface Item {
 export type Category = {
   id: string
   name: string
+  customName?: boolean
   color: string
 }
 

@@ -2,6 +2,7 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore'
 import type { AppData, SelectItem } from '~/types/state'
 
 export const useSettingsStore = defineStore('settings', () => {
+  const { $i18n } = useNuxtApp()
   const currency = ref(DEFAULT_CURRENCY)
   const showIntro = ref(true)
 
@@ -69,7 +70,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
     uiStore.addNotification({
       type: 'success',
-      message: 'Currency has been set successfully',
+      message: $i18n.t('notification.currencySet'),
     })
     uiStore.setSaving(false)
   }

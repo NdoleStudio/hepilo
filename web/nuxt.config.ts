@@ -138,9 +138,10 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     locales: [
       { code: 'en', name: 'English', language: 'en-US', file: 'en.json' },
-      { code: 'fr', name: 'Français', language: 'fr-FR', file: 'fr.json' },
-      { code: 'es', name: 'Español', language: 'es-ES', file: 'es.json' },
-      { code: 'de', name: 'Deutsch', language: 'de-DE', file: 'de.json' },
+      { code: 'fr', name: 'Français', language: 'fr-FR', files: ['fr.json', 'catalog-fr.json'] },
+      { code: 'es', name: 'Español', language: 'es-ES', files: ['es.json', 'catalog-es.json'] },
+      { code: 'de', name: 'Deutsch', language: 'de-DE', files: ['de.json', 'catalog-de.json'] },
+      { code: 'et', name: 'Eesti', language: 'et-EE', files: ['et.json', 'catalog-et.json'] },
     ],
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {

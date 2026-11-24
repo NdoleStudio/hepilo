@@ -11,7 +11,6 @@ import type {
   ListItem,
   MaterializedList,
   MaterializedListElement,
-  MaterializedListItem,
   SelectItem,
   UpdateItemRequest,
   UpsertListRequest,
@@ -56,6 +55,7 @@ const CATEGORY_COLORS = [
 ]
 
 export const useListStore = defineStore('list', () => {
+  const { $i18n } = useNuxtApp()
   const lists = ref<List[]>([])
   const selectedListId = ref('')
   const stateLoaded = ref(false)
@@ -132,41 +132,25 @@ export const useListStore = defineStore('list', () => {
       addedToCart ? li.addedToCart : !li.addedToCart,
     )
 
-    const categoryNames = new Set<string>()
+    const groups = new Map<string, MaterializedListElement>()
     filteredItems.forEach((li: ListItem) => {
       const item = itemStore.findItemById(li.itemId)
       if (!item) return
       const category = categoryStore.findCategoryById(item.categoryId)
       if (!category) return
-      categoryNames.add(category.name.toUpperCase())
+      let group = groups.get(category.id)
+      if (!group) {
+        group = { category: { ...category, name: categoryStore.displayName(category) }, items: [] }
+        groups.set(category.id, group)
+        result.push(group)
+      }
+      group.items.push({ listItem: li, item: { ...item, name: itemStore.displayName(item) } })
     })
 
-    const sortedCategories = Array.from(categoryNames).sort()
-    sortedCategories.forEach((catName: string) => {
-      const category = categoryStore.findCategoryByName(catName)
-      if (!category) return
-
-      result.push({
-        category,
-        items: filteredItems
-          .filter((li: ListItem) => {
-            const item = itemStore.findItemById(li.itemId)
-            if (!item) return false
-            const itemCat = categoryStore.findCategoryById(item.categoryId)
-            if (!itemCat) return false
-            return itemCat.id === category.id
-          })
-          .map((li: ListItem): MaterializedListItem => ({
-            listItem: li,
-            item: itemStore.findItemById(li.itemId)!,
-          }))
-          .sort((a: MaterializedListItem, b: MaterializedListItem) =>
-            a.item.name.localeCompare(b.item.name),
-          ),
-      })
-    })
-
-    return result
+    const collator = new Intl.Collator($i18n.locale.value)
+    for (const group of result)
+      group.items.sort((a, b) => collator.compare(a.item.name, b.item.name))
+    return result.sort((a, b) => collator.compare(a.category.name, b.category.name))
   }
 
   const listMaterializedItems = computed((): MaterializedList => materializedList(false))
@@ -459,7 +443,7 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.addNotification({
       type: 'success',
-      message: `${request.name} has been added successfully`,
+      message: $i18n.t('notification.listSaved', { name: request.name }),
     })
     uiStore.setSaving(false)
   }
@@ -508,7 +492,7 @@ export const useListStore = defineStore('list', () => {
     if (lists.value.length < 2) {
       uiStore.addNotification({
         type: 'error',
-        message: 'You cannot delete the only list',
+        message: $i18n.t('notification.cannotDeleteOnlyList'),
       })
       uiStore.setSaving(false)
       return
@@ -534,7 +518,7 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.addNotification({
       type: 'info',
-      message: `${list?.name ?? 'List'} has been deleted successfully`,
+      message: $i18n.t('notification.listDeleted', { name: list?.name ?? listId }),
     })
     uiStore.setSaving(false)
   }
@@ -579,7 +563,7 @@ export const useListStore = defineStore('list', () => {
     if (name.trim().length > 50) {
       uiStore.addNotification({
         type: 'error',
-        message: 'You name must be maximum 50 characters',
+        message: $i18n.t('errors.nameTooLong50Store'),
       })
       uiStore.setSaving(false)
       return
@@ -592,25 +576,24 @@ export const useListStore = defineStore('list', () => {
       name = name.split(' ').slice(1).join(' ')
     }
 
-    const itemId = itemStore.nameToId(name)
-
-    if (!itemStore.hasItem(name)) {
-      const item: Item = {
-        id: itemId,
+    let item =
+      itemStore.itemByName(name) ??
+      itemStore.items.find(
+        (entry) => itemStore.displayName(entry).toLowerCase() === name.trim().toLowerCase(),
+      )
+    if (!item) {
+      item = {
+        id: itemStore.nameToId(name),
         name: name.trim(),
+        customName: true,
         unit: null,
         pricePerUnit: 0,
-        categoryId: itemStore.findCategoryIdByItemId(itemId),
+        categoryId: DEFAULT_CATEGORY.id,
       }
-      const idx = itemStore.items.findIndex((i) => i.id === item.id)
-      if (idx === -1) {
-        itemStore.items.push(item)
-      } else {
-        itemStore.items[idx] = item
-      }
-      itemStore.items = [...itemStore.items]
+      itemStore.items = [...itemStore.items, item]
     }
 
+    const itemId = item.id
     if (!listHasItemId(itemId)) {
       const listItem: ListItem = {
         itemId,
@@ -646,7 +629,7 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.addNotification({
       type: 'success',
-      message: `${name} has been added successfully`,
+      message: $i18n.t('notification.itemAdded', { name: itemStore.displayName(item) }),
     })
     uiStore.setSaving(false)
   }
@@ -660,8 +643,10 @@ export const useListStore = defineStore('list', () => {
     uiStore.setSaving(true)
 
     const item = itemStore.findItemById(request.itemId)
+    const name = itemStore.storedName(item, request.name)
     if (item) {
-      item.name = request.name.trim()
+      if (item.name !== name) item.customName = true
+      item.name = name
       item.pricePerUnit = request.pricePerUnit
       item.categoryId = request.categoryId
       item.unit = itemStore.isValidUnit(request.unit) ? request.unit : null
@@ -683,7 +668,7 @@ export const useListStore = defineStore('list', () => {
     _upsertListItem(listItem)
 
     // Update ID if name changed
-    const newId = itemStore.nameToId(request.name)
+    const newId = itemStore.nameToId(name)
     if (newId !== request.itemId) {
       itemStore.items = itemStore.items.map((i: Item) => {
         if (i.id === request.itemId) i.id = newId
@@ -746,7 +731,9 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.addNotification({
       type: 'info',
-      message: `${item?.name ?? 'Item'} has been deleted successfully`,
+      message: $i18n.t('notification.listItemDeleted', {
+        name: item ? itemStore.displayName(item) : itemId,
+      }),
     })
     uiStore.setSaving(false)
   }
@@ -772,7 +759,7 @@ export const useListStore = defineStore('list', () => {
     if (item) {
       uiStore.addNotification({
         type: 'success',
-        message: `${item.name} added to cart`,
+        message: $i18n.t('notification.addedToCart', { name: itemStore.displayName(item) }),
       })
     }
     uiStore.setSaving(false)
@@ -799,7 +786,7 @@ export const useListStore = defineStore('list', () => {
     if (item) {
       uiStore.addNotification({
         type: 'success',
-        message: `${item.name} removed from cart`,
+        message: $i18n.t('notification.removedFromCart', { name: itemStore.displayName(item) }),
       })
     }
     uiStore.setSaving(false)
@@ -830,7 +817,7 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.addNotification({
       type: 'info',
-      message: 'Your cart has been emptied successfully',
+      message: $i18n.t('notification.cartEmptied'),
     })
     uiStore.setSaving(false)
   }
@@ -916,7 +903,7 @@ export const useListStore = defineStore('list', () => {
 
     uiStore.addNotification({
       type: 'info',
-      message: 'List has been populated successfully',
+      message: $i18n.t('notification.listPopulated'),
     })
   }
 

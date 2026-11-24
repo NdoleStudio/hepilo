@@ -39,7 +39,8 @@ const formNameRules = [
   (value: string | null): boolean | string =>
     (!!value && value.trim() !== '') || t('errors.categoryNameRequired'),
   (value: string | null): boolean | string =>
-    (!!value && value.length <= 15) || t('errors.categoryNameTooLong'),
+    (!!value && (value.length <= 15 || value === originalDisplayName.value)) ||
+    t('errors.categoryNameTooLong'),
 ]
 
 const formPricePerUnitRules = [
@@ -50,12 +51,18 @@ const formPricePerUnitRules = [
 
 const filteredItems = computed(() => {
   const query = formQuery.value.trim().toLowerCase()
-  if (query === '') return itemStore.items
-  return itemStore.items.filter(
+  const items = itemStore.items.map((item) => ({ ...item, name: itemStore.displayName(item) }))
+  if (query === '') return items
+  return items.filter(
     (item) =>
       item.name.toLowerCase().includes(query) ||
       itemStore.findCategoryNameByItemId(item.id).toLowerCase().includes(query),
   )
+})
+
+const originalDisplayName = computed(() => {
+  const item = itemStore.findItemById(editedItem.value.itemId)
+  return item && itemStore.displayName(item)
 })
 
 const canLoadMore = computed(() => filteredItems.value.length > itemSize.value)
