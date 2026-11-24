@@ -1,6 +1,7 @@
 export default defineNuxtRouteMiddleware(async (_to, _from) => {
   if (!import.meta.client) return
 
+  const localePath = useLocalePath()
   const { getCurrentUser } = useFirebase()
   const user = await getCurrentUser()
 
@@ -27,5 +28,5 @@ export default defineNuxtRouteMiddleware(async (_to, _from) => {
     // Fall through to login redirect
   }
 
-  return navigateTo('/login')
+  return navigateTo(localePath('/login'))
 })

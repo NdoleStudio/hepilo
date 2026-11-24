@@ -10,6 +10,13 @@ definePageMeta({
   middleware: 'guest',
 })
 
+const { t, tm, rt, locales } = useI18n()
+const localePath = useLocalePath()
+const config = useRuntimeConfig()
+const localePaths = Object.fromEntries(
+  locales.value.map((locale) => [locale.code, localePath('/lists', locale.code)]),
+)
+
 // Redirect already-signed-in users to their lists before the prerendered
 // landing page paints, avoiding a ~1s flash of the marketing page on open.
 // Runs synchronously in <head> before the body renders. The `guest`
@@ -20,14 +27,21 @@ useHead({
     {
       key: 'authed-redirect',
       tagPosition: 'head',
-      innerHTML: `try{if(localStorage.getItem('${AUTHED_STORAGE_KEY}')==='1'){location.replace('/lists')}}catch(e){}`,
+      innerHTML: `try {
+        if (localStorage.getItem('${AUTHED_STORAGE_KEY}') === '1') {
+          var paths = ${JSON.stringify(localePaths)};
+          var cookieKey = ${JSON.stringify(config.public.i18n.detectBrowserLanguage && config.public.i18n.detectBrowserLanguage.cookieKey)};
+          var cookie = document.cookie.split(';').map(function(value) { return value.trim(); }).find(function(value) { return value.startsWith(cookieKey + '='); });
+          var savedLocale = cookie ? decodeURIComponent(cookie.slice(cookieKey.length + 1)) : '';
+          var routeLocale = location.pathname.split('/')[1];
+          var selectedLocale = Object.hasOwn(paths, routeLocale) ? routeLocale : savedLocale;
+          location.replace(Object.hasOwn(paths, selectedLocale) ? paths[selectedLocale] : paths[${JSON.stringify(config.public.i18n.defaultLocale)}]);
+        }
+      } catch(e) {}`,
     },
   ],
 })
 
-const { t, tm, rt } = useI18n()
-const localePath = useLocalePath()
-const config = useRuntimeConfig()
 const { mdAndDown } = useVDisplay()
 
 useSeoDefaults({
